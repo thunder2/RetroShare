@@ -99,6 +99,22 @@ bool Rshare::useConfigDir;
 QString Rshare::configDir;
 QLocalServer* Rshare::localServer;
 
+
+class CreateEventFilter : public QObject
+{
+//	Q_OBJECT // no need to be a Q_OBJECT
+
+protected:
+	bool eventFilter(QObject *object, QEvent *event)
+	{
+		if (event->type() == QEvent::Create) {
+			object->setProperty("cssLocale", QLocale().name());
+		}
+		// standard event processing
+		return QObject::eventFilter(object, event);
+	}
+};
+
 /** Catches debugging messages from Qt and sends them to RetroShare's logs. If Qt
  * emits a QtFatalMsg, we will write the message to the log and then abort().
  */
@@ -250,6 +266,9 @@ Rshare::Rshare(QStringList args, int &argc, char **argv, const QString &dir)
   qInstallMsgHandler(qt_msg_handler);
 #endif
 
+  eventFilter = new CreateEventFilter;
+  installEventFilter(eventFilter);
+
 #ifndef __APPLE__
 
   /* set default window icon */
@@ -311,6 +330,9 @@ Rshare::Rshare(QStringList args, int &argc, char **argv, const QString &dir)
 /** Destructor */
 Rshare::~Rshare()
 {
+	removeEventFilter(eventFilter);
+	delete(eventFilter);
+
 	/* Cleanup GxsIdDetails */
 	GxsIdDetails::cleanup();
 	if (localServer)

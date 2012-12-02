@@ -194,6 +194,7 @@ private:
   static QString configDir;
   bool mBlink;
   static QLocalServer* localServer;
+  QObject *eventFilter;
 };
 
 #endif
