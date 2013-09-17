@@ -6,6 +6,8 @@ TEMPLATE = subdirs
 SUBDIRS += openpgpsdk
 openpgpsdk.file = openpgpsdk/src/openpgpsdk.pro
 
+SUBDIRS += PlainChat
+
 retrotor {
 	libretroshare.depends = openpgpsdk 
 } else {
