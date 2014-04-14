@@ -346,8 +346,15 @@ bool RsAccountsDetail::defaultBaseDirectory()
 #else
 	if (RsInit::isPortable())
 	{
+		char buffer[MAX_PATH];
+		GetModuleFileNameA(NULL, buffer, sizeof(buffer));
+
+		std::string path = buffer;
+		std::string::size_type pos = path.find_last_of("\\/");
+		path.erase(pos);
+
 		// use directory "Data" in portable version
-		basedir = "Data";
+		basedir = RsDirUtil::makePath(path, "Data");
 	} 
 	else 
 	{
