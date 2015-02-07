@@ -225,7 +225,7 @@ void RsGenExchange::tick()
 				for(std::list<RsGxsGroupId>::const_iterator it(grpIds.begin());it!=grpIds.end();++it)
 					std::cerr << "    " << *it << std::endl;
 #endif
-				mNotifications.push_back(gc);
+				addNotification_locked(gc);
 
 				// also notify the network exchange service that these groups no longer exist.
 
@@ -237,7 +237,7 @@ void RsGenExchange::tick()
 			{
 				RsGxsMsgChange* c = new RsGxsMsgChange(RsGxsNotify::TYPE_PROCESSED, false);
 				c->msgChangeMap = msgIds;
-				mNotifications.push_back(c);
+				addNotification_locked(c);
 			}
 
 			delete mIntegrityCheck;
@@ -2041,7 +2041,7 @@ void RsGenExchange::processMsgMetaChanges()
         RS_STACK_MUTEX(mGenMtx);
         RsGxsMsgChange* c = new RsGxsMsgChange(RsGxsNotify::TYPE_PROCESSED, false);
         c->msgChangeMap = msgIds;
-        mNotifications.push_back(c);
+        addNotification_locked(c);
     }
 }
 
@@ -2092,7 +2092,7 @@ void RsGenExchange::processGrpMetaChanges()
         RS_STACK_MUTEX(mGenMtx);
         RsGxsGroupChange* gc = new RsGxsGroupChange(RsGxsNotify::TYPE_PROCESSED, true);
         gc->mGrpIdList = grpChanged;
-        mNotifications.push_back(gc);
+        addNotification_locked(gc);
 #ifdef GEN_EXCH_DEBUG
                     			std::cerr << "  adding the following grp ids to notification: " << std::endl;
                                 	for(std::list<RsGxsGroupId>::const_iterator it(grpChanged.begin());it!=grpChanged.end();++it)
@@ -2348,7 +2348,7 @@ void RsGenExchange::publishMsgs()
 	{
 		RsGxsMsgChange* ch = new RsGxsMsgChange(RsGxsNotify::TYPE_PUBLISHED, false);
 		ch->msgChangeMap = msgChangeMap;
-		mNotifications.push_back(ch);
+		addNotification_locked(ch);
 	}
 
 }
@@ -2486,7 +2486,7 @@ void RsGenExchange::processGroupDelete()
 	{
 		RsGxsGroupChange* gc = new RsGxsGroupChange(RsGxsNotify::TYPE_PUBLISHED, false);
 		gc->mGrpIdList = grpDeleted;
-		mNotifications.push_back(gc);
+		addNotification_locked(gc);
 	}
 
 	mGroupDeletePublish.clear();
@@ -2797,7 +2797,7 @@ void RsGenExchange::publishGrps()
 	    {
 		    RsGxsGroupChange* gc = new RsGxsGroupChange(RsGxsNotify::TYPE_RECEIVED_NEW, true);
 		    gc->mGrpIdList = grpChanged;
-		    mNotifications.push_back(gc);
+		    addNotification_locked(gc);
 #ifdef GEN_EXCH_DEBUG
 		    std::cerr << "  adding the following grp ids to notification: " << std::endl;
 		    for(std::list<RsGxsGroupId>::const_iterator it(grpChanged.begin());it!=grpChanged.end();++it)
@@ -3064,7 +3064,7 @@ void RsGenExchange::processRecvdMessages()
 
 		    RsGxsMsgChange* c = new RsGxsMsgChange(RsGxsNotify::TYPE_RECEIVED_NEW, false);
 		    c->msgChangeMap = msgIds;
-		    mNotifications.push_back(c);
+		    addNotification_locked(c);
 	    }
     }
 
@@ -3197,7 +3197,7 @@ void RsGenExchange::processRecvdGroups()
 	{
 		RsGxsGroupChange* c = new RsGxsGroupChange(RsGxsNotify::TYPE_RECEIVED_NEW, false);
 		c->mGrpIdList = grpIds;
-		mNotifications.push_back(c);
+		addNotification_locked(c);
 		mDataStore->storeGroup(grps_to_store);
 #ifdef GEN_EXCH_DEBUG
                     			std::cerr << "  adding the following grp ids to notification: " << std::endl;
@@ -3434,4 +3434,133 @@ bool RsGenExchange::localSearch( const std::string& matchString,
                   std::list<RsGxsGroupSummary>& results )
 {
 	return mNetService->search(matchString, results);
+}
+
+void RsGenExchange::addNotification_locked(RsGxsNotify *change)
+{
+	if (!change)
+	{
+		return;
+	}
+
+	bool add = true;
+
+	/* Convert to possible classes */
+	RsGxsMsgChange *msgChange = dynamic_cast<RsGxsMsgChange*>(change);
+	RsGxsGroupChange *grpChange = NULL;
+	if (!msgChange)
+	{
+		grpChange = dynamic_cast<RsGxsGroupChange *>(change);
+		if (!grpChange)
+		{
+			// Add more types here
+			std::cerr << "RsGenExchange::addNotification_locked() unknown RsGxsNotify" << std::endl;
+		}
+	}
+
+	if (msgChange || grpChange)
+	{
+		std::vector<RsGxsNotify*>::iterator notifyIt;
+		for (notifyIt = mNotifications.begin(); notifyIt != mNotifications.end(); ++notifyIt)
+		{
+			RsGxsNotify *c = *notifyIt;
+
+			if (change->getType() != c->getType())
+			{
+				/* Another type */
+				continue;
+			}
+
+			if (msgChange)
+			{
+				RsGxsMsgChange *mc = dynamic_cast<RsGxsMsgChange*>(c);
+				if (!mc)
+				{
+					/* Not a message change */
+					continue;
+				}
+
+				if (msgChange->metaChange() != mc->metaChange())
+				{
+					/* Another meta change */
+					continue;
+				}
+
+				/* Add messages to existing notification */
+				std::map<RsGxsGroupId, std::set<RsGxsMessageId> >::iterator gitNew;
+				for (gitNew = msgChange->msgChangeMap.begin(); gitNew != msgChange->msgChangeMap.end(); ++gitNew)
+				{
+					const RsGxsGroupId &grpIdNew = gitNew->first;
+
+					std::map<RsGxsGroupId, std::set<RsGxsMessageId> >::iterator gitExist = mc->msgChangeMap.find(grpIdNew);
+					if (gitExist == mc->msgChangeMap.end())
+					{
+						/* Add all message changes of the group id */
+						mc->msgChangeMap.insert(*gitNew);
+						continue;
+					}
+
+					/* Add message changes to existing changes */
+					std::set<RsGxsMessageId> &msgNew = gitNew->second;
+					std::set<RsGxsMessageId> &msgExist = gitExist->second;
+
+					std::set<RsGxsMessageId>::iterator mitNew;
+					for (mitNew = msgNew.begin(); mitNew != msgNew.end(); ++mitNew)
+					{
+						const RsGxsMessageId &msgIdNew = *mitNew;
+						if (std::find(msgExist.begin(), msgExist.end(), msgIdNew) == msgExist.end())
+						{
+							/* Add message id */
+							msgExist.insert(msgIdNew);
+						}
+					}
+				}
+
+				add = false;
+				break;
+			}
+
+			if (grpChange)
+			{
+				RsGxsGroupChange *gc = dynamic_cast<RsGxsGroupChange*>(c);
+				if (!gc)
+				{
+					/* Not a group change */
+					continue;
+				}
+
+				if (grpChange->metaChange() != gc->metaChange())
+				{
+					/* Another meta change */
+					continue;
+				}
+
+				/* Add groups to existing notification */
+				std::list<RsGxsGroupId>::iterator git;
+				for (git = grpChange->mGrpIdList.begin(); git != grpChange->mGrpIdList.end(); ++git)
+				{
+					RsGxsGroupId &grpId = *git;
+					if (std::find(gc->mGrpIdList.begin(), gc->mGrpIdList.end(), grpId) == gc->mGrpIdList.end())
+					{
+						/* Add group id */
+						gc->mGrpIdList.push_back(grpId);
+					}
+				}
+
+				add = false;
+				break;
+			}
+
+			// should not happen
+			break;
+		}
+	}
+
+	if (add) {
+		mNotifications.push_back(change);
+	}
+	else
+	{
+		delete(change);
+	}
 }

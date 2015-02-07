@@ -890,6 +890,12 @@ private:
      */
     void removeDeleteExistingMessages(std::list<RsNxsMsg*>& msgs, GxsMsgReq& msgIdsNotify);
 
+    /*!
+     * Adds a notification to mNotifications with check of existing entries
+     * @param notify RsGxsNotify
+     */
+    void addNotification_locked(RsGxsNotify *change);
+
     RsMutex mGenMtx;
     RsGxsDataAccess* mDataAccess;
     RsGeneralDataService* mDataStore;
