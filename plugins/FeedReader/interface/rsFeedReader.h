@@ -26,6 +26,8 @@
 #include <string>
 #include <list>
 
+#include "retroshare/rsgxsifacetypes.h"
+
 class RsFeedReader;
 extern RsFeedReader *rsFeedReader;
 
@@ -122,6 +124,7 @@ public:
 	time_t                   lastUpdate;
 	uint32_t                 storageTime;
 	std::string              forumId;
+	RsGxsId                  authorId;
 	WorkState                workstate;
 	RsFeedReaderErrorState   errorState;
 	std::string              errorString;

@@ -92,6 +92,11 @@ static void feedToInfo(const RsFeedReaderFeed *feed, FeedInfo &info)
 	info.updateInterval = feed->updateInterval;
 	info.lastUpdate = feed->lastUpdate;
 	info.forumId = feed->forumId;
+	if (!feed->authorId.ids.empty()) {
+		info.authorId = *feed->authorId.ids.begin();
+	} else {
+		info.authorId.clear();
+	}
 	info.storageTime = feed->storageTime;
 	info.errorState = feed->errorState;
 	info.errorString = feed->errorString;

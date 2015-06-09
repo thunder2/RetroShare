@@ -24,6 +24,7 @@
 #include "rsitems/rsserviceids.h"
 #include "serialiser/rsserial.h"
 #include "serialiser/rstlvstring.h"
+#include "serialiser/rstlvidset.h"
 
 #include "p3FeedReader.h"
 
@@ -76,6 +77,7 @@ public:
 	time_t                   lastUpdate;
 	uint32_t                 flag; // RS_FEED_FLAG_...
 	std::string              forumId;
+	RsTlvGxsIdSet            authorId;
 	uint32_t                 storageTime;
 	std::string              description;
 	std::string              icon;

@@ -84,6 +84,7 @@ uint32_t RsFeedReaderSerialiser::sizeFeed(RsFeedReaderFeed *item)
 	s += sizeof(uint32_t); /* storageTime */
 	s += sizeof(uint32_t); /* flag */
 	s += GetTlvStringSize(item->forumId);
+	s += item->authorId.TlvSize();
 	s += sizeof(uint32_t); /* errorstate */
 	s += GetTlvStringSize(item->errorString);
 	s +=  sizeof(uint32_t); /* transformationType */
@@ -113,7 +114,7 @@ bool RsFeedReaderSerialiser::serialiseFeed(RsFeedReaderFeed *item, void *data, u
 	offset += 8;
 
 	/* add values */
-	ok &= setRawUInt16(data, tlvsize, &offset, 1); /* version */
+	ok &= setRawUInt16(data, tlvsize, &offset, 2); /* version */
 	ok &= SetTlvString(data, tlvsize, &offset, TLV_TYPE_STR_GENID, item->feedId);
 	ok &= SetTlvString(data, tlvsize, &offset, TLV_TYPE_STR_VALUE, item->parentId);
 	ok &= SetTlvString(data, tlvsize, &offset, TLV_TYPE_STR_LINK, item->url);
@@ -129,6 +130,7 @@ bool RsFeedReaderSerialiser::serialiseFeed(RsFeedReaderFeed *item, void *data, u
 	ok &= setRawUInt32(data, tlvsize, &offset, item->storageTime);
 	ok &= setRawUInt32(data, tlvsize, &offset, item->flag);
 	ok &= SetTlvString(data, tlvsize, &offset, TLV_TYPE_STR_VALUE, item->forumId);
+	ok &= item->authorId.SetTlv(data, tlvsize, &offset);
 	ok &= setRawUInt32(data, tlvsize, &offset, item->errorState);
 	ok &= SetTlvString(data, tlvsize, &offset, TLV_TYPE_STR_VALUE, item->errorString);
 	ok &= setRawUInt32(data, tlvsize, &offset, item->transformationType);
@@ -193,6 +195,9 @@ RsFeedReaderFeed *RsFeedReaderSerialiser::deserialiseFeed(void *data, uint32_t *
 	ok &= getRawUInt32(data, rssize, &offset, &(item->storageTime));
 	ok &= getRawUInt32(data, rssize, &offset, &(item->flag));
 	ok &= GetTlvString(data, rssize, &offset, TLV_TYPE_STR_VALUE, item->forumId);
+	if (version >= 2) {
+		ok &= item->authorId.GetTlv(data, rssize, &offset);
+	}
 	uint32_t errorState = 0;
 	ok &= getRawUInt32(data, rssize, &offset, &errorState);
 	item->errorState = (RsFeedReaderErrorState) errorState;
