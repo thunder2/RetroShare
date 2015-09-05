@@ -958,6 +958,8 @@ bool RsGxsDataAccess::getGroupSerializedData(GroupSerializedDataReq* req)
 bool RsGxsDataAccess::getGroupData(GroupDataReq* req)
 {
 	std::map<RsGxsGroupId, RsNxsGrp*> grpData;
+
+    if (hasGrpFilter(req->Options)) {
         std::list<RsGxsGroupId> grpIdsOut;
 
         getGroupList(req->mGroupIds, req->Options, grpIdsOut);
@@ -972,6 +974,7 @@ bool RsGxsDataAccess::getGroupData(GroupDataReq* req)
         {
             grpData[*lit] = NULL;
         }
+    }
 
         bool ok = mDataStore->retrieveNxsGrps(grpData, true, true);
 
@@ -986,17 +989,20 @@ bool RsGxsDataAccess::getGroupSummary(GroupMetaReq* req)
 {
 
 	RsGxsGrpMetaTemporaryMap grpMeta;
-	std::list<RsGxsGroupId> grpIdsOut;
 
-	getGroupList(req->mGroupIds, req->Options, grpIdsOut);
+	if (hasGrpFilter(req->Options)) {
+		std::list<RsGxsGroupId> grpIdsOut;
 
-	if(grpIdsOut.empty())
-		return true;
+		getGroupList(req->mGroupIds, req->Options, grpIdsOut);
 
-	std::list<RsGxsGroupId>::const_iterator lit = grpIdsOut.begin();
+		if(grpIdsOut.empty())
+			return true;
 
-	for(; lit != grpIdsOut.end(); ++lit)
-		grpMeta[*lit] = NULL;
+		std::list<RsGxsGroupId>::const_iterator lit = grpIdsOut.begin();
+
+		for(; lit != grpIdsOut.end(); ++lit)
+			grpMeta[*lit] = NULL;
+	}
 
 	mDataStore->retrieveGxsGrpMetaData(grpMeta);
 
@@ -1036,14 +1042,12 @@ bool RsGxsDataAccess::getMsgData(MsgDataReq* req)
 {
 	GxsMsgReq msgIdOut;
 
-	const RsTokReqOptions& opts(req->Options);
+//	if (hasMsgFilter(req->Options)) {
+		// filter based on options
+		getMsgList(req->mMsgIds, req->Options, msgIdOut);
+//	} else {
 
-	// filter based on options
-	getMsgList(req->mMsgIds, opts, msgIdOut);
-
-	// If the list is empty because of filtering do not retrieve from DB
-	if((opts.mMsgFlagMask || opts.mStatusMask) && msgIdOut.empty())
-		return true;
+//	}
 
 	mDataStore->retrieveNxsMsgs(msgIdOut, req->mMsgData, true, true);
 	return true;
@@ -1054,7 +1058,10 @@ bool RsGxsDataAccess::getMsgSummary(MsgMetaReq* req)
 {
 	GxsMsgReq msgIdOut;
 
-	const RsTokReqOptions& opts(req->Options);
+//    if (hasMsgFilter(req->Options)) {
+        // filter based on options
+        getMsgList(req->mMsgIds, req->Options, msgIdOut);
+//    }
 
 	// filter based on options
 	getMsgList(req->mMsgIds, opts, msgIdOut);
@@ -1901,6 +1908,15 @@ bool RsGxsDataAccess::disposeOfPublicToken(uint32_t token)
 	return true;
 }
 
+bool RsGxsDataAccess::hasGrpFilter(const RsTokReqOptions &opts)
+{
+	if (opts.mSubscribeMask) {
+		return true;
+	}
+
+	return false;
+}
+
 bool RsGxsDataAccess::checkGrpFilter(const RsTokReqOptions &opts, const RsGxsGrpMetaData *meta) const
 {
 
@@ -1921,6 +1937,25 @@ bool RsGxsDataAccess::checkGrpFilter(const RsTokReqOptions &opts, const RsGxsGrp
 
     return subscribeMatch;
 }
+
+bool RsGxsDataAccess::hasMsgFilter(const RsTokReqOptions &opts)
+{
+	if (opts.mOptions) {
+		return true;
+	}
+
+	if (opts.mStatusMask) {
+		return true;
+	}
+
+	if (opts.mMsgFlagMask) {
+		return true;
+	}
+
+	return false;
+}
+
+bool RsGxsDataAccess::checkMsgFilter(const RsTokReqOptions& opts, const RsGxsMsgMetaData* meta) const
 bool RsGxsDataAccess::checkMsgFilter(
         const RsTokReqOptions& opts, const RsGxsMsgMetaData* meta ) const
 {

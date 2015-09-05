@@ -455,6 +455,12 @@ private:
      */
     void filterGrpList(std::list<RsGxsGroupId>& msgIds, const RsTokReqOptions& opts, const GrpMetaFilter& meta) const;
 
+    /*!
+     * This checks if options are set to filter the messages
+     * @param opts options containing filters to check
+     * @return true if a filter is set
+     */
+    bool hasMsgFilter(const RsTokReqOptions& opts);
 
     /*!
      * This applies the options to the meta to find out if the given message satisfies
@@ -464,6 +470,13 @@ private:
      * @return true if msg meta passes all options
      */
     bool checkMsgFilter(const RsTokReqOptions& opts, const RsGxsMsgMetaData* meta) const;
+
+    /*!
+     * This checks if options are set to filter the groups
+     * @param opts options containing filters to check
+     * @return true if a filter is set
+     */
+    bool hasGrpFilter(const RsTokReqOptions& opts);
 
     /*!
      * This applies the options to the meta to find out if the given group satisfies
