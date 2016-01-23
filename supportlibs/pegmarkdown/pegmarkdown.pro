@@ -38,10 +38,6 @@ win32 {
 		# Switch on extra warnings
 		QMAKE_CFLAGS += -Wextra
 
-		# Switch off optimization for release version
-		QMAKE_CFLAGS_RELEASE -= -O2
-		QMAKE_CFLAGS_RELEASE += -O0
-
 		CONFIG += dummy_glib 
 
 		# With GCC package 4.8, including io.h either directly or indirectly causes off64_t not to be defined when compiling with -ansi switch

@@ -261,12 +261,6 @@ win32-g++ {
 	QMAKE_CFLAGS += -Wextra
 	QMAKE_CXXFLAGS += -Wextra
 
-	# Switch off optimization for release version
-	QMAKE_CXXFLAGS_RELEASE -= -O2
-	QMAKE_CXXFLAGS_RELEASE += -O0
-	QMAKE_CFLAGS_RELEASE -= -O2
-	QMAKE_CFLAGS_RELEASE += -O0
-
 	# Switch on optimization for debug version
 	#QMAKE_CXXFLAGS_DEBUG += -O2
 	#QMAKE_CFLAGS_DEBUG += -O2

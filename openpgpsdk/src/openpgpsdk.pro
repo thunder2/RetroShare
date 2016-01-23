@@ -45,12 +45,6 @@ win32-g++ {
 
     DEFINES *= WIN32_LEAN_AND_MEAN
 
-	# Switch off optimization for release version
-	QMAKE_CXXFLAGS_RELEASE -= -O2
-	QMAKE_CXXFLAGS_RELEASE += -O0
-	QMAKE_CFLAGS_RELEASE -= -O2
-	QMAKE_CFLAGS_RELEASE += -O0
-
     mLibs = bz2 z ssl crypto
     static {
         LIBS += $$linkStaticLibs(mLibs)
