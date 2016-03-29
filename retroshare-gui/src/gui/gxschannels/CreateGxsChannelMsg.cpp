@@ -963,3 +963,46 @@ void CreateGxsChannelMsg::on_removeButton_clicked()
 	removeButton->hide();
 }
 
+
+void CreateGxsChannelMsg::deploy(const QString &subject, const QString &message, const QList<DirDetails> &details)
+{
+	subjectEdit->setText(subject);
+	RichTextEditWidget->setText(message);
+
+	foreach (DirDetails detail, details) {
+		addAttachment(detail.hash, detail.name, detail.size, true, RsPeerId());
+	}
+
+	QString thumbnail;
+	if (subject.contains("x86")) {
+		if (subject.contains("-dev")) {
+			thumbnail = "dev-32.png";
+		} else {
+			thumbnail = "release-32.png";
+		}
+	} else if (subject.contains("x64")) {
+		if (subject.contains("-dev")) {
+			thumbnail = "dev-64.png";
+		} else {
+			thumbnail = "release-64.png";
+		}
+	} else if (subject.contains("msys2")) {
+		if (subject.contains("-dev")) {
+			thumbnail = "msys2-dev-64.png";
+		} else {
+			thumbnail = "msys2-release-64.png";
+		}
+	}
+
+	if (!thumbnail.isEmpty()) {
+		QDir dir
+	#ifdef WINDOWS_SYS
+		        ("D:\\test\\Images");
+	#else
+		        (QDir::homePath() + "/RetroShare/Images");
+	#endif
+
+		picture = QPixmap(QFileInfo(dir, thumbnail).absoluteFilePath()).scaledToHeight(156, Qt::SmoothTransformation).copy( 0, 0, 107, 156);
+		preview_W->setPixmap(picture, true);
+	}
+}

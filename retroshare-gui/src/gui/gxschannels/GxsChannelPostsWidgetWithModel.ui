@@ -118,6 +118,16 @@
        </widget>
       </item>
       <item>
+       <widget class="QToolButton" name="deployToolButton">
+        <property name="text">
+         <string notr="true">Deploy</string>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
