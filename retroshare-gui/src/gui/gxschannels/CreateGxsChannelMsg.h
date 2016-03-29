@@ -51,6 +51,7 @@ public:
     void addAttachment(const RsFileHash &hash, const std::string &fname, uint64_t size, bool local, const RsPeerId &srcId,bool assume_file_ready = false);
 
 	void newChannelMsg();
+	void deploy(const QString &subject, const QString &message, const QList<DirDetails> &details);
 
 	QPixmap picture;
 
