@@ -23,8 +23,11 @@
 #include <QSignalMapper>
 #include <QPainter>
 #include <QMessageBox>
+#include <QDir>
 
 #include "retroshare/rsgxscircles.h"
+#include <retroshare/rsfiles.h>
+#include <retroshare/rspeers.h>
 
 #include "ui_GxsChannelPostsWidgetWithModel.h"
 #include "gui/feeds/GxsChannelPostItem.h"
@@ -519,6 +522,7 @@ GxsChannelPostsWidgetWithModel::GxsChannelPostsWidgetWithModel(const RsGxsGroupI
 
     /* Connect signals */
     connect(ui->postButton, SIGNAL(clicked()), this, SLOT(createMsg()));
+    connect(ui->deployToolButton, SIGNAL(clicked(bool)), this, SLOT(deploy()));
     connect(ui->subscribeToolButton, SIGNAL(subscribe(bool)), this, SLOT(subscribeGroup(bool)));
     connect(RsGUIEventManager::getInstance(), SIGNAL(settingsChanged()), this, SLOT(settingsChanged()));
 
@@ -1324,6 +1328,7 @@ void GxsChannelPostsWidgetWithModel::insertChannelDetails(const RsGxsChannelGrou
     ui->logoLabel->setFixedSize(QSize(ui->logoLabel->height()*chanImage.width()/(float)chanImage.height(),ui->logoLabel->height())); // make the logo have the same aspect ratio than the original image
 
     ui->postButton->setEnabled(bool(group.mMeta.mSubscribeFlags & GXS_SERV::GROUP_SUBSCRIBE_PUBLISH));
+	ui->deployToolButton->setEnabled(bool(group.mMeta.mSubscribeFlags & GXS_SERV::GROUP_SUBSCRIBE_PUBLISH));
 
 #ifdef TO_REMOVE
     bool autoDownload ;
@@ -1653,3 +1658,93 @@ void GxsChannelPostsWidgetWithModel::setAllMessagesReadDo(bool read)
     mChannelPostsModel->setAllMsgReadStatus(read);
 }
 
+void GxsChannelPostsWidgetWithModel::deploy()
+{
+	if (groupId().isNull()) {
+		return;
+	}
+
+	if (!IS_GROUP_SUBSCRIBED(mGroup.mMeta.mSubscribeFlags)) {
+		return;
+	}
+
+	QDir dir
+#ifdef WINDOWS_SYS
+	        ("D:\\test\\Deploy");
+#else
+	        (QDir::homePath() + "/RetroShare/Deploy");
+#endif
+
+	QFile msgFile(QFileInfo(dir, "msg.txt").absoluteFilePath());
+	if (!msgFile.exists()) {
+		return;
+	}
+
+	if (!msgFile.open(QFile::ReadOnly)) {
+		return;
+	}
+
+	QString msg(msgFile.readAll());
+
+	QFileInfoList packages = dir.entryInfoList(QDir::Dirs | QDir::NoDot | QDir::NoDotDot);
+
+	foreach (QFileInfo package, packages) {
+		QFileInfoList packageFiles = QDir(package.absoluteFilePath()).entryInfoList(QDir::Files);
+
+		QList<DirDetails> details;
+		std::list<void*> refs;
+		refs.push_back(NULL);
+
+		while (!refs.empty()) {
+			void *ref = refs.front();
+			refs.pop_front();
+
+			DirDetails detail;
+//			if (ref) {
+				if (!rsFiles->RequestDirDetails(ref, detail, RS_FILE_HINTS_LOCAL)) {
+					return;
+				}
+//			} else {
+//				if (!rsFiles->RequestDirDetails(rsPeers->getOwnId(), "/UploadsGlobal", detail)) {
+//					return;
+//				}
+//			}
+
+			if (detail.type == DIR_TYPE_FILE) {
+				foreach (QFileInfo packageFile, packageFiles) {
+					if (QString::fromUtf8(detail.name.c_str()) == packageFile.fileName()) {
+						details.push_back(detail);
+						break;
+					}
+				}
+				if (packageFiles.count() == details.count()) {
+					break;
+				}
+			}
+
+			if (detail.type == DIR_TYPE_ROOT || detail.type == DIR_TYPE_DIR) {
+				std::vector<DirStub>::const_iterator childIt;
+				for (childIt = detail.children.begin(); childIt != detail.children.end(); ++childIt) {
+					refs.push_back(childIt->ref);
+				}
+			}
+
+			if (detail.type == DIR_TYPE_PERSON && detail.id == rsPeers->getOwnId()) {
+				std::vector<DirStub>::const_iterator childIt;
+				for (childIt = detail.children.begin(); childIt != detail.children.end(); ++childIt) {
+					refs.push_back(childIt->ref);
+				}
+			}
+		}
+
+		if (packageFiles.count() != details.count()) {
+			return;
+		}
+
+		CreateGxsChannelMsg *msgDialog = new CreateGxsChannelMsg(groupId());
+		msgDialog->deploy(package.fileName(), msg, details);
+		msgDialog->show();
+
+		/* window will destroy itself! */
+	}
+}
