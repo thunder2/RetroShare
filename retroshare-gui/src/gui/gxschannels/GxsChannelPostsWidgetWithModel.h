@@ -165,6 +165,7 @@ public slots:
     void updateCommentsCount(int n);
     void showChannelFilesContextMenu(QPoint p);
     void copyChannelFilesLink();
+	void deploy();
 
 private:
 	void processSettings(bool load);
