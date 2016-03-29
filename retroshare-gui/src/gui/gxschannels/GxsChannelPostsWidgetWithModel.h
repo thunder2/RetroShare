@@ -169,6 +169,7 @@ public slots:
     void showChannelFilesContextMenu(QPoint p);
     void showChannelPostFilesContextMenu(QPoint p);
     void copyChannelFilesLink();
+	void deploy();
 
 private:
     void updateZoomFactor(int what_to_do);	// -1=unzoom, 0=nothing, 1=zoom
