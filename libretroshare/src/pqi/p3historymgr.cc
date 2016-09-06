@@ -54,7 +54,7 @@ p3HistoryMgr::p3HistoryMgr()
 	mPrivateSaveCount = 0;
 	mLastCleanTime = 0 ;
 
-	mMaxStorageDurationSeconds = 10*86400 ; // store for 10 days at most.
+	mMaxStorageDurationSeconds = 0 ; // store all messages
 }
 
 p3HistoryMgr::~p3HistoryMgr()
