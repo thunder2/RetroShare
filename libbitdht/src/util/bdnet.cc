@@ -188,7 +188,7 @@ int bdnet_setsockopt(int s, int level, int optname,
 ssize_t bdnet_recvfrom(int s, void *buf, size_t len, int flags,
                               struct sockaddr *from, socklen_t *fromlen)
 {
-	std::cerr << "bdnet_recvfrom()" << std::endl;
+//	std::cerr << "bdnet_recvfrom()" << std::endl;
 	int ret = recvfrom(s, (char *) buf, len, flags, from, fromlen);
 	if (ret == SOCKET_ERROR)
 	{
@@ -201,7 +201,7 @@ ssize_t bdnet_recvfrom(int s, void *buf, size_t len, int flags,
 ssize_t bdnet_sendto(int s, const void *buf, size_t len, int flags, 
  				const struct sockaddr *to, socklen_t tolen)
 {
-	std::cerr << "bdnet_sendto()" << std::endl;
+//	std::cerr << "bdnet_sendto()" << std::endl;
 	int ret = sendto(s, (const char *) buf, len, flags, to, tolen);
 	if (ret == SOCKET_ERROR)
 	{
