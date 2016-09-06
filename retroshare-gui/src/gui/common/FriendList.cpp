@@ -284,9 +284,8 @@ void FriendList::initializeHeader(bool afterLoadSettings)
 {
     // set column size
     QHeaderView *header = ui->peerTreeWidget->header();
-    QHeaderView_setSectionsMovable(header, true);
-    //QHeaderView_setSectionResizeMode(header, COLUMN_NAME, QHeaderView::Stretch);
-    QHeaderView_setSectionResizeMode(header, COLUMN_NAME, QHeaderView::Interactive);
+    QHeaderView_setSectionsMovable(header, false);
+    QHeaderView_setSectionResizeMode(header, COLUMN_NAME, QHeaderView::Stretch);
     QHeaderView_setSectionResizeMode(header, COLUMN_STATE, QHeaderView::Interactive);
     QHeaderView_setSectionResizeMode(header, COLUMN_LAST_CONTACT, QHeaderView::Interactive);
     QHeaderView_setSectionResizeMode(header, COLUMN_IP, QHeaderView::Interactive);
