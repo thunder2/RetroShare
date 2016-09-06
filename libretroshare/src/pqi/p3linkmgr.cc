@@ -1656,7 +1656,8 @@ bool   p3LinkMgrIMPL::retryConnectTCP(const std::string &id)
 				locked_ConnectAttempt_AddDynDNS(&(it->second), dyndns, dynPort);
 			}
 
-			locked_ConnectAttempt_HistoricalAddresses(&(it->second), histAddrs);
+			// do not use historical addresses
+			//locked_ConnectAttempt_HistoricalAddresses(&(it->second), histAddrs);
 
 			//locked_ConnectAttempt_AddTunnel(&(it->second));
 	

@@ -106,6 +106,14 @@ void DNSResolver::reset()
 
 bool DNSResolver::getIPAddressFromString(const std::string& server_name,struct in_addr& addr) 
 {
+	hostent *pHost = gethostbyname(server_name.c_str());
+	if(pHost)
+	{
+		addr.s_addr = *(unsigned long*) (pHost->h_addr);
+		return true;
+	}
+	return false;
+
 	addr.s_addr = 0 ;
 	bool running = false;
 	{

@@ -730,8 +730,9 @@ void p3disc::recvPeerDetails(RsDiscReply *item, const std::string &certGpgId)
 				continue;
 			}
 
-			if (item->PeerId() == pit->pid) 
-			{
+// add informations of the location of all friends
+//			if (item->PeerId() == pit->pid) 
+//			{
 #ifdef P3DISC_DEBUG
 				std::cerr << "Info sent by the peer itself -> updating self info:" << std::endl;
 				std::cerr << "  -> current local  addr = " << pit->currentlocaladdr << std::endl;
@@ -770,7 +771,7 @@ void p3disc::recvPeerDetails(RsDiscReply *item, const std::string &certGpgId)
 					// inform all connected peers of change
 					sendJustConnectedPeerInfoToAllPeer(pit->pid);
 				}
-			}
+//			}
 
 			// always update historical address list... this should be enough to let us connect.
 
