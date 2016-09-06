@@ -3,7 +3,6 @@
 
 # Needed defines
 ;!define VERSION ""
-;!define SOURCEDIR ""
 ;!define RELEASEDIR ""
 ;!define QTDIR ""
 ;!define MINGWDIR ""
@@ -15,10 +14,6 @@
 # Check needed defines
 !ifndef VERSION
 !error "VERSION is not defined"
-!endif
-
-!ifndef SOURCEDIR
-!error "SOURCEDIR is not defined"
 !endif
 
 !ifndef RELEASEDIR
@@ -33,7 +28,7 @@
 
 # Check optional defines
 !ifdef REVISION
-!define REVISION_ "${REVISION}_"
+!define REVISION_ "${REVISION}-"
 !else
 !define REVISION ""
 !define REVISION_ ""
@@ -45,6 +40,20 @@
 !define OUTDIR ""
 !define OUTDIR_ ""
 !endif
+
+!ifndef INSTALLERADD
+!define INSTALLERADD ""
+!endif
+
+# Source directory
+!define SOURCEDIR "..\..\.."
+
+# Get version of Qt
+!GetDllVersion "${QTDIR}\bin\QtCore4.dll" QTVERSION_
+!define QTVERSION ${QTVERSION_1}.${QTVERSION_2}.${QTVERSION_3}
+
+# Date
+!define /date Date "%Y%m%d"
 
 # Application name and version
 !define APPNAME "RetroShare"
@@ -60,7 +69,7 @@
 # Main Install settings
 Name "${APPNAMEANDVERSION}"
 InstallDirRegKey HKLM "Software\${APPNAME}" ""
-OutFile "${OUTDIR_}RetroShare_${VERSION}_${REVISION_}setup.exe"
+OutFile "${OUTDIR_}RetroShare-${VERSION}-${Date}-${REVISION_}Qt${QTVERSION}${INSTALLERADD}-setup.exe"
 BrandingText "${APPNAMEANDVERSION}"
 RequestExecutionlevel highest
 # Use compression
@@ -81,7 +90,7 @@ Var StyleSheetDir
 # Interface Settings
 !define MUI_ABORTWARNING
 !define MUI_HEADERIMAGE
-!define MUI_HEADERIMAGE_BITMAP "${SOURCEDIR}\build_scripts\Windows\HeaderImage.bmp"
+!define MUI_HEADERIMAGE_BITMAP "${SOURCEDIR}\build_scripts\Windows\installer\HeaderImage.bmp"
 ;!define MUI_WELCOMEFINISHPAGE_BITMAP "...bmp"
 
 # MUI defines
