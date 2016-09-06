@@ -1761,6 +1761,8 @@ bool  p3LinkMgrIMPL::locked_CheckPotentialAddr(const struct sockaddr_in *addr, t
 	std::cerr << std::endl;
 #endif
 
+	return true;
+
 	if (sameNet(&(mLocalAddress.sin_addr), &(addr->sin_addr)))
 	{
 #ifdef LINKMGR_DEBUG
