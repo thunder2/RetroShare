@@ -29,6 +29,12 @@ if "%LibsGCCVersion%" NEQ "%GCCVersion%" %cecho% error "Please use correct versi
 call "%ToolsPath%\depends.bat" init
 if errorlevel 1 %cecho% error "Error initializing depends." & exit /B 1
 
+:: Install tor
+if "%ParamTor%"=="1" (
+	%EnvMSYS2Install% "mingw-w64-%MSYS2Architecture%-tor"
+	if errorlevel 1 exit /B 1
+)
+
 :: Remove deploy path
 if exist "%RsDeployPath%" rmdir /S /Q "%RsDeployPath%"
 
@@ -51,15 +57,6 @@ call "%ToolsPath%\get-rs-date.bat" "%SourcePath%" RsDate
 if errorlevel 1 %cecho% error "Could not get date."& goto error
 
 if "%RsDate%"=="" %cecho% error "Could not get date."& goto error
-
-rem Tor
-if "%ParamTor%"=="1" (
-	:: Check for tor executable
-	if not exist "%EnvTorPath%\Tor\tor.exe" (
-		%cecho% error "Tor binary not found. Please download Tor Expert Bundle from\nhttps://www.torproject.org/download/download.html.en\nand unpack to\n%EnvTorPath:\=\\%"
-		goto error
-	)
-)
 
 set QtMainVersion=%QtVersion:~0,1%
 
@@ -122,7 +119,7 @@ echo copy extensions
 if "%ParamPlugins%"=="1" (
 	for /D %%D in ("%RsBuildPath%\plugins\*") do (
 		call :copy_extension "%%D" "%RsDeployPath%\Data\%Extensions%"
-		call :copy_dependencies "%RsDeployPath%\Data\%Extensions%\%%~nxD.dll" "%RsDeployPath%"
+		call :copy_dependencies mingw "%RsDeployPath%\Data\%Extensions%\%%~nxD.dll" "%RsDeployPath%"
 	)
 )
 
@@ -130,8 +127,8 @@ echo copy external binaries
 copy "%BuildLibsPath%\libs\bin\*.dll" "%RsDeployPath%" %Quite%
 
 echo copy dependencies
-call :copy_dependencies "%RsDeployPath%\retroshare.exe" "%RsDeployPath%"
-if exist "%RsDeployPath%\retroshare.dll" call :copy_dependencies "%RsDeployPath%\retroshare.dll" "%RsDeployPath%"
+call :copy_dependencies mingw "%RsDeployPath%\retroshare.exe" "%RsDeployPath%"
+if exist "%RsDeployPath%\retroshare.dll" call :copy_dependencies mingw "%RsDeployPath%\retroshare.dll" "%RsDeployPath%"
 
 echo copy Qt DLL's
 copy "%QtPath%\Qt%QtMainVersion1%Svg%QtMainVersion2%.dll" "%RsDeployPath%" %Quite%
@@ -155,6 +152,18 @@ del /Q "%RsDeployPath%\imageformats\*d?.dll" %Quite%
 if exist "%SourcePath%\retroshare-gui\src\qss" (
 	echo copy qss
 	xcopy /S "%SourcePath%\retroshare-gui\src\qss" "%RsDeployPath%\qss" %Quite%
+)
+
+if "%ParamTor%"=="1" (
+	echo copy tor
+	if not exist "%RsDeployPath%\tor" mkdir "%RsDeployPath%\tor"
+	copy "%EnvMSYS2MinGWPath%\bin\tor.exe" "%RsDeployPath%\tor" %Quite%
+	copy "%EnvMSYS2MinGWPath%\bin\tor-gencert.exe" "%RsDeployPath%\tor" %Quite%
+
+	echo copy tor dependencies
+	for /R "%RsDeployPath%\tor" %%D in (*.exe) do (
+		call :copy_dependencies msys2 "%%D" "%RsDeployPath%\tor"
+	)
 )
 
 echo copy stylesheets
@@ -193,12 +202,6 @@ if exist "%SourcePath%\libresapi\src\webui" (
 	xcopy /S "%SourcePath%\libresapi\src\webui" "%RsDeployPath%\webui" %Quite%
 )
 
-if "%ParamTor%"=="1" (
-	echo copy tor
-	if not exist "%RsDeployPath%\tor" mkdir "%RsDeployPath%\tor"
-	echo n | copy /-y "%EnvTorPath%\Tor\*.*" "%RsDeployPath%\tor" %Quite%
-)
-
 rem pack files
 title Pack - %SourceName%%RsType%-%RsBuildConfig% [pack files]
 
@@ -231,15 +234,25 @@ if exist "%~1\lib\%~n1.dll" (
 goto :EOF
 
 :copy_dependencies
-for /F "usebackq" %%A in (`%ToolsPath%\depends.bat list %1`) do (
-	if not exist "%~2\%%A" (
-		if exist "%QtPath%\%%A" (
-			copy "%QtPath%\%%A" %2 %Quite%
-			call :copy_dependencies %~2\%%A %2
-		) else (
-			if exist "%MinGWPath%\%%A" (
-				copy "%MinGWPath%\%%A" %2 %Quite%
-				call :copy_dependencies %~2\%%A %2
+for /F "usebackq" %%A in (`%ToolsPath%\depends.bat list %2`) do (
+	if not exist "%~3\%%A" (
+		if "%~1"=="mingw" (
+			rem Search in WinGW paths
+			if exist "%QtPath%\%%A" (
+				copy "%QtPath%\%%A" %3 %Quite%
+				call :copy_dependencies %1 %~3\%%A %3
+			) else (
+				if exist "%MinGWPath%\%%A" (
+					copy "%MinGWPath%\%%A" %3 %Quite%
+					call :copy_dependencies %1 %~3\%%A %3
+				)
+			)
+		)
+		if "%~1"=="msys2" (
+			rem Search in MSYS2 paths
+			if exist "%EnvMSYS2MinGWPath%\bin\%%A" (
+				copy "%EnvMSYS2MinGWPath%\bin\%%A" %3 %Quite%
+				call :copy_dependencies %1 %~3\%%A %3
 			)
 		)
 	)
