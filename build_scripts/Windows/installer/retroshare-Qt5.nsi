@@ -318,7 +318,19 @@ SectionEnd
 !ifdef TOR_EXISTS
   Section /o $(Section_Tor) Section_Tor
     SetOutPath "$INSTDIR\tor"
-    File /r "${TORDIR}\*"
+    File /r "${TORDIR}\tor.exe"
+    File /r "${TORDIR}\tor-gencert.exe"
+    File /r "${TORDIR}\libevent-*.dll"
+    File /r "${TORDIR}\liblzma-*.dll"
+    File /r "${TORDIR}\libssp-*.dll"
+    File /r "${TORDIR}\libwinpthread-*.dll"
+    File /r "${TORDIR}\libzstd.dll"
+    File /r "${TORDIR}\zlib*.dll"
+    File /r "${TORDIR}\libcrypto-*.dll"
+    File /r "${TORDIR}\libssl-*.dll"
+!if ${ARCHITECTURE} == "x86"
+    File /r "${TORDIR}\libgcc_s_dw2-*.dll"
+!endif
   SectionEnd
 !endif
 

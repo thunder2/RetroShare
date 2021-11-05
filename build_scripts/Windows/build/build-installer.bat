@@ -7,6 +7,8 @@ call "%~dp0..\env.bat"
 if errorlevel 1 goto error_env
 call "%EnvPath%\env.bat"
 if errorlevel 1 goto error_env
+call "%EnvPath%\env-msys2.bat"
+if errorlevel 1 goto error_env
 
 :: Initialize environment
 call "%~dp0env.bat" installer release
@@ -20,6 +22,10 @@ if not exist "%BuildLibsPath%\libs" %cecho% error "Please build external librari
 if not exist "%BuildLibsPath%\libs\gcc-version" %cecho% error "Cannot get gcc version of external libraries." & exit /B 1
 set /P LibsGCCVersion=<"%BuildLibsPath%\libs\gcc-version"
 if "%LibsGCCVersion%" NEQ "%GCCVersion%" %cecho% error "Please use correct version of external libraries. (gcc %GCCVersion% ^<^> libs %LibsGCCVersion%)." & exit /B 1
+
+:: Install tor
+%EnvMSYS2Install% "mingw-w64-%MSYS2Architecture%-tor"
+if errorlevel 1 exit /B 1
 
 :: Get date
 call "%ToolsPath%\get-rs-date.bat" "%SourcePath%" RsDate
@@ -38,8 +44,8 @@ set NSIS_PARAM=%NSIS_PARAM% /DINSTALLERADD="%RsArchiveAdd%"
 set NSIS_PARAM=%NSIS_PARAM% /DEXTERNAL_LIB_DIR="%BuildLibsPath%\libs"
 set NSIS_PARAM=%NSIS_PARAM% /DARCHITECTURE="%GCCArchitecture%"
 set NSIS_PARAM=%NSIS_PARAM% /DDATE="%RsDate%"
+set NSIS_PARAM=%NSIS_PARAM% /DTORDIR="%EnvMSYS2MinGWBinPath%"
 
-if exist "%EnvTorPath%\Tor\tor.exe" set NSIS_PARAM=%NSIS_PARAM% /DTORDIR="%EnvTorPath%\Tor"
 if exist "%RsWebuiBuildPath%" set NSIS_PARAM=%NSIS_PARAM% /DWEBUIDIR="%RsWebuiBuildPath%"
 
 :: Get compiled version
