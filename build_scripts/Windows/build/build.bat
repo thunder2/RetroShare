@@ -22,12 +22,12 @@ set /P LibsGCCVersion=<"%BuildLibsPath%\libs\gcc-version"
 if "%LibsGCCVersion%" NEQ "%GCCVersion%" %cecho% error "Please use correct version of external libraries. (gcc %GCCVersion% ^<^> libs %LibsGCCVersion%)." & exit /B 1
 
 :: Check git executable
-set GitPath=
-call "%ToolsPath%\find-in-path.bat" GitPath git.exe
-if "%GitPath%"=="" (
-	%cecho% error "Git not found in PATH. Version information cannot be determined."
-	exit /B 1
-)
+::set GitPath=
+::call "%ToolsPath%\find-in-path.bat" GitPath git.exe
+::if "%GitPath%"=="" (
+::	%cecho% error "Git not found in PATH. Version information cannot be determined."
+::	exit /B 1
+::)
 
 echo.
 echo === Version
@@ -42,6 +42,11 @@ popd
 
 if not exist "%RsBuildPath%" mkdir "%RsBuildPath%"
 pushd "%RsBuildPath%"
+
+if exist "%EnvMSYS2SH%" (
+	if exist "%EnvMSYS2SH%.bak" del /Q "%EnvMSYS2SH%.bak"
+	ren "%EnvMSYS2SH%" sh.exe.bak
+)
 
 echo.
 echo === qmake
@@ -85,6 +90,8 @@ echo.
 
 title Build - %SourceName%-%RsBuildConfig% [changelog]
 call "%ToolsPath%\generate-changelog.bat" "%SourcePath%" "%RsBuildPath%\changelog.txt"
+
+ren "%EnvMSYS2SH%.bak" sh.exe
 
 :error
 popd

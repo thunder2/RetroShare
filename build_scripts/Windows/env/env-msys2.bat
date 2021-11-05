@@ -39,6 +39,9 @@ if not exist "%EnvMSYS2SH%" if errorlevel 1 goto error_env
 set EnvMSYS2Cmd="%EnvMSYS2SH%" -lc
 set EnvMSYS2Install=%EnvMSYS2Cmd% "pacman --needed --noconfirm -S $0"
 
+rem Don't add MSYS2 to path to prevent Qt from finding sh.exe and set QMAKE_SH
+set PATH=%EnvMSYS2BinPath%;%EnvMSYS2BasePath%\usr\lib\git-core;%PATH%
+
 exit /B 0
 
 :error_env

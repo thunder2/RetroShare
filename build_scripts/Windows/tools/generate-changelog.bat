@@ -8,11 +8,6 @@ if "%~2"=="" (
 	exit /B 1
 )
 
-:: Check git executable
-set GitPath=
-call "%~dp0find-in-path.bat" GitPath git.exe
-if "%GitPath%"=="" echo Git executable not found in PATH.& exit /B 1
-
 set logfile=%~2
 copy nul %logfile% > nul
 
