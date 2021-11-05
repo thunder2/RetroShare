@@ -9,6 +9,8 @@ call "%~dp0..\env.bat"
 if errorlevel 1 goto error_env
 call "%EnvPath%\env.bat"
 if errorlevel 1 goto error_env
+call "%EnvPath%\env-msys2.bat"
+if errorlevel 1 goto error_env
 
 :: Initialize environment
 call "%~dp0env.bat" pack %*
@@ -22,6 +24,10 @@ if not exist "%BuildLibsPath%\libs" %cecho% error "Please build external librari
 if not exist "%BuildLibsPath%\libs\gcc-version" %cecho% error "Cannot get gcc version of external libraries." & exit /B 1
 set /P LibsGCCVersion=<"%BuildLibsPath%\libs\gcc-version"
 if "%LibsGCCVersion%" NEQ "%GCCVersion%" %cecho% error "Please use correct version of external libraries. (gcc %GCCVersion% ^<^> libs %LibsGCCVersion%)." & exit /B 1
+
+:: Initialize depends
+call "%ToolsPath%\depends.bat" init
+if errorlevel 1 %cecho% error "Error initializing depends." & exit /B 1
 
 :: Remove deploy path
 if exist "%RsDeployPath%" rmdir /S /Q "%RsDeployPath%"
@@ -225,20 +231,17 @@ if exist "%~1\lib\%~n1.dll" (
 goto :EOF
 
 :copy_dependencies
-set CopyDependenciesCopiedSomething=0
 for /F "usebackq" %%A in (`%ToolsPath%\depends.bat list %1`) do (
 	if not exist "%~2\%%A" (
 		if exist "%QtPath%\%%A" (
-			set CopyDependenciesCopiedSomething=1
 			copy "%QtPath%\%%A" %2 %Quite%
+			call :copy_dependencies %~2\%%A %2
 		) else (
 			if exist "%MinGWPath%\%%A" (
-				set CopyDependenciesCopiedSomething=1
 				copy "%MinGWPath%\%%A" %2 %Quite%
+				call :copy_dependencies %~2\%%A %2
 			)
 		)
 	)
 )
-rem Currently not needed
-rem if "%CopyDependenciesCopiedSomething%"=="1" goto copy_dependencies
 goto :EOF

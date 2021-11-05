@@ -1,37 +1,37 @@
 :: Usage:
-:: call depends.bat [list^|missing] file
+:: call depends.bat [init^|list] file
 
+if "%1"=="init" (
+	:: Check MSYS environment
+	if not exist "%EnvMSYS2SH%" %cecho% error "Please install MSYS2 first." & exit /B 1
+
+	:: Install MSYS2 packages
+	%EnvMSYS2Install% "mingw-w64-%MSYS2Architecture%-ntldd awk"
+	if errorlevel 1 exit /B 1
+	exit /B 0
+)
+
+if "%1" NEQ "list" goto usage
 if "%2"=="" (
-	echo Usage: %~nx0 [list^|missing] File
-	exit /B 1
+	goto usage
 )
 
 setlocal
+pushd %~dp2
 
-if not exist "%EnvDependsExe%" echo depends.exe not found in %EnvToolsPath%.& exit /B 1
-if not exist "%EnvCutExe%" echo cut.exe not found in %EnvToolsPath%.& exit /B 1
+rem Don't use --recursive to not find false dependencies e.g. MSYS2 file when searching for MinGW files
+%EnvMSYS2Cmd% "ntldd $0 | cut -f1 -d"=" | awk '{$1=$1};1'" %~nx2 > %~sdp0depends.tmp
 
-start /wait "" "%EnvDependsExe%" /c /pa:0 /oc:"%~dp0depends.tmp" %2
-if "%1"=="missing" (
-	"%EnvCutExe%" --delimiter=, --fields=1,2 "%~dp0depends.tmp" >"%~dp0depends1.tmp"
-	for /F "tokens=1,2 delims=," %%A in (%~sdp0depends1.tmp) do (
-		if "%%A"=="?" (
-			echo %%~B
-		)
-	)
-)
-
-if "%1"=="list" (
-	"%EnvCutExe%" --delimiter=, --fields=2 "%~dp0depends.tmp" >"%~dp0depends1.tmp"
-	for /F "tokens=1 delims=," %%A in (%~sdp0depends1.tmp) do (
-		if "%%A" NEQ "Module" (
-			echo %%~A
-		)
-	)
+for /F %%A in (%~sdp0depends.tmp) do (
+	echo %%~A
 )
 
 if exist "%~dp0depends.tmp" del /Q "%~dp0depends.tmp"
-if exist "%~dp0depends1.tmp" del /Q "%~dp0depends1.tmp"
 
+popd
 endlocal
 exit /B 0
+
+:usage
+echo Usage: %~nx0 [init^|list] File
+exit /B 1

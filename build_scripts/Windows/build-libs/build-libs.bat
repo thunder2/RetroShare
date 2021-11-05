@@ -34,9 +34,6 @@ call "%ToolsPath%\msys2-path.bat" "%BuildLibsPath%" MSYS2BuildLibsPath
 
 if not exist "%BuildLibsPath%" mkdir "%BuildLibsPath%"
 
-set MSYSTEM=MINGW%MSYS2Base%
-set MSYS2_PATH_TYPE=inherit
-
 %EnvMSYS2Cmd% "pacman --needed --noconfirm -S diffutils perl tar make wget mingw-w64-%MSYS2Architecture%-make"
 ::mingw-w64-%MSYS2Architecture%-cmake
 ::%EnvMSYS2Cmd% "pacman --noconfirm -Rd --nodeps mingw-w64-%MSYS2Architecture%-zlib"

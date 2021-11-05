@@ -11,8 +11,6 @@ set EnvMSYS2Path=%EnvRootPath%\msys2
 
 set EnvSevenZipExe=%EnvToolsPath%\7z.exe
 set EnvSedExe=%EnvToolsPath%\sed.exe
-set EnvCutExe=%EnvToolsPath%\cut.exe
-set EnvDependsExe=%EnvToolsPath%\depends.exe
 set EnvMakeNSISExe=%EnvToolsPath%\NSIS\makensis.exe
 set EnvCEchoExe=%EnvToolsPath%\cecho.exe
 set cecho=call "%ToolsPath%\cecho.bat"
