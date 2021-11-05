@@ -6,8 +6,6 @@ set CEchoUrl=https://github.com/lordmulder/cecho/releases/download/2015-10-10/ce
 set CEchoInstall=cecho.2015-10-10.zip
 set SevenZipUrl=https://sourceforge.net/projects/sevenzip/files/7-Zip/19.00/7z1900.msi/download
 set SevenZipInstall=7z1900.msi
-set DependsUrl=http://www.dependencywalker.com/depends22_x86.zip
-set DependsInstall=depends22_x86.zip
 set UnixToolsUrl=http://unxutils.sourceforge.net/UnxUpdates.zip
 set UnixToolsInstall=UnxUpdates.zip
 set NSISInstall=nsis-3.05-setup.exe
@@ -52,38 +50,6 @@ if not exist "%EnvToolsPath%\cecho.exe" (
 	echo Unpack cecho
 	"%EnvSevenZipExe%" x -o"%EnvTempPath%" "%EnvDownloadPath%\%CEchoInstall%"
 	copy "%EnvTempPath%\cecho.exe" "%EnvToolsPath%"
-
-	call "%ToolsPath%\remove-dir.bat" "%EnvTempPath%"
-)
-
-if not exist "%EnvToolsPath%\depends.exe" (
-	call "%ToolsPath%\remove-dir.bat" "%EnvTempPath%"
-	mkdir "%EnvTempPath%"
-
-	%cecho% info "Download Dependency Walker installation"
-
-	if not exist "%EnvDownloadPath%\%DependsInstall%" call "%ToolsPath%\download-file.bat" %DependsUrl% "%EnvDownloadPath%\%DependsInstall%"
-	if not exist "%EnvDownloadPath%\%DependsInstall%" %cecho% error "Cannot download Dependendy Walker installation" & goto error
-
-	%cecho% info "Unpack Dependency Walker"
-	"%EnvSevenZipExe%" x -o"%EnvTempPath%" "%EnvDownloadPath%\%DependsInstall%"
-	copy "%EnvTempPath%\*" "%EnvToolsPath%"
-
-	call "%ToolsPath%\remove-dir.bat" "%EnvTempPath%"
-)
-
-if not exist "%EnvToolsPath%\cut.exe" (
-	call "%ToolsPath%\remove-dir.bat" "%EnvTempPath%"
-	mkdir "%EnvTempPath%"
-
-	%cecho% info "Download Unix Tools installation"
-
-	if not exist "%EnvDownloadPath%\%UnixToolsInstall%" call "%ToolsPath%\download-file.bat" %UnixToolsUrl% "%EnvDownloadPath%\%UnixToolsInstall%"
-	if not exist "%EnvDownloadPath%\%UnixToolsInstall%" %cecho% error "Cannot download Unix Tools installation" & goto error
-
-	%cecho% info "Unpack Unix Tools"
-	"%EnvSevenZipExe%" x -o"%EnvTempPath%" "%EnvDownloadPath%\%UnixToolsInstall%"
-	copy "%EnvTempPath%\cut.exe" "%EnvToolsPath%"
 
 	call "%ToolsPath%\remove-dir.bat" "%EnvTempPath%"
 )

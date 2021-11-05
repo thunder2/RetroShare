@@ -5,13 +5,11 @@
 call "%~dp0env.bat"
 if errorlevel 1 goto error_env
 
-rem openssl x86 doesn't compile with mingw64 x64
 :: Get gcc versions
 call "%ToolsPath%\get-gcc-version.bat" GCCVersion GCCArchitecture
 if "%GCCVersion%"=="" %cecho% error "Cannot get gcc version." & exit /B 1
 if "%GCCArchitecture%"=="" %cecho% error "Cannot get gcc architecture." & exit /B 1
 
-rem IF DEFINED ProgramFiles(x86) (
 if "%GCCArchitecture%"=="x64" (
 	:: x64
 	set MSYS2Architecture=x86_64
@@ -22,13 +20,18 @@ if "%GCCArchitecture%"=="x64" (
 	set MSYS2Base=32
 )
 
+set CHERE_INVOKING=1
+set MSYSTEM=MINGW%MSYS2Base%
+set MSYS2_PATH_TYPE=inherit
+
 call "%~dp0tools\prepare-msys2.bat" %1
-if errorlevel 1 exit /B %ERRORLEVEL%
+if errorlevel 1 exit /B 1
 
 set EnvMSYS2SH=%EnvMSYS2Path%\msys%MSYS2Base%\usr\bin\sh.exe
 if not exist "%EnvMSYS2SH%" if errorlevel 1 goto error_env
 
 set EnvMSYS2Cmd="%EnvMSYS2SH%" -lc
+set EnvMSYS2Install=%EnvMSYS2Cmd% "pacman --needed --noconfirm -S $0"
 
 exit /B 0
 
