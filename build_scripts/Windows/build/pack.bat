@@ -239,5 +239,6 @@ for /F "usebackq" %%A in (`%ToolsPath%\depends.bat list %1`) do (
 		)
 	)
 )
-if "%CopyDependenciesCopiedSomething%"=="1" goto copy_dependencies
+rem Currently not needed
+rem if "%CopyDependenciesCopiedSomething%"=="1" goto copy_dependencies
 goto :EOF
