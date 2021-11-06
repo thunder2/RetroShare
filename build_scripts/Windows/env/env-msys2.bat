@@ -21,8 +21,6 @@ if "%GCCArchitecture%"=="x64" (
 	set MSYS2Base=32
 )
 
-set EnvMSYS2Path=%EnvRootPath%\msys2
-
 call "%~dp0tools\prepare-msys2.bat" %1
 if errorlevel 1 exit /B %ERRORLEVEL%
 
