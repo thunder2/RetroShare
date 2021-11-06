@@ -8,8 +8,6 @@ if "%MSYS2Architecture%"=="" exit /B 1
 if "%MSYS2Base%"=="" exit /B 1
 if not exist "%EnvRootPath%"=="" exit /B 1
 
-copy "%~dp0root\update-msys2.bat" "%EnvRootPath%" >nul
-
 if "%~1"=="clean" (
 	%cecho% info "Clean MSYS2"
 	call "%ToolsPath%\remove-dir.bat" "%EnvMSYS2Path%"

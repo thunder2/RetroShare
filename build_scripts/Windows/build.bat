@@ -8,6 +8,10 @@ if errorlevel 1 goto error_env
 call "%EnvPath%\env.bat"
 if errorlevel 1 goto error_env
 
+%cecho% info "Update MSYS2"
+call "%~dp0update-msys2.bat"
+if errorlevel 1 %cecho% error "Failed to update MSYS2." & exit /B %ERRORLEVEL%
+
 %cecho% info "Build libraries"
 call "%~dp0build-libs\build-libs.bat"
 if errorlevel 1 %cecho% error "Failed to build libraries." & exit /B %ERRORLEVEL%
