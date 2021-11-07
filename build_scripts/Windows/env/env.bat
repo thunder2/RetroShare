@@ -29,6 +29,8 @@ set HOME=%EnvToolsPath%\MinGit\home
 :: Add Doxygen to PATH
 set PATH=%EnvToolsPath%\doxygen;%PATH%
 
+if not exist "%HOME%" mkdir "%HOME%"
+
 exit /B 0
 
 :error_env
