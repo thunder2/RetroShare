@@ -25,6 +25,7 @@ set MSYSTEM=MINGW%MSYS2Base%
 set MSYS2_PATH_TYPE=inherit
 
 set EnvMSYS2BasePath=%EnvMSYS2Path%\msys%MSYS2Base%
+set EnvMSYS2BinPath=%EnvMSYS2BasePath%\usr\bin
 
 set EnvMSYS2MinGWPath=%EnvMSYS2BasePath%\mingw%MSYS2Base%
 set EnvMSYS2MinGWBinPath=%EnvMSYS2MinGWPath%\bin
@@ -32,7 +33,7 @@ set EnvMSYS2MinGWBinPath=%EnvMSYS2MinGWPath%\bin
 call "%~dp0tools\prepare-msys2.bat" %1
 if errorlevel 1 exit /B 1
 
-set EnvMSYS2SH=%EnvMSYS2BasePath%\usr\bin\sh.exe
+set EnvMSYS2SH=%EnvMSYS2BinPath%\sh.exe
 if not exist "%EnvMSYS2SH%" if errorlevel 1 goto error_env
 
 set EnvMSYS2Cmd="%EnvMSYS2SH%" -lc
