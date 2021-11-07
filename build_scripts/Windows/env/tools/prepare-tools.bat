@@ -6,9 +6,6 @@ set CEchoUrl=https://github.com/lordmulder/cecho/releases/download/2015-10-10/ce
 set CEchoInstall=cecho.2015-10-10.zip
 set SevenZipUrl=https://sourceforge.net/projects/sevenzip/files/7-Zip/19.00/7z1900.msi/download
 set SevenZipInstall=7z1900.msi
-set NSISInstall=nsis-3.05-setup.exe
-set NSISUrl=http://prdownloads.sourceforge.net/nsis/%NSISInstall%?download
-set NSISInstallPath=%EnvToolsPath%\NSIS
 set MinGitInstall=MinGit-2.28.0-32-bit.zip
 set MinGitUrl=https://github.com/git-for-windows/git/releases/download/v2.28.0.windows.1/%MinGitInstall%
 set MinGitInstallPath=%EnvToolsPath%\MinGit
@@ -49,27 +46,6 @@ if not exist "%EnvToolsPath%\cecho.exe" (
 	echo Unpack cecho
 	"%EnvSevenZipExe%" x -o"%EnvTempPath%" "%EnvDownloadPath%\%CEchoInstall%"
 	copy "%EnvTempPath%\cecho.exe" "%EnvToolsPath%"
-
-	call "%ToolsPath%\remove-dir.bat" "%EnvTempPath%"
-)
-
-if not exist "%EnvDownloadPath%\%NSISInstall%" call "%ToolsPath%\remove-dir.bat" "%NSISInstallPath%"
-if not exist "%NSISInstallPath%\nsis.exe" (
-	call "%ToolsPath%\remove-dir.bat" "%EnvTempPath%"
-
-	if exist "%NSISInstallPath%" call "%ToolsPath%\remove-dir.bat" "%NSISInstallPath%"
-
-	mkdir "%EnvTempPath%"
-
-	%cecho% info "Download NSIS installation"
-
-	if not exist "%EnvDownloadPath%\%NSISInstall%" call "%ToolsPath%\download-file.bat" "%NSISUrl%" "%EnvDownloadPath%\%NSISInstall%"
-	if not exist "%EnvDownloadPath%\%NSISInstall%" %cecho% error "Cannot download NSIS installation" & goto error
-
-	%cecho% info "Unpack NSIS"
-	"%EnvSevenZipExe%" x -o"%EnvTempPath%" "%EnvDownloadPath%\%NSISInstall%"
-	if not exist "%NSISInstallPath%" mkdir "%NSISInstallPath%"
-	xcopy /s "%EnvTempPath%" "%NSISInstallPath%"
 
 	call "%ToolsPath%\remove-dir.bat" "%EnvTempPath%"
 )
