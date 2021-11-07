@@ -26,6 +26,8 @@ if errorlevel 1 exit /B %ERRORLEVEL%
 set PATH=%EnvToolsPath%\MinGit\cmd;%EnvToolsPath%\cmake\bin;%PATH%
 set HOME=%EnvToolsPath%\MinGit\home
 
+if not exist "%HOME%" mkdir "%HOME%"
+
 exit /B 0
 
 :error_env
