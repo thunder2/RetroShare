@@ -23,8 +23,8 @@ if not exist "%BuildLibsPath%\libs\gcc-version" %cecho% error "Cannot get gcc ve
 set /P LibsGCCVersion=<"%BuildLibsPath%\libs\gcc-version"
 if "%LibsGCCVersion%" NEQ "%GCCVersion%" %cecho% error "Please use correct version of external libraries. (gcc %GCCVersion% ^<^> libs %LibsGCCVersion%)." & exit /B 1
 
-:: Install tor
-%EnvMSYS2Install% "mingw-w64-%MSYS2Architecture%-tor"
+:: Install needed tools
+%EnvMSYS2Install% "mingw-w64-%MSYS2Architecture%-nsis mingw-w64-%MSYS2Architecture%-tor"
 if errorlevel 1 exit /B 1
 
 :: Get date
@@ -57,7 +57,7 @@ set NSIS_PARAM=%NSIS_PARAM% /DREVISION=%RsVersion.Extra%
 set QtMainVersion=%QtVersion:~0,1%
 
 :: Create installer
-"%EnvMakeNSISExe%" %NSIS_PARAM% "%SourcePath%\build_scripts\Windows\installer\retroshare-Qt%QtMainVersion%.nsi"
+"%EnvMSYS2MinGWBinPath%\makensis" %NSIS_PARAM% "%SourcePath%\build_scripts\Windows\installer\retroshare-Qt%QtMainVersion%.nsi"
 
 exit /B %ERRORLEVEL%
 
