@@ -29,11 +29,15 @@ if "%LibsGCCVersion%" NEQ "%GCCVersion%" %cecho% error "Please use correct versi
 call "%ToolsPath%\depends.bat" init
 if errorlevel 1 %cecho% error "Error initializing depends." & exit /B 1
 
+:: Install needed tools
+set MSYS2Packages=sed
+
 :: Install tor
 if "%ParamTor%"=="1" (
-	%EnvMSYS2Install% "mingw-w64-%MSYS2Architecture%-tor"
-	if errorlevel 1 exit /B 1
+	set MSYS2Packages=%MSYS2Packages% mingw-w64-%MSYS2Architecture%-tor
 )
+%EnvMSYS2Install% "%MSYS2Packages%"
+if errorlevel 1 exit /B 1
 
 :: Remove deploy path
 if exist "%RsDeployPath%" rmdir /S /Q "%RsDeployPath%"
@@ -82,7 +86,7 @@ title Pack - %SourceName%%RsType%-%RsBuildConfig% [copy files]
 
 set ExtensionsFile=%SourcePath%\libretroshare\src\rsserver\rsinit.cc
 set Extensions=
-for /f %%e in ('type "%ExtensionsFile%" ^| "%EnvSedExe%" -n "s/^.*\/\(extensions[^/]*\)\/.*$/\1/p" ^| "%EnvSedExe%" -n "1,1p"') do set Extensions=%%e
+for /f %%e in ('type "%ExtensionsFile%" ^| "%EnvMSYS2BinPath%\sed" -n "s/^.*\/\(extensions[^/]*\)\/.*$/\1/p" ^| "%EnvMSYS2BinPath%\sed" -n "1,1p"') do set Extensions=%%e
 if "%Extensions%"=="" %cecho% error "Folder for extensions not found in %ExtensionsFile%"& goto error
 
 :: Copy files
