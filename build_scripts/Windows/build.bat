@@ -23,6 +23,8 @@ if errorlevel 1 %cecho% error "Failed to build %SourceName%." & exit /B %ERRORLE
 %cecho% info "Pack %SourceName%"
 call "%~dp0build\pack.bat" release plugins service
 if errorlevel 1 %cecho% error "Failed to pack %SourceName%." & exit /B %ERRORLEVEL%
+call "%~dp0build\pack.bat" release plugins service tor
+if errorlevel 1 %cecho% error "Failed to pack %SourceName%." & exit /B %ERRORLEVEL%
 
 %cecho% info "Build installer"
 call "%~dp0build\build-installer.bat"
