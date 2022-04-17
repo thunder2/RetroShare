@@ -509,6 +509,11 @@ GxsChannelPostsWidgetWithModel::GxsChannelPostsWidgetWithModel(const RsGxsGroupI
     }, mEventHandlerId, RsEventType::GXS_CHANNELS );
 }
 
+static QModelIndex QModelIndex_siblingAtColumn(const QModelIndex &index, int acolumn)
+{
+    return index.isValid() ? (index.column() == acolumn) ? index : index.sibling(index.row(), acolumn) : QModelIndex();
+}
+
 void GxsChannelPostsWidgetWithModel::keyPressEvent(QKeyEvent *e)
 {
     QModelIndex index = ui->postsTree->selectionModel()->currentIndex();
@@ -519,13 +524,13 @@ void GxsChannelPostsWidgetWithModel::keyPressEvent(QKeyEvent *e)
 
         if(e->key() == Qt::Key_Left && index.column()==0)
         {
-            ui->postsTree->setCurrentIndex(index.sibling(index.row(),n));
+            ui->postsTree->setCurrentIndex(QModelIndex_siblingAtColumn(index, n));
             e->accept();
             return;
         }
         if(e->key() == Qt::Key_Right && index.column()==n)
         {
-            ui->postsTree->setCurrentIndex(index.sibling(index.row(),0));
+            ui->postsTree->setCurrentIndex(QModelIndex_siblingAtColumn(index, 0));
             e->accept();
             return;
         }
