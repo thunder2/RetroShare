@@ -175,17 +175,31 @@ public:
 	{
 		// do not show empty groups
 
-		QModelIndex index = sourceModel()->index(source_row,0,source_parent);
+		QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
+		if (!index.isValid())
+			return false;
 
 		if(index.data(RsFriendListModel::TypeRole) == RsFriendListModel::ENTRY_TYPE_GROUP)  // always show groups when not searching, so we can delete them even when empty
-			return index.data(RsFriendListModel::FilterRole).toString() == RsFriendListModel::FilterString ;
+		{
+			// 1. Passt die Gruppe selbst (oder ist kein Suchfilter aktiv)?
+			if (index.data(RsFriendListModel::FilterRole).toString() == RsFriendListModel::FilterString)
+				return true;
+
+			// 2. Falls nicht: Rekursiv prüfen, ob mindestens ein Kind sichtbar ist
+			return hasAcceptedChildren(index);
+		}
 
 		// Filter offline friends
 
-        if(!m_showOfflineNodes && (RsStatusValue(index.data(RsFriendListModel::OnlineRole).toInt()) == RsStatusValue::RS_STATUS_OFFLINE))
+        if (!m_showOfflineNodes && (RsStatusValue(index.data(RsFriendListModel::OnlineRole).toInt()) == RsStatusValue::RS_STATUS_OFFLINE))
 			return false;
 
-		return index.data(RsFriendListModel::FilterRole).toString() == RsFriendListModel::FilterString ;
+		// Prüfen, ob der Eintrag selbst passt
+		if (index.data(RsFriendListModel::FilterRole).toString() == RsFriendListModel::FilterString)
+			return true;
+
+		// Falls es sich um einen Freund mit untergeordneten Nodes handelt: Kinder prüfen
+		return hasAcceptedChildren(index);
 	}
 
 	void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) override
@@ -200,6 +214,18 @@ public:
 
     bool showOfflineNodes() const { return m_showOfflineNodes ; }
     bool sortByState() const { return m_sortByState ; }
+
+private:
+	bool hasAcceptedChildren(const QModelIndex& parent) const
+	{
+		int childCount = sourceModel()->rowCount(parent);
+		for (int i = 0; i < childCount; ++i)
+		{
+			if (filterAcceptsRow(i, parent))
+				return true;
+		}
+		return false;
+	}
 
 private:
     const QHeaderView *m_header ;
@@ -237,7 +263,7 @@ NewFriendList::NewFriendList(QWidget */*parent*/) : /* RsAutoUpdatePage(5000,par
     mProxyModel->setSortRole(RsFriendListModel::SortRole);
     mProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
 	mProxyModel->setFilterRole(RsFriendListModel::FilterRole);
-	mProxyModel->setRecursiveFilteringEnabled(true);	// show the parents of a match
+//	mProxyModel->setRecursiveFilteringEnabled(true);	// show the parents of a match
 	QSortFilterProxyModel_setFilterRegularExpression(mProxyModel, RsFriendListModel::FilterString);
 
 	ui->peerTreeWidget->setModel(mProxyModel);
