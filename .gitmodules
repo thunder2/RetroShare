@@ -31,11 +31,11 @@
 	branch = master
 [submodule "libretroshare"]
 	path = libretroshare
-	url = https://github.com/RetroShare/libretroshare.git
+	url = ../libretroshare.git
 	branch = master
 [submodule "retroshare-webui"]
 	path = retroshare-webui
-	url = https://github.com/RetroShare/RSNewWebUI.git
+	url = ../RSNewWebUI.git
 	branch = master
 [submodule "supportlibs/librnp"]
 	path = supportlibs/librnp
