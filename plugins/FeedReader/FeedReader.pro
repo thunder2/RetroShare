@@ -110,6 +110,8 @@ TRANSLATIONS +=  \
 			lang/FeedReader_tr.ts \
 			lang/FeedReader_zh_CN.ts
 
+INCLUDEPATH *= $$clean_path($${PWD}/../../supportlibs/rapidjson/include)
+
 linux-* {
 	CONFIG += link_pkgconfig
 
