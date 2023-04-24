@@ -40,6 +40,7 @@ target.files = lib/libVOIP.so
 DEPENDPATH += $$PWD/../../retroshare-gui/src/temp/ui
 INCLUDEPATH += $$PWD/../../retroshare-gui/src/temp/ui
 
+INCLUDEPATH *= $$clean_path($${PWD}/../../supportlibs/rapidjson/include)
 
 #################################### Linux #####################################
 
