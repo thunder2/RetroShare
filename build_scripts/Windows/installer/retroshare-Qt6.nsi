@@ -302,6 +302,7 @@ SectionEnd
   Section /o $(Section_Service) Section_Service
     SetOutPath "$INSTDIR"
   File "${RELEASEDIR}\retroshare-service\src\release\retroshare-service.exe"
+  File "${SOURCEDIR}\build_scripts\Windows\files\retroshare-service.bat"
   SectionEnd
 !endif
 
