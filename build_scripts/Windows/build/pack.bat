@@ -182,6 +182,9 @@ copy "%SourcePath%\libbitdht\src\bitdht\bdboot.txt" "%RsDeployPath%" %Quite%
 echo copy changelog.txt
 copy "%RsBuildPath%\changelog.txt" "%RsDeployPath%" %Quite%
 
+echo copy additional files
+xcopy /S "%SourcePath%\build_scripts\Windows\files" "%RsDeployPath%" %Quite%
+
 if defined ParamWebui (
 	echo copy webui
 	mkdir "%RsDeployPath%\webui"
