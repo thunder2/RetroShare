@@ -51,8 +51,11 @@
 !define QTVERSION ${QTVERSION_1}.${QTVERSION_2}.${QTVERSION_3}
 
 # Check version
-!ifndef REVISION
-!error "REVISION is not defined"
+!ifdef REVISION
+!define REVISIONSTRING "-${REVISION}"
+!else
+#!error "REVISION is not defined"
+!define REVISIONSTRING ""
 !endif
 
 # Date
@@ -105,7 +108,7 @@ ${!defineifexist} WEBUI_EXISTS "${WEBUIDIR}\index.html"
 # Main Install settings
 Name "${APPNAMEANDVERSION}"
 InstallDirRegKey HKLM "Software\${APPNAME}" ""
-OutFile "${OUTDIR_}RetroShare-${VERSION}-${DATE}-${REVISION}-Qt-${QTVERSION}-${ARCHITECTURE}${INSTALLERADD}-setup.exe"
+OutFile "${OUTDIR_}RetroShare-${VERSION}${REVISIONSTRING}-${DATE}-Qt-${QTVERSION}-${ARCHITECTURE}${INSTALLERADD}-setup.exe"
 BrandingText "${APPNAMEANDVERSION}"
 RequestExecutionlevel highest
 # Use compression

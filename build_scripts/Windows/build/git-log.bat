@@ -24,9 +24,10 @@ if errorlevel 1 %cecho% error "Version not found."& goto error
 if "%RsVersion.Major%"=="" %cecho% error "Major version not found."& goto error
 if "%RsVersion.Minor%"=="" %cecho% error "Minor version not found."& goto error
 if "%RsVersion.Mini%"=="" %cecho% error "Mini number not found".& goto error
-if "%RsVersion.Extra%"=="" %cecho% error "Extra number not found".& goto error
 
 set RsVersion=%RsVersion.Major%.%RsVersion.Minor%.%RsVersion.Mini%
+set RsVersionExtra=
+if "%RsVersion.Extra%" NEQ "" set RsVersionExtra=-%RsVersion.Extra%
 
 :: Get date
 call "%ToolsPath%\get-rs-date.bat" "%SourcePath%" RsDate
@@ -63,9 +64,9 @@ if %errorlevel%==2 exit /B 1
 :no_confirm
 
 if "%RsBuildConfig%" NEQ "release" (
-	set RsGitLog=%DeployPath%\RetroShare-%RsVersion%-Windows-Portable-%RsDate%-%RsVersion.Extra%-Qt-%QtVersion%-%GCCArchitecture%%RsType%%RsArchiveAdd%-%RsBuildConfig%.txt
+	set RsGitLog=%DeployPath%\RetroShare-%RsVersion%%RsVersionExtra%-Windows-Portable-%RsDate%-Qt-%QtVersion%-%GCCArchitecture%%RsType%%RsArchiveAdd%-%RsBuildConfig%.txt
 ) else (
-	set RsGitLog=%DeployPath%\RetroShare-%RsVersion%-Windows-Portable-%RsDate%-%RsVersion.Extra%-Qt-%QtVersion%-%GCCArchitecture%%RsType%%RsArchiveAdd%.txt
+	set RsGitLog=%DeployPath%\RetroShare-%RsVersion%%RsVersionExtra%-Windows-Portable-%RsDate%-Qt-%QtVersion%-%GCCArchitecture%%RsType%%RsArchiveAdd%.txt
 )
 
 title %SourceName%-%RsBuildConfig% [git log]
