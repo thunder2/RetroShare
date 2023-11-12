@@ -4,6 +4,7 @@
 :: Variable.Major
 :: Variable.Minor
 :: Variable.Mini
+:: Variable.Patch
 :: Variable.Extra
 
 setlocal
@@ -25,14 +26,16 @@ if not exist "%Executable%" (
 set VersionMajor=
 set VersionMinor=
 set VersionMini=
+set VersionPatch=
 set VersionExtra=
 
-for /F "USEBACKQ tokens=1,2,3,* delims=.-" %%A in (`powershell -NoLogo -NoProfile -Command ^(Get-Item "%Executable%"^).VersionInfo.FileVersion`) do (
+for /F "USEBACKQ tokens=1,2,3,4,* delims=.-" %%A in (`powershell -NoLogo -NoProfile -Command ^(Get-Item "%Executable%"^).VersionInfo.FileVersion`) do (
 	set VersionMajor=%%A
 	set VersionMinor=%%B
 	set VersionMini=%%C
-	set VersionExtra=%%D
+	set VersionPatch=%%D
+	set VersionExtra=%%E
 )
 
-endlocal & set %Variable%.Major=%VersionMajor%& set %Variable%.Minor=%VersionMinor%& set %Variable%.Mini=%VersionMini%& set %Variable%.Extra=%VersionExtra%&
+endlocal & set %Variable%.Major=%VersionMajor%& set %Variable%.Minor=%VersionMinor%& set %Variable%.Mini=%VersionMini%& set %Variable%.Patch=%VersionPatch%& set %Variable%.Extra=%VersionExtra%
 exit /B 0
