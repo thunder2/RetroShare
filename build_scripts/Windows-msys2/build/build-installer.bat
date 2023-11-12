@@ -34,7 +34,6 @@ if not exist "%GetRsVersion%" (
 :: Get compiled version
 call "%GetRsVersion%" "%RsDeployPath%\retroshare.exe" RsVersion
 if errorlevel 1 %cecho% error "Revision not found."& goto error
-if "%RsVersion.Extra%"=="" %cecho% error "Extra number not found".& goto error
 
 :: Build defines for script
 set NSIS_PARAM=
@@ -44,7 +43,7 @@ set NSIS_PARAM=%NSIS_PARAM% /DOUTDIR="%RsPackPath%"
 set NSIS_PARAM=%NSIS_PARAM% /DINSTALLERADD="%RsArchiveAdd%"
 set NSIS_PARAM=%NSIS_PARAM% /DARCHITECTURE="%RsArchitecture%"
 set NSIS_PARAM=%NSIS_PARAM% /DTOOLCHAIN="%RsToolchain%"
-set NSIS_PARAM=%NSIS_PARAM% /DREVISION=%RsVersion.Extra%
+if "%RsVersion.Extra%" NEQ "" set NSIS_PARAM=%NSIS_PARAM% /DREVISION=%RsVersion.Extra%
 set NSIS_PARAM=%NSIS_PARAM% /DQTVERSION=%QtVersion%
 
 set QtMainVersion=%QtVersion:~0,1%
