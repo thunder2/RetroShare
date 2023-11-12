@@ -48,9 +48,11 @@ if errorlevel 1 %cecho% error "Revision not found."& goto error
 if "%RsVersion.Major%"=="" %cecho% error "Major version not found."& goto error
 if "%RsVersion.Minor%"=="" %cecho% error "Minor version not found."& goto error
 if "%RsVersion.Mini%"=="" %cecho% error "Mini number not found".& goto error
-if "%RsVersion.Extra%"=="" %cecho% error "Extra number not found".& goto error
+if "%RsVersion.Patch%"=="" %cecho% error "Patch number not found".& goto error
 
-set RsVersion=%RsVersion.Major%.%RsVersion.Minor%.%RsVersion.Mini%
+set RsVersion=%RsVersion.Major%.%RsVersion.Minor%.%RsVersion.Mini%.%RsVersion.Patch%
+set RsVersionExtra=
+if "%RsVersion.Extra%" NEQ "" set RsVersionExtra=-%RsVersion.Extra%
 
 :: Check WMIC is available
 wmic.exe alias /? >nul 2>&1 || echo WMIC is not available.&& goto error
@@ -74,9 +76,9 @@ if "%QtMainVersion%"=="5" set QtMainVersion1=5
 if "%QtMainVersion%"=="6" set QtMainVersion1=6
 
 if "%RsBuildConfig%" NEQ "release" (
-	set Archive=%RsPackPath%\RetroShare-%RsVersion%-Windows-Portable-%RsDate%-%RsVersion.Extra%-Qt-%QtVersion%-%RsToolchain%-msys2%RsType%%RsArchiveAdd%-%RsBuildConfig%.7z
+	set Archive=%RsPackPath%\RetroShare-%RsVersion%-Windows-Portable-%RsDate%%RsVersionExtra%-Qt-%QtVersion%-%RsToolchain%-msys2%RsType%%RsArchiveAdd%-%RsBuildConfig%.7z
 ) else (
-	set Archive=%RsPackPath%\RetroShare-%RsVersion%-Windows-Portable-%RsDate%-%RsVersion.Extra%-Qt-%QtVersion%-%RsToolchain%-msys2%RsType%%RsArchiveAdd%.7z
+	set Archive=%RsPackPath%\RetroShare-%RsVersion%-Windows-Portable-%RsDate%%RsVersionExtra%-Qt-%QtVersion%-%RsToolchain%-msys2%RsType%%RsArchiveAdd%.7z
 )
 
 if exist "%Archive%" del /Q "%Archive%"

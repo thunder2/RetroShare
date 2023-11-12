@@ -43,7 +43,7 @@
 
 # Get version from executable
 !GetDllVersion "${RELEASEDIR}\retroshare-gui\src\release\retroshare.exe" VERSION_
-!define VERSION ${VERSION_1}.${VERSION_2}.${VERSION_3}
+!define VERSION ${VERSION_1}.${VERSION_2}.${VERSION_3}.${VERSION_4}
 ;!define REVISION ${VERSION_4}
 
 # Get version of Qt
@@ -51,8 +51,11 @@
 !define QTVERSION ${QTVERSION_1}.${QTVERSION_2}.${QTVERSION_3}
 
 # Check version
-!ifndef REVISION
-!error "REVISION is not defined"
+!ifdef REVISION
+!define REVISIONSTRING "-${REVISION}"
+!else
+#!error "REVISION is not defined"
+!define REVISIONSTRING ""
 !endif
 
 # Date
@@ -105,7 +108,7 @@ ${!defineifexist} WEBUI_EXISTS "${WEBUIDIR}\index.html"
 # Main Install settings
 Name "${APPNAMEANDVERSION}"
 InstallDirRegKey HKLM "Software\${APPNAME}" ""
-OutFile "${OUTDIR_}RetroShare-${VERSION}-${DATE}-${REVISION}-Qt-${QTVERSION}-${ARCHITECTURE}${INSTALLERADD}-setup.exe"
+OutFile "${OUTDIR_}RetroShare-${VERSION}${REVISIONSTRING}-${DATE}-Qt-${QTVERSION}-${ARCHITECTURE}${INSTALLERADD}-setup.exe"
 BrandingText "${APPNAMEANDVERSION}"
 RequestExecutionlevel highest
 # Use compression

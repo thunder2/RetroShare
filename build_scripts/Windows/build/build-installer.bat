@@ -46,9 +46,9 @@ if exist "%RsWebuiBuildPath%" set NSIS_PARAM=%NSIS_PARAM% /DWEBUIDIR="%RsWebuiBu
 call "%ToolsPath%\get-rs-version.bat" "%RsBuildPath%\retroshare-gui\src\%RsBuildConfig%\retroshare.exe" RsVersion
 if errorlevel 1 %cecho% error "Version not found."& exit /B 1
 
-if "%RsVersion.Extra%"=="" %cecho% error "Extra number not found".& exit /B 1
+if "%RsVersion.Extra%" NEQ "" set NSIS_PARAM=%NSIS_PARAM% /DREVISION=%RsVersion.Extra%
 
-set NSIS_PARAM=%NSIS_PARAM% /DREVISION=%RsVersion.Extra%
+set NSIS_PARAM=%NSIS_PARAM%
 
 set QtMainVersion=%QtVersion:~0,1%
 

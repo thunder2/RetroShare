@@ -479,6 +479,7 @@ defined in command line")
     DEFINES += RS_MAJOR_VERSION=$${RS_MAJOR_VERSION}
     DEFINES += RS_MINOR_VERSION=$${RS_MINOR_VERSION}
     DEFINES += RS_MINI_VERSION=$${RS_MINI_VERSION}
+    DEFINES += RS_PATCH_REVISION=0
     DEFINES += RS_EXTRA_VERSION=\\\"$${RS_EXTRA_VERSION}\\\"
 } else {
     RS_GIT_DESCRIBE = $$system(git describe --long --dirty --match v*.*.*)
@@ -488,19 +489,20 @@ defined in command line")
 
         RS_MAJOR_VERSION = $$member(RS_GIT_DESCRIBE_SPLIT, 0)
         RS_MINOR_VERSION = $$member(RS_GIT_DESCRIBE_SPLIT, 1)
+        RS_MINI_VERSION = $$member(RS_GIT_DESCRIBE_SPLIT, 2)
 
-        RS_GIT_DESCRIBE_SPLIT = $$member(RS_GIT_DESCRIBE_SPLIT, 2)
+        RS_GIT_DESCRIBE_SPLIT = $$member(RS_GIT_DESCRIBE_SPLIT, 3)
         RS_GIT_DESCRIBE_SPLIT = $$split(RS_GIT_DESCRIBE_SPLIT, )
 
-        # Split string into mini version (leading numbers) and extra version (string after the numbers)
-        RS_MINI_VERSION =
+        # Split string into patch version (leading numbers) and extra version (string after the numbers)
+        RS_PATCH_VERSION =
         RS_EXTRA_VERSION =
         for(CHAR, RS_GIT_DESCRIBE_SPLIT) {
             isEqual(CHAR, 0) | greaterThan(CHAR, 0):lessThan(CHAR, 9) | isEqual(CHAR, 9) {
                 # Number
                 isEmpty(RS_EXTRA_VERSION) {
-                    # Add leading numbers to mini version
-                    RS_MINI_VERSION = $${RS_MINI_VERSION}$${CHAR}
+                    # Add leading numbers to patch version
+                    RS_PATCH_VERSION = $${RS_PATCH_VERSION}$${CHAR}
                 } else {
                     # Add to extra version
                     RS_EXTRA_VERSION = $${RS_EXTRA_VERSION}$${CHAR}
@@ -512,12 +514,13 @@ defined in command line")
         }
 
         message("RetroShare version\
-$${RS_MAJOR_VERSION}.$${RS_MINOR_VERSION}.$${RS_MINI_VERSION}$${RS_EXTRA_VERSION}\
+$${RS_MAJOR_VERSION}.$${RS_MINOR_VERSION}.$${RS_MINI_VERSION}.$${RS_PATCH_VERSION}$${RS_EXTRA_VERSION}\
 determined via git")
 
         DEFINES += RS_MAJOR_VERSION=$${RS_MAJOR_VERSION}
         DEFINES += RS_MINOR_VERSION=$${RS_MINOR_VERSION}
         DEFINES += RS_MINI_VERSION=$${RS_MINI_VERSION}
+        DEFINES += RS_PATCH_VERSION=$${RS_PATCH_VERSION}
         DEFINES += RS_EXTRA_VERSION=\\\"$${RS_EXTRA_VERSION}\\\"
     } else {
         warning("Determining RetroShare version via git failed plese specify it\
@@ -531,7 +534,7 @@ trough qmake command line arguments!")
 # consumes this define; harmless for the other sub-projects. When the version
 # could not be determined, rsguiversion.h falls back to its built-in default.
 !isEmpty(RS_MAJOR_VERSION) {
-    DEFINES += RS_GUI_VERSION=\\\"$${RS_MAJOR_VERSION}.$${RS_MINOR_VERSION}.$${RS_MINI_VERSION}$${RS_EXTRA_VERSION}\\\"
+    DEFINES += RS_GUI_VERSION=\\\"$${RS_MAJOR_VERSION}.$${RS_MINOR_VERSION}.$${RS_MINI_VERSION}.$${RS_PATCH_VERSION}$${RS_EXTRA_VERSION}\\\"
 }
 
 # Some supportlibs compilation won't start if the intstalled CMAKE verison is >=3.5.
