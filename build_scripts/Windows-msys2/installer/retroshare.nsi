@@ -43,12 +43,15 @@
 
 # Get version from executable
 !GetDllVersion "${DEPLOYDIR}\retroshare.exe" VERSION_
-!define VERSION ${VERSION_1}.${VERSION_2}.${VERSION_3}
+!define VERSION ${VERSION_1}.${VERSION_2}.${VERSION_3}.${VERSION_4}
 ;!define REVISION ${VERSION_4}
 
 # Check version
-!ifndef REVISION
-!error "REVISION is not defined"
+!ifdef REVISION
+!define REVISIONSTRING "-${REVISION}"
+!else
+#!error "REVISION is not defined"
+!define REVISIONSTRING ""
 !endif
 
 # Date
@@ -76,7 +79,7 @@ ${!defineifexist} TOR_EXISTS "${DEPLOYDIR}\tor.exe"
 # Main Install settings
 Name "${APPNAMEANDVERSION}"
 InstallDirRegKey HKLM "Software\${APPNAME}" ""
-OutFile "${OUTDIR_}RetroShare-${VERSION}-${Date}-${REVISION}-Qt-${QTVERSION}-${TOOLCHAIN}-msys2${RSTYPE}${INSTALLERADD}-setup.exe"
+OutFile "${OUTDIR_}RetroShare-${VERSION}-${Date}${REVISIONSTRING}-Qt-${QTVERSION}-${TOOLCHAIN}-msys2${RSTYPE}${INSTALLERADD}-setup.exe"
 BrandingText "${APPNAMEANDVERSION}"
 RequestExecutionlevel highest
 # Use compression
