@@ -36,9 +36,10 @@ if errorlevel 1 %cecho% error "Version not found."& goto error
 if "%RsVersion.Major%"=="" %cecho% error "Major version not found."& goto error
 if "%RsVersion.Minor%"=="" %cecho% error "Minor version not found."& goto error
 if "%RsVersion.Mini%"=="" %cecho% error "Mini number not found".& goto error
-if "%RsVersion.Extra%"=="" %cecho% error "Extra number not found".& goto error
 
 set RsVersion=%RsVersion.Major%.%RsVersion.Minor%.%RsVersion.Mini%
+set RsVersionExtra=
+if "%RsVersion.Extra%" NEQ "" set RsVersionExtra=-%RsVersion.Extra%
 
 :: Get date
 call "%ToolsPath%\get-rs-date.bat" "%SourcePath%" RsDate
@@ -65,9 +66,9 @@ if "%QtMainVersion%"=="4" set QtMainVersion2=4
 if "%QtMainVersion%"=="5" set QtMainVersion1=5
 
 if "%RsBuildConfig%" NEQ "release" (
-	set Archive=%RsPackPath%\RetroShare-%RsVersion%-Windows-Portable-%RsDate%-%RsVersion.Extra%-Qt-%QtVersion%-%GCCArchitecture%%RsType%%RsArchiveAdd%-%RsBuildConfig%.7z
+	set Archive=%RsPackPath%\RetroShare-%RsVersion%%RsVersionExtra%-Windows-Portable-%RsDate%-Qt-%QtVersion%-%GCCArchitecture%%RsType%%RsArchiveAdd%-%RsBuildConfig%.7z
 ) else (
-	set Archive=%RsPackPath%\RetroShare-%RsVersion%-Windows-Portable-%RsDate%-%RsVersion.Extra%-Qt-%QtVersion%-%GCCArchitecture%%RsType%%RsArchiveAdd%.7z
+	set Archive=%RsPackPath%\RetroShare-%RsVersion%%RsVersionExtra%-Windows-Portable-%RsDate%-Qt-%QtVersion%-%GCCArchitecture%%RsType%%RsArchiveAdd%.7z
 )
 
 if exist "%Archive%" del /Q "%Archive%"
