@@ -144,6 +144,7 @@ template<> bool RsFriendListModel::convertInternalIdToIndex<8>(quintptr ref,Entr
 
 void RsFriendListModel::setDisplayStatusString(bool b)
 {
+    preMods();
     mDisplayStatusString = b;
 	postMods();
 }
