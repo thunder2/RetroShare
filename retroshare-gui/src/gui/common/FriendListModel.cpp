@@ -162,6 +162,7 @@ static QIcon createAvatar(const QPixmap &avatar, const QPixmap &overlay)
 
 void RsFriendListModel::setDisplayStatusString(bool b)
 {
+    preMods();
     mDisplayStatusString = b;
 	postMods();
 }
