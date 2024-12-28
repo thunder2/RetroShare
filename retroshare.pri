@@ -695,6 +695,8 @@ linux-* {
     QMAKE_LIBDIR += "$${PREFIX}/lib64"
     QMAKE_LIBDIR += "$${PREFIX}/lib/x86_64-linux-gnu"
     QMAKE_LIBDIR *= "$$PWD/../lib/sqlcipher/.libs"
+    QMAKE_LIBDIR *= "$$PWD/../lib/libs/lib"
+    INCLUDEPATH *= $$escape_expand($$shell_path($$PWD/../lib/libs/include))
 
     rs_autologin {
         # try libsecret first since it is not limited to gnome keyring and libgnome-keyring is deprecated
