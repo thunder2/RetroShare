@@ -22,6 +22,7 @@
 
 #include <QModelIndex>
 #include <QColor>
+#include <QFont>
 
 #include "retroshare/rsstatus.h"
 #include "retroshare/rsmsgs.h"
@@ -145,6 +146,7 @@ public:
     int getCategory(const QModelIndex&) const;
 
     void setFilter(uint8_t filter_type, const QStringList& strings) ;
+    void setFont(const QFont &font);
 
     void expandItem(const QModelIndex&) ;
     void collapseItem(const QModelIndex&) ;
@@ -221,6 +223,7 @@ private:
 
     QStringList mFilterStrings;
     uint8_t  mFilterType;
+    QFont mFont;
 
     rstime_t mLastInternalDataUpdate;
     rstime_t mLastNodeUpdate;;

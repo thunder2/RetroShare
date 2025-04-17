@@ -54,6 +54,7 @@ RsIdentityListModel::RsIdentityListModel(QObject *parent)
     , mLastInternalDataUpdate(0), mLastNodeUpdate(0)
 {
 	mFilterStrings.clear();
+    mFont = QApplication::font();
     mIdentityUpdateTimer = new QTimer();
     connect(mIdentityUpdateTimer,SIGNAL(timeout()),this,SLOT(timerUpdate()));
 }
@@ -419,6 +420,16 @@ void RsIdentityListModel::setFilter(uint8_t filter_type, const QStringList& stri
 	postMods();
 }
 
+void RsIdentityListModel::setFont(const QFont &font)
+{
+    preMods();
+
+    mFont = font;
+
+    postMods();
+}
+
+
 QVariant RsIdentityListModel::toolTipRole(const EntryIndex& fmpe,int /*column*/) const
 {
     switch(fmpe.type)
@@ -457,8 +468,8 @@ QVariant RsIdentityListModel::toolTipRole(const EntryIndex& fmpe,int /*column*/)
 
 QVariant RsIdentityListModel::sizeHintRole(const EntryIndex& e,int col) const
 {
-	float x_factor = QFontMetricsF(QApplication::font()).height()/14.0f ;
-	float y_factor = QFontMetricsF(QApplication::font()).height()/14.0f ;
+	float x_factor = QFontMetricsF(mFont).height()/14.0f ;
+	float y_factor = QFontMetricsF(mFont).height()/14.0f ;
 
     if(e.type == ENTRY_TYPE_IDENTITY)
         y_factor *= 1.0;
@@ -475,7 +486,7 @@ QVariant RsIdentityListModel::sizeHintRole(const EntryIndex& e,int col) const
     case COLUMN_THREAD_NAME:
     case COLUMN_THREAD_ID:
     case COLUMN_THREAD_OWNER_NAME:
-    case COLUMN_THREAD_OWNER_ID:   return QFontMetricsF(QApplication::font()).boundingRect(displayRole(e,col).toString()).size();
+    case COLUMN_THREAD_OWNER_ID:   return QFontMetricsF(mFont).boundingRect(displayRole(e,col).toString()).size();
     }
 }
 
@@ -572,7 +583,7 @@ QVariant RsIdentityListModel::fontRole(const EntryIndex& e, int /*col*/) const
 
     if(rsIdentity->isOwnId(id))
     {
-        QFont f;
+        QFont f(mFont);
         f.setBold(true);
         return QVariant(f);
     }
@@ -591,7 +602,7 @@ QVariant RsIdentityListModel::fontRole(const EntryIndex& e, int /*col*/) const
 	{
 		case RS_STATUS_INACTIVE:
 		{
-			QFont font ;
+			QFont font(mFont);
 			QTreeView* myParent = dynamic_cast<QTreeView*>(QAbstractItemModel::parent());
 			if (myParent)
 				font = myParent->font();
