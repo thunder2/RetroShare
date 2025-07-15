@@ -18,6 +18,10 @@
 
 TEMPLATE = subdirs
 
+win32-g++:isEmpty(QMAKE_SH) {
+    # Windows native build
 SUBDIRS += \
                 VOIP \
+}
+SUBDIRS += \
 		FeedReader
