@@ -261,6 +261,6 @@ bool LanguageSupport::localize(const QString &languageCode)
 {
   if (!isValidLanguageCode(languageCode))
     return false;
-  QLocale::setDefault(locales().key(languageCode));
+//  QLocale::setDefault(locales().key(languageCode));
   return true;
 }

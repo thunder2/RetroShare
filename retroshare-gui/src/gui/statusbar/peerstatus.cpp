@@ -28,7 +28,7 @@ PeerStatus::PeerStatus(QWidget *parent)
  : QWidget(parent)
 {
     QHBoxLayout *hbox = new QHBoxLayout(this);
-    hbox->setMargin(0);
+//    hbox->setMargin(0);
     hbox->setSpacing(6);
     
 

@@ -260,7 +260,7 @@ QMenu *RSTreeWidget::createStandardContextMenu(QMenu *contextMenu)
 
 		// create menu header
 		QHBoxLayout *hbox = new QHBoxLayout(widget);
-		hbox->setMargin(0);
+//		hbox->setMargin(0);
 		hbox->setSpacing(6);
 
 		QLabel *iconLabel = new QLabel(widget);

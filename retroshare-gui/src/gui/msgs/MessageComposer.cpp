@@ -2403,8 +2403,8 @@ bool MessageComposer::fileSave()
     if (!file.open(QFile::WriteOnly))
         return false;
     QTextStream ts(&file);
-    ts.setCodec(QTextCodec::codecForName("UTF-8"));
-    ts << ui.msgText->document()->toHtml("UTF-8");
+//    ts.setCodec(QTextCodec::codecForName("UTF-8"));
+//    ts << ui.msgText->document()->toHtml("UTF-8");
     std::cerr << "Setting modified 002 = false" << std::endl;
     ui.msgText->document()->setModified(false);
     return true;
@@ -2432,8 +2432,8 @@ void MessageComposer::filePrint()
     QPrinter printer(QPrinter::HighResolution);
     printer.setFullPage(true);
     QPrintDialog *dlg = new QPrintDialog(&printer, this);
-    if (ui.msgText->textCursor().hasSelection())
-        dlg->addEnabledOption(QAbstractPrintDialog::PrintSelection);
+//    if (ui.msgText->textCursor().hasSelection())
+//        dlg->addEnabledOption(QAbstractPrintDialog::PrintSelection);
     dlg->setWindowTitle(tr("Print Document"));
     if (dlg->exec() == QDialog::Accepted) {
         ui.msgText->print(&printer);

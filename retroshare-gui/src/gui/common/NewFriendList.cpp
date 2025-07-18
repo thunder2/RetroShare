@@ -213,7 +213,7 @@ NewFriendList::NewFriendList(QWidget */*parent*/) : /* RsAutoUpdatePage(5000,par
     mProxyModel->setSortRole(RsFriendListModel::SortRole);
     mProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
 	mProxyModel->setFilterRole(RsFriendListModel::FilterRole);
-	mProxyModel->setFilterRegExp(QRegExp(RsFriendListModel::FilterString));
+//	mProxyModel->setFilterRegExp(QRegExp(RsFriendListModel::FilterString));
 
 	ui->peerTreeWidget->setModel(mProxyModel);
 	RSElidedItemDelegate *itemDelegate = new RSElidedItemDelegate(this);
@@ -319,7 +319,7 @@ void NewFriendList::headerContextMenuRequested(QPoint /*p*/)
 
     // create menu header
     QHBoxLayout *hbox = new QHBoxLayout(widget);
-    hbox->setMargin(0);
+//    hbox->setMargin(0);
     hbox->setSpacing(6);
 
     QLabel *iconLabel = new QLabel(widget);
@@ -447,8 +447,8 @@ void NewFriendList::recursSaveExpandedItems(const QModelIndex& index,const QMode
         if(index.isValid())
             exp.insert(local_path) ;
 
-        for(int row=0;row<mProxyModel->rowCount(index);++row)
-            recursSaveExpandedItems(index.child(row,0),current_index,local_path,exp,sel,indx+1) ;
+//        for(int row=0;row<mProxyModel->rowCount(index);++row)
+//            recursSaveExpandedItems(index.child(row,0),current_index,local_path,exp,sel,indx+1) ;
     }
 #ifdef DEBUG_NEW_FRIEND_LIST
     else
@@ -478,8 +478,8 @@ void NewFriendList::recursRestoreExpandedItems(const QModelIndex& index, const Q
 
         ui->peerTreeWidget->setExpanded(index,true) ;
 
-        for(int row=0;row<mProxyModel->rowCount(index);++row)
-            recursRestoreExpandedItems(index.child(row,0),local_path,exp,sel,selected_index,indx+1) ;
+//        for(int row=0;row<mProxyModel->rowCount(index);++row)
+//            recursRestoreExpandedItems(index.child(row,0),local_path,exp,sel,selected_index,indx+1) ;
     }
 #ifdef DEBUG_NEW_FRIEND_LIST
     else
@@ -558,7 +558,7 @@ void NewFriendList::processSettings(bool load)
 void NewFriendList::toggleSortByState(bool sort)
 {
     mProxyModel->setSortByState(sort);
-	mProxyModel->setFilterRegExp(QRegExp(QString(RsFriendListModel::FilterString))) ;// triggers a re-display.
+//	mProxyModel->setFilterRegExp(QRegExp(QString(RsFriendListModel::FilterString))) ;// triggers a re-display.
     processSettings(false);
 }
 
@@ -591,7 +591,7 @@ void NewFriendList::peerTreeWidgetCustomPopupMenu()
 
     // create menu header
     QHBoxLayout *hbox = new QHBoxLayout(widget);
-    hbox->setMargin(0);
+//    hbox->setMargin(0);
     hbox->setSpacing(6);
 
     QLabel *iconLabel = new QLabel(widget);
@@ -1419,7 +1419,7 @@ bool NewFriendList::exportFriendlist(QString &fileName)
     root.appendChild(groups);
 
     QTextStream ts(&file);
-    ts.setCodec("UTF-8");
+//    ts.setCodec("UTF-8");
     ts << doc.toString();
     file.close();
 
@@ -1468,7 +1468,7 @@ bool NewFriendList::importFriendlist(QString &fileName, bool &errorPeers, bool &
             return false;
         }
 
-        bool ok = doc.setContent(&file);
+		bool ok = true;//doc.setContent(&file);
         file.close();
 
         if(!ok) {
@@ -1623,7 +1623,7 @@ bool NewFriendList::getOrCreateGroup(const std::string& name, uint flag, RsNodeG
 void NewFriendList::setShowUnconnected(bool show)
 {
     mProxyModel->setShowOfflineNodes(show);
-	mProxyModel->setFilterRegExp(QRegExp(QString(RsFriendListModel::FilterString))) ;// triggers a re-display.
+//	mProxyModel->setFilterRegExp(QRegExp(QString(RsFriendListModel::FilterString))) ;// triggers a re-display.
 }
 
 bool NewFriendList::isColumnVisible(int col) const
@@ -1673,7 +1673,7 @@ void NewFriendList::setShowGroups(bool show)
  */
 void NewFriendList::filterItems(const QString &text)
 {
-    QStringList lst = text.split(' ',QString::SkipEmptyParts);
+    QStringList lst = text.split(' '/*,QString::SkipEmptyParts*/);
 	int filterColumn = ui->filterLineEdit->currentFilter();
 
     if(filterColumn == 0)
@@ -1682,7 +1682,7 @@ void NewFriendList::filterItems(const QString &text)
 		mModel->setFilter(RsFriendListModel::FILTER_TYPE_ID,lst);
 
     // We do this in order to trigger a new filtering action in the proxy model.
-	mProxyModel->setFilterRegExp(QRegExp(QString(RsFriendListModel::FilterString))) ;
+//	mProxyModel->setFilterRegExp(QRegExp(QString(RsFriendListModel::FilterString))) ;
 
     if(!lst.empty())
 		ui->peerTreeWidget->expandAll();

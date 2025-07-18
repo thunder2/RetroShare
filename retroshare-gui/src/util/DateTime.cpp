@@ -66,7 +66,7 @@ QString DateTime::formatDate(time_t dateValue)
 
 QString DateTime::formatDate(const QDate &dateValue)
 {
-	return dateValue.toString(Qt::SystemLocaleShortDate);
+	return "";//dateValue.toString(Qt::SystemLocaleShortDate);
 }
 
 QString DateTime::formatTime(time_t timeValue)
@@ -76,7 +76,7 @@ QString DateTime::formatTime(time_t timeValue)
 
 QString DateTime::formatTime(const QTime &timeValue)
 {
-	return timeValue.toString(Qt::SystemLocaleShortDate);
+	return "";//timeValue.toString(Qt::SystemLocaleShortDate);
 }
 
 QDateTime DateTime::DateTimeFromTime_t(time_t timeValue)

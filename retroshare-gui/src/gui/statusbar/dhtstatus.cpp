@@ -37,7 +37,7 @@ DHTStatus::DHTStatus(QWidget *parent)
  : QWidget(parent)
 {
     QHBoxLayout *hbox = new QHBoxLayout();
-    hbox->setMargin(0);
+//    hbox->setMargin(0);
     hbox->setSpacing(6);
        
     statusDHT = new QLabel("<strong>" + tr("DHT") + ":</strong>", this );

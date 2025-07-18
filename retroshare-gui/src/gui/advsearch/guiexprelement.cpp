@@ -219,7 +219,7 @@ QStringList GuiExprElement::getConditionOptions(ExprSearchType t)
 QHBoxLayout * GuiExprElement::createLayout(QWidget * parent /*= nullptr*/)
 {
     QHBoxLayout * hboxLayout = new QHBoxLayout(parent);
-    hboxLayout->setMargin(0);
+//    hboxLayout->setMargin(0);
     hboxLayout->setSpacing(0);
     return hboxLayout;
 }
@@ -398,10 +398,10 @@ void ExprParamElement::adjustForSearchType(ExprSearchType type)
 {
 	// record which search type is active
 	searchType = type;
-	QRegExp regExp("0|[1-9][0-9]*");
-	numValidator = new QRegExpValidator(regExp, this);
-	QRegExp hexRegExp("[A-Fa-f0-9]*");
-	hexValidator = new QRegExpValidator(hexRegExp, this);
+//	QRegExp regExp("0|[1-9][0-9]*");
+//	numValidator = new QRegExpValidator(regExp, this);
+//	QRegExp hexRegExp("[A-Fa-f0-9]*");
+//	hexValidator = new QRegExpValidator(hexRegExp, this);
 
 	QHBoxLayout* hbox = static_cast<QHBoxLayout*>(layout());
 	clearLayout(hbox);
@@ -430,7 +430,7 @@ void ExprParamElement::adjustForSearchType(ExprSearchType type)
 		// hex search specifics: hidden case sensitivity and hex validator
 		if (searchType == HashSearch) {
 			icCb->hide();
-			lineEdit->setValidator(hexValidator);
+//			lineEdit->setValidator(hexValidator);
 		}
 		setMinimumSize(lineEdit->minimumSize()
 		               + QSize((searchType != HashSearch ? icCb->minimumWidth() : 0),0) );
@@ -455,7 +455,7 @@ void ExprParamElement::adjustForSearchType(ExprSearchType type)
 		lineEdit->setMaximumSize(getMinSize(SIZE_FIELDS_MIN_WFACTOR, FIELDS_MIN_HFACTOR));
 		lineEdit->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 		lineEdit->setObjectName("param1");
-		lineEdit->setValidator(numValidator);
+//		lineEdit->setValidator(numValidator);
 		hbox->addWidget(lineEdit, Qt::AlignLeft);
 
 		hbox->addSpacing(9);
@@ -530,7 +530,7 @@ void ExprParamElement::setRangedSearch(bool ranged)
             lineEdit->setMaximumSize(getMinSize(SIZE_FIELDS_MIN_WFACTOR, FIELDS_MIN_HFACTOR));
             lineEdit->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
             lineEdit->setObjectName("param2");
-            lineEdit->setValidator(numValidator);
+//            lineEdit->setValidator(numValidator);
             
             RSComboBox * cb = new RSComboBox(this);
             cb->setObjectName("unitsCb2");
@@ -607,7 +607,7 @@ uint64_t ExprParamElement::getIntValueFromField(QString fieldName, bool isToFiel
 #else
             QDateTime time = dateEdit->date().startOfDay();
 #endif
-            val = (uint64_t)time.toTime_t();
+//            val = (uint64_t)time.toTime_t();
             break;
         }
         case SizeSearch:

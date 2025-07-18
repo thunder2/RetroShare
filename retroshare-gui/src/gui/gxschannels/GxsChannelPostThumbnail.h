@@ -64,8 +64,8 @@ protected:
     void resizeEvent(QResizeEvent *ev) override;
     void wheelEvent(QWheelEvent *me) override;
 
-    void enterEvent(QEvent * /* ev */ ) override { if(mUseStyleSheet) setStyleSheet("QLabel { border: 2px solid #039bd5; }");}
-    void leaveEvent(QEvent * /* ev */ ) override { if(mUseStyleSheet) setStyleSheet("QLabel { border: 2px solid #CCCCCC; border-radius: 3px; }");}
+    void enterEvent(QEvent * /* ev */ ) { if(mUseStyleSheet) setStyleSheet("QLabel { border: 2px solid #039bd5; }");}
+    void leaveEvent(QEvent * /* ev */ ) { if(mUseStyleSheet) setStyleSheet("QLabel { border: 2px solid #CCCCCC; border-radius: 3px; }");}
 
     bool mUseStyleSheet;
 

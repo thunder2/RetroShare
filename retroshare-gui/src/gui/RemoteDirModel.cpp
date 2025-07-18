@@ -825,29 +825,29 @@ QVariant RetroshareDirModel::data(const QModelIndex &index, int role) const
 	if (role == RetroshareDirModel::FileNameRole) /* end of FileNameRole */
 		return QString::fromUtf8(details.name.c_str()) ;
 
-	if (role == Qt::TextColorRole)
-	{
-        if((details.type == DIR_TYPE_FILE  || details.type == DIR_TYPE_EXTRA_FILE) && details.hash.isNull())
-            return QVariant(QColor(Qt::green)) ;
-        else if(ageIndicator != IND_ALWAYS && details.max_mtime + ageIndicator < time(NULL))
-			return QVariant(QColor(Qt::gray)) ;
-        else if(RemoteMode)
-        {
-            FileInfo info;
-            QVariant local_file_color = QVariant(QColor(Qt::red));
-            if(rsFiles->alreadyHaveFile(details.hash, info))
-                return local_file_color;
-
-            std::list<RsFileHash> downloads;
-            rsFiles->FileDownloads(downloads);
-            if(std::find(downloads.begin(), downloads.end(), details.hash) != downloads.end())
-                return local_file_color;
-            else
-                return QVariant();
-        }
-		else
-			return QVariant() ; // standard
-	} /* end of TextColorRole */
+//	if (role == Qt::TextColorRole)
+//	{
+//        if((details.type == DIR_TYPE_FILE  || details.type == DIR_TYPE_EXTRA_FILE) && details.hash.isNull())
+//            return QVariant(QColor(Qt::green)) ;
+//        else if(ageIndicator != IND_ALWAYS && details.max_mtime + ageIndicator < time(NULL))
+//			return QVariant(QColor(Qt::gray)) ;
+//        else if(RemoteMode)
+//        {
+//            FileInfo info;
+//            QVariant local_file_color = QVariant(QColor(Qt::red));
+//            if(rsFiles->alreadyHaveFile(details.hash, info))
+//                return local_file_color;
+//
+//            std::list<RsFileHash> downloads;
+//            rsFiles->FileDownloads(downloads);
+//            if(std::find(downloads.begin(), downloads.end(), details.hash) != downloads.end())
+//                return local_file_color;
+//            else
+//                return QVariant();
+//        }
+//		else
+//			return QVariant() ; // standard
+//	} /* end of TextColorRole */
 
 
 	if(role == Qt::DecorationRole)

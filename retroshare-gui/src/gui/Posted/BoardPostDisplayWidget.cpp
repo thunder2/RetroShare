@@ -195,7 +195,7 @@ void BoardPostDisplayWidgetBase::baseSetup()
         fromLabel()->setId(mPost.mMeta.mAuthorId);
         titleLabel()->setText(tr( "<p><font color=\"#ff0000\"><b>The author of this message (with ID %1) is banned.</b>").arg(QString::fromStdString(mPost.mMeta.mAuthorId.toStdString()))) ;
         QDateTime qtime;
-        qtime.setTime_t(mPost.mMeta.mPublishTs);
+//        qtime.setTime_t(mPost.mMeta.mPublishTs);
         QString timestamp = qtime.toString("hh:mm dd-MMM-yyyy");
         dateLabel()->setText(timestamp);
         pictureLabel()->setDisabled(true);
@@ -203,7 +203,7 @@ void BoardPostDisplayWidgetBase::baseSetup()
     else
     {
         QDateTime qtime;
-        qtime.setTime_t(mPost.mMeta.mPublishTs);
+//        qtime.setTime_t(mPost.mMeta.mPublishTs);
         QString timestamp = qtime.toString("hh:mm dd-MMM-yyyy");
         QString timestamp2 = misc::timeRelativeToNow(mPost.mMeta.mPublishTs) + " " + tr("ago");
         dateLabel()->setText(timestamp);

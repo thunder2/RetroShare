@@ -33,7 +33,7 @@ SysTrayStatus::SysTrayStatus(QWidget *parent) :
   QWidget(parent)
 {
 	QHBoxLayout *hbox = new QHBoxLayout(this);
-	hbox->setMargin(0);
+//	hbox->setMargin(0);
 	hbox->setSpacing(0);
 
 	imageButton = new QPushButton(this);

@@ -47,19 +47,19 @@ JsonApiPage::JsonApiPage(QWidget */*parent*/, Qt::WindowFlags /*flags*/)
     // This limits the possible tokens to alphanumeric
 
     QString anRange = "[a-zA-Z0-9]+";
-    QRegExp anRegex ("^" + anRange + ":" + anRange + "$");
-    QRegExpValidator *anValidator = new QRegExpValidator(anRegex, this);
+//    QRegExp anRegex ("^" + anRange + ":" + anRange + "$");
+//    QRegExpValidator *anValidator = new QRegExpValidator(anRegex, this);
 
-    ui.tokenLineEdit->setValidator(anValidator);
+//    ui.tokenLineEdit->setValidator(anValidator);
 
     // This limits the possible tokens to alphanumeric
 
     QString ipRange = "(?:[0-1]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])";
     // You may want to use QRegularExpression for new code with Qt 5 (not mandatory).
-    QRegExp ipRegex ("^" + ipRange + "\\." + ipRange + "\\." + ipRange + "\\." + ipRange + "$");
-    QRegExpValidator *ipValidator = new QRegExpValidator(ipRegex, this);
+//    QRegExp ipRegex ("^" + ipRange + "\\." + ipRange + "\\." + ipRange + "\\." + ipRange + "$");
+//    QRegExpValidator *ipValidator = new QRegExpValidator(ipRegex, this);
 
-    ui.listenAddressLineEdit->setValidator(ipValidator);
+//    ui.listenAddressLineEdit->setValidator(ipValidator);
     ui.providersListView->setSelectionMode(QAbstractItemView::NoSelection);	// prevents edition.
 
     mEventHandlerId = 0;

@@ -799,7 +799,7 @@ void GxsCommentTreeWidget::insertComments(const std::vector<RsGxsComment>& comme
 
 		{
 			QDateTime qtime ;
-			qtime.setTime_t(comment.mMeta.mPublishTs) ;
+//			qtime.setTime_t(comment.mMeta.mPublishTs) ;
 
 			text = qtime.toString("yyyy-MM-dd hh:mm:ss") ;
 			item->setText(PCITEM_COLUMN_DATE, text) ;

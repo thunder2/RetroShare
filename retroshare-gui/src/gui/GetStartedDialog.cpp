@@ -377,42 +377,42 @@ void GetStartedDialog::emailSupport()
   #if defined(_WIN32) || defined(__MINGW32__)
 	// Windows
 	#ifdef Q_OS_WIN
-	switch(QSysInfo::windowsVersion())
-	{
-		case QSysInfo::WV_32s: 
-			sysVersion = "Windows 2.1";
-			break;
-		case QSysInfo::WV_95: 
-			sysVersion = "Windows 95";
-			break;
-		case QSysInfo::WV_98: 
-			sysVersion = "Windows 98";
-			break;
-		case QSysInfo::WV_Me: 
-			sysVersion = "Windows Me";
-			break;
-		case QSysInfo::WV_NT: 
-			sysVersion = "Windows NT";
-			break;
-		case QSysInfo::WV_2000: 
-			sysVersion = "Windows 2000";
-			break;
-		case QSysInfo::WV_XP:
-			sysVersion = "Windows XP";
-			break;
-		case QSysInfo::WV_2003: 
-			sysVersion = "Windows 2003";
-			break;
-		case QSysInfo::WV_VISTA: 
-			sysVersion = "Windows Vista";
-			break;
-		case QSysInfo::WV_WINDOWS7:
-			sysVersion = "Windows 7";
-			break;
-		default: 
-			sysVersion = "Windows";
-			break;
-	}
+//	switch(QSysInfo::windowsVersion())
+//	{
+//		case QSysInfo::WV_32s:
+//			sysVersion = "Windows 2.1";
+//			break;
+//		case QSysInfo::WV_95:
+//			sysVersion = "Windows 95";
+//			break;
+//		case QSysInfo::WV_98:
+//			sysVersion = "Windows 98";
+//			break;
+//		case QSysInfo::WV_Me:
+//			sysVersion = "Windows Me";
+//			break;
+//		case QSysInfo::WV_NT:
+//			sysVersion = "Windows NT";
+//			break;
+//		case QSysInfo::WV_2000:
+//			sysVersion = "Windows 2000";
+//			break;
+//		case QSysInfo::WV_XP:
+//			sysVersion = "Windows XP";
+//			break;
+//		case QSysInfo::WV_2003:
+//			sysVersion = "Windows 2003";
+//			break;
+//		case QSysInfo::WV_VISTA:
+//			sysVersion = "Windows Vista";
+//			break;
+//		case QSysInfo::WV_WINDOWS7:
+//			sysVersion = "Windows 7";
+//			break;
+//		default:
+//			sysVersion = "Windows";
+//			break;
+//	}
 	#else
 	sysVersion = "Windows Unknown";
 	#endif

@@ -286,7 +286,7 @@ public:
 		{
 		case Qt::SizeHintRole:       return sizeHintRole(index.column()) ;
 		case Qt::TextAlignmentRole:
-		case Qt::TextColorRole:
+//		case Qt::TextColorRole:
 		case Qt::WhatsThisRole:
 		case Qt::EditRole:
 		case Qt::ToolTipRole:
@@ -433,8 +433,8 @@ public:
 						file = QFileInfo(QString::fromUtf8(rsFiles->getPartialsDirectory().c_str()), QString::fromUtf8(fileInfo.hash.toStdString().c_str()));
 
 					//Get Last Access on File
-					if (file.exists())
-						qi64LastDL = file.lastModified().toTime_t();
+//					if (file.exists())
+//						qi64LastDL = file.lastModified().toTime_t();
 				}
 				return QVariant(qi64LastDL) ;
 			}
@@ -2646,5 +2646,5 @@ void TransfersDialog::filterChanged(const QString& /*text*/)
 	int filterColumn = ui.filterLineEdit->currentFilter();
 	QString text = ui.filterLineEdit->text();
 	DLLFilterModel->setFilterKeyColumn(filterColumn);
-	DLLFilterModel->setFilterRegExp(text);
+//	DLLFilterModel->setFilterRegExp(text);
 }

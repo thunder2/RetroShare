@@ -376,7 +376,7 @@ QString ChatStyle::formatMessage(enumFormatMessage type
 	QString strDate = DateTime::formatDate(timestamp.date()).prepend(QString("<a name=\"date\">")).append(QString("</a>"));
 	QString strTime = DateTime::formatTime(timestamp.time()).prepend(QString("<a name=\"time\">")).append(QString("</a>"));
 
-	int bi = name.lastIndexOf(QRegExp(" \\(.*\\)")); //trim location from the end
+	int bi = -1;//name.lastIndexOf(QRegExp(" \\(.*\\)")); //trim location from the end
 	QString strShortName = RsHtml::plainText(name.left(bi)).prepend(QString("<a name=\"name\">")).append(QString("</a>"));
 
 	//handle /me
@@ -384,9 +384,9 @@ QString ChatStyle::formatMessage(enumFormatMessage type
 	//meName class for modifying the style of the name in the palce of /me
 	if(me){
 		messageBody = messageBody.replace(messageBody.indexOf("/me "), 3, strShortName.prepend(QString("<span class=\"meName\">")).append(QString("</span>"))); //replace only the first /me
-		style = style.remove(QRegExp("%nome%.*%/nome%")).remove("%me%").remove("%/me%");
+//		style = style.remove(QRegExp("%nome%.*%/nome%")).remove("%me%").remove("%/me%");
 	} else {
-		style = style.remove(QRegExp("%me%.*%/me%")).remove("%nome%").remove("%/nome%");
+//		style = style.remove(QRegExp("%me%.*%/me%")).remove("%nome%").remove("%/nome%");
 	}
 
 	QString formatMsg = style.replace("%name%", strName)

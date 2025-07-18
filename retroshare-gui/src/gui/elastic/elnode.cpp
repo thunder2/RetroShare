@@ -313,8 +313,8 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 
 	if (!mDeterminedBB)
 	{
-		QRect textBox = painter->boundingRect(-10, 5*f, QFontMetricsF(graph->font()).width(txt), 1.5*m, Qt::AlignVCenter, QString::fromUtf8(_desc_string.c_str()));
-		mBBWidth = textBox.width()+40*f;
+//		QRect textBox = painter->boundingRect(-10, 5*f, QFontMetricsF(graph->font()).width(txt), 1.5*m, Qt::AlignVCenter, QString::fromUtf8(_desc_string.c_str()));
+//		mBBWidth = textBox.width()+40*f;
 		mDeterminedBB = true;
 	}
 }

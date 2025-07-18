@@ -206,7 +206,7 @@ void RetroStyleLabel::mouseReleaseEvent(QMouseEvent * event) {
 void RetroStyleLabel::setText(const QString & text) {
 	QLabel::setText(text);
 	QFontMetrics fm(font());
-	int textWidth = fm.width(text);
+	int textWidth = 1;//fm.width(text);
 	textWidth += 40;
 	QSize s = size();
 	if (textWidth > s.width()) {

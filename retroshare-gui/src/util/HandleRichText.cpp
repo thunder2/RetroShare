@@ -66,7 +66,7 @@ protected:
 
 public:
 	const EmbeddedType myType;
-        QList<QRegExp> myREs;
+//        QList<QRegExp> myREs;
 };
 
 /**
@@ -141,7 +141,7 @@ public:
 		regHotLinkFinders.append(regUrlPath);
 
 		while (!regHotLinkFinders.isEmpty()) {
-			myREs.append(QRegExp(regHotLinkFinders.takeFirst(), Qt::CaseInsensitive));
+//			myREs.append(QRegExp(regHotLinkFinders.takeFirst(), Qt::CaseInsensitive));
 		};
 	}
 };
@@ -178,54 +178,54 @@ void RsHtml::initEmoticons(const QHash<QString, QPair<QVector<QString>, QHash<QS
 	QString genericpattern;
 	genericpattern += "(?:^|\\s)(:\\w{1,40}:)(?:$|\\s)|";		//generic rule for :emoji_name:
 	genericpattern += "(?:^|\\s)(\\(\\w{1,40}\\))(?:$|\\s)";	//generic rule for (emoji_name)
-	QRegExp genericrx(genericpattern);
-	genericrx.setMinimal(true);
-
-	QString newRE;
-	for(QHash<QString, QPair<QVector<QString>, QHash<QString, QString> > >::const_iterator groupit = hash.begin(); groupit != hash.end(); ++groupit) {
-		QHash<QString,QString> group = groupit.value().second;
-		for(QHash<QString,QString>::const_iterator it = group.begin(); it != group.end(); ++it)
-			foreach(QString smile, it.key().split("|")) {
-				if (smile.isEmpty()) {
-					continue;
-				}
-				defEmbedImg.smileys.insert(smile, it.value());
-				//check if smiley is using standard format :new-format: or (old-format) and don't make a new regexp for it
-				if(!genericrx.exactMatch(smile)) {
-					// add space around smileys
-					newRE += "(?:^|\\s)(" + QRegExp::escape(smile) + ")(?:$|\\s)|";
-					// explanations:
-					//	(?:^|\s)(*smiley*)(?:$|\s)
-					//
-					//	(?:^|\s) Non-capturing group
-					//		1st Alternative: ^
-					//			^ assert position at start of the string
-					//		2nd Alternative: \s
-					//			\s match any white space character [\r\n\t\f ]
-					//
-					//	1st Capturing group (*smiley*)
-					//		*smiley* matches the characters *smiley* literally (case sensitive)
-					//
-					//	(?:$|\s) Non-capturing group
-					//		1st Alternative: $
-					//			$ assert position at end of the string
-					//		2nd Alternative: \s
-					//			\s match any white space character [\r\n\t\f ]
-
-					/*
-			 * TODO
-			 * a better version is:
-			 * (?<=^|\s)(*smile*)(?=$|\s) using the lookbehind/lookahead operator instead of non-capturing groups.
-			 * This solves the problem that spaces are matched, too (see workaround in RsHtml::embedHtml)
-			 * This is not supported by Qt4!
-			 */
-				}
-			}
-	}
-
-	QRegExp emojimatcher(newRE + genericpattern);
-	emojimatcher.setMinimal(true);
-	defEmbedImg.myREs.append(emojimatcher);
+//	QRegExp genericrx(genericpattern);
+//	genericrx.setMinimal(true);
+//
+//	QString newRE;
+//	for(QHash<QString, QPair<QVector<QString>, QHash<QString, QString> > >::const_iterator groupit = hash.begin(); groupit != hash.end(); ++groupit) {
+//		QHash<QString,QString> group = groupit.value().second;
+//		for(QHash<QString,QString>::const_iterator it = group.begin(); it != group.end(); ++it)
+//			foreach(QString smile, it.key().split("|")) {
+//				if (smile.isEmpty()) {
+//					continue;
+//				}
+//				defEmbedImg.smileys.insert(smile, it.value());
+//				//check if smiley is using standard format :new-format: or (old-format) and don't make a new regexp for it
+//				if(!genericrx.exactMatch(smile)) {
+//					// add space around smileys
+//					newRE += "(?:^|\\s)(" + QRegExp::escape(smile) + ")(?:$|\\s)|";
+//					// explanations:
+//					//	(?:^|\s)(*smiley*)(?:$|\s)
+//					//
+//					//	(?:^|\s) Non-capturing group
+//					//		1st Alternative: ^
+//					//			^ assert position at start of the string
+//					//		2nd Alternative: \s
+//					//			\s match any white space character [\r\n\t\f ]
+//					//
+//					//	1st Capturing group (*smiley*)
+//					//		*smiley* matches the characters *smiley* literally (case sensitive)
+//					//
+//					//	(?:$|\s) Non-capturing group
+//					//		1st Alternative: $
+//					//			$ assert position at end of the string
+//					//		2nd Alternative: \s
+//					//			\s match any white space character [\r\n\t\f ]
+//
+//					/*
+//			 * TODO
+//			 * a better version is:
+//			 * (?<=^|\s)(*smile*)(?=$|\s) using the lookbehind/lookahead operator instead of non-capturing groups.
+//			 * This solves the problem that spaces are matched, too (see workaround in RsHtml::embedHtml)
+//			 * This is not supported by Qt4!
+//			 */
+//				}
+//			}
+//	}
+//
+//	QRegExp emojimatcher(newRE + genericpattern);
+//	emojimatcher.setMinimal(true);
+//	defEmbedImg.myREs.append(emojimatcher);
 }
 
 bool RsHtml::canReplaceAnchor(QDomDocument &/*doc*/, QDomElement &/*element*/, const RetroShareLink &link)
@@ -357,21 +357,21 @@ void RsHtml::filterEmbeddedImages(QDomDocument &doc, QDomElement &currentElement
 	}
 }
 
-int RsHtml::indexInWithValidation(QRegExp &rx, const QString &text, EmbedInHtml &embedInfos, int pos)
-{
-	int index = rx.indexIn(text, pos);
-	if(index == -1 || embedInfos.myType != Img) return index;
-
-	const EmbedInHtmlImg& embedImg = static_cast<const EmbedInHtmlImg&>(embedInfos);
-
-	while((index = rx.indexIn(text, pos)) != -1) {
-		if(embedImg.smileys.contains(rx.cap(0).trimmed()))
-			return index;
-		else
-			++pos;
-	}
-	return -1;
-}
+//int RsHtml::indexInWithValidation(QRegExp &rx, const QString &text, EmbedInHtml &embedInfos, int pos)
+//{
+//	int index = rx.indexIn(text, pos);
+//	if(index == -1 || embedInfos.myType != Img) return index;
+//
+//	const EmbedInHtmlImg& embedImg = static_cast<const EmbedInHtmlImg&>(embedInfos);
+//
+//	while((index = rx.indexIn(text, pos)) != -1) {
+//		if(embedImg.smileys.contains(rx.cap(0).trimmed()))
+//			return index;
+//		else
+//			++pos;
+//	}
+//	return -1;
+//}
 
 /**
  * Parses a DOM tree and replaces text by HTML tags.
@@ -446,108 +446,108 @@ void RsHtml::embedHtml(QTextDocument *textDocument, QDomDocument& doc, QDomEleme
 		}
 		else if(node.isText()) {
           // child is a text, we parse it
-          QString tempText = node.toText().data();
-          for (int patNdx = 0; patNdx < embedInfos.myREs.size(); ++patNdx) {
-            QRegExp myRE = embedInfos.myREs.at(patNdx);
-            if(myRE.pattern().length() == 0)	// we'll get stuck with an empty regexp
-                return;
+//          QString tempText = node.toText().data();
+//          for (int patNdx = 0; patNdx < embedInfos.myREs.size(); ++patNdx) {
+//            QRegExp myRE = embedInfos.myREs.at(patNdx);
+//            if(myRE.pattern().length() == 0)	// we'll get stuck with an empty regexp
+//                return;
 
 			int nextPos = 0;
-			if((nextPos = indexInWithValidation(myRE, tempText, embedInfos)) == -1)
-				continue;
+//			if((nextPos = indexInWithValidation(myRE, tempText, embedInfos)) == -1)
+//				continue;
 
 			// there is at least one link inside, we start replacing
-			int currentPos = 0;
-			do {
-				// if nextPos == 0 it means the text begins by a link
-				if(nextPos > 0) {
-					QDomText textPart = doc.createTextNode(tempText.mid(currentPos, nextPos - currentPos));
-					currentElement.insertBefore(textPart, node);
-					index++;
-				}
-
-				// inserted tag
-				QDomElement insertedTag;
-				switch(embedInfos.myType) {
-					case Ahref:
-							{
-								insertedTag = doc.createElement("a");
-								insertedTag.setAttribute("href", myRE.cap(0));
-								insertedTag.appendChild(doc.createTextNode(myRE.cap(0)));
-
-								RetroShareLink link(myRE.cap(0));
-								if (link.valid()) {
-									QString title = link.title();
-									if (!title.isEmpty()) {
-										insertedTag.setAttribute("title", title);
-									}
-
-									if (textDocument && (flag & RSHTML_FORMATTEXT_REPLACE_LINKS)) {
-										replaceAnchorWithImg(doc, insertedTag, textDocument, link);
-									}
-								}
-								else
-								{
-									QUrl url(myRE.cap(0));
-									if(url.isValid())
-									{
-										QString title = url.host();
-										if (!title.isEmpty()) {
-											insertedTag.setAttribute("title", title);
-										}
-										if (textDocument && (flag & RSHTML_FORMATTEXT_REPLACE_LINKS)) {
-											replaceAnchorWithImg(doc, insertedTag, textDocument, url);
-										}
-									}
-								}
-							}
-							break;
-					case Img:
-							{
-								insertedTag = doc.createElement("img");
-								const EmbedInHtmlImg& embedImg = static_cast<const EmbedInHtmlImg&>(embedInfos);
-								// myRE.cap(0) may include spaces at the end/beginning -> trim!
-								insertedTag.setAttribute("src", embedImg.smileys[myRE.cap(0).trimmed()]);
-								/*
-								 * NOTE
-								 * Trailing spaces are matched, too. This leads to myRE.matchedLength() being incorrect.
-								 * This hack reduces nextPos by one so that the new value of currentPos is calculated corretly.
-								 * This is needed to match multiple smileys since the leading whitespace in front of a smiley is required!
-								 *
-								 * This can be avoided by using Qt5 (see comment in RsHtml::initEmoticons)
-								 *
-								 * NOTE
-								 * Preceding spaces are also matched and removed.
-								 */
-								if(myRE.cap(0).endsWith(' '))
-									nextPos--;
-							}
-							break;
-				}
-
-				currentElement.insertBefore(insertedTag, node);
-				index++;
-
-				currentPos = nextPos + myRE.matchedLength();
-			} while((nextPos = indexInWithValidation(myRE, tempText, embedInfos, currentPos)) != -1);
-
-			// text after the last link, only if there's one, don't touch the index
-			// otherwise decrement the index because we're going to remove node
-			if(currentPos < tempText.length()) {
-				QDomText textPart = doc.createTextNode(tempText.mid(currentPos));
-				currentElement.insertBefore(textPart, node);
-			}
-			else
-				index--;
-
-			currentElement.removeChild(node);
-            break;
-            // We'd better not expect that
-            // subsequent hotlink patterns
-            // wouldn't also match replacements
-            // we've already made.  They might, so
-            // skip 'em to be safe.
-		  };
+//			int currentPos = 0;
+//			do {
+//				// if nextPos == 0 it means the text begins by a link
+//				if(nextPos > 0) {
+//					QDomText textPart = doc.createTextNode(tempText.mid(currentPos, nextPos - currentPos));
+//					currentElement.insertBefore(textPart, node);
+//					index++;
+//				}
+//
+//				// inserted tag
+//				QDomElement insertedTag;
+//				switch(embedInfos.myType) {
+//					case Ahref:
+//							{
+//								insertedTag = doc.createElement("a");
+//								insertedTag.setAttribute("href", myRE.cap(0));
+//								insertedTag.appendChild(doc.createTextNode(myRE.cap(0)));
+//
+//								RetroShareLink link(myRE.cap(0));
+//								if (link.valid()) {
+//									QString title = link.title();
+//									if (!title.isEmpty()) {
+//										insertedTag.setAttribute("title", title);
+//									}
+//
+//									if (textDocument && (flag & RSHTML_FORMATTEXT_REPLACE_LINKS)) {
+//										replaceAnchorWithImg(doc, insertedTag, textDocument, link);
+//									}
+//								}
+//								else
+//								{
+//									QUrl url(myRE.cap(0));
+//									if(url.isValid())
+//									{
+//										QString title = url.host();
+//										if (!title.isEmpty()) {
+//											insertedTag.setAttribute("title", title);
+//										}
+//										if (textDocument && (flag & RSHTML_FORMATTEXT_REPLACE_LINKS)) {
+//											replaceAnchorWithImg(doc, insertedTag, textDocument, url);
+//										}
+//									}
+//								}
+//							}
+//							break;
+//					case Img:
+//							{
+//								insertedTag = doc.createElement("img");
+//								const EmbedInHtmlImg& embedImg = static_cast<const EmbedInHtmlImg&>(embedInfos);
+//								// myRE.cap(0) may include spaces at the end/beginning -> trim!
+//								insertedTag.setAttribute("src", embedImg.smileys[myRE.cap(0).trimmed()]);
+//								/*
+//								 * NOTE
+//								 * Trailing spaces are matched, too. This leads to myRE.matchedLength() being incorrect.
+//								 * This hack reduces nextPos by one so that the new value of currentPos is calculated corretly.
+//								 * This is needed to match multiple smileys since the leading whitespace in front of a smiley is required!
+//								 *
+//								 * This can be avoided by using Qt5 (see comment in RsHtml::initEmoticons)
+//								 *
+//								 * NOTE
+//								 * Preceding spaces are also matched and removed.
+//								 */
+//								if(myRE.cap(0).endsWith(' '))
+//									nextPos--;
+//							}
+//							break;
+//				}
+//
+//				currentElement.insertBefore(insertedTag, node);
+//				index++;
+//
+//				currentPos = nextPos + myRE.matchedLength();
+//			} while((nextPos = indexInWithValidation(myRE, tempText, embedInfos, currentPos)) != -1);
+//
+//			// text after the last link, only if there's one, don't touch the index
+//			// otherwise decrement the index because we're going to remove node
+//			if(currentPos < tempText.length()) {
+//				QDomText textPart = doc.createTextNode(tempText.mid(currentPos));
+//				currentElement.insertBefore(textPart, node);
+//			}
+//			else
+//				index--;
+//
+//			currentElement.removeChild(node);
+//            break;
+//            // We'd better not expect that
+//            // subsequent hotlink patterns
+//            // wouldn't also match replacements
+//            // we've already made.  They might, so
+//            // skip 'em to be safe.
+//		  };
 		}
 	}
 }
@@ -1076,13 +1076,13 @@ static void styleCreate(QDomDocument& doc
 			QString val = keyvalue.at(1).trimmed();
 
 			if (key == "font-size") {
-				QRegExp re("(\\d+)(\\D*)");
-				if (re.indexIn(val) != -1) {
-					bool ok; int iVal = re.cap(1).toInt(&ok);
-					if (ok && (iVal < desiredMinimumFontSize)) {
-						val = QString::number(desiredMinimumFontSize) + re.cap(2);
-					}
-				}
+//				QRegExp re("(\\d+)(\\D*)");
+//				if (re.indexIn(val) != -1) {
+//					bool ok; int iVal = re.cap(1).toInt(&ok);
+//					if (ok && (iVal < desiredMinimumFontSize)) {
+//						val = QString::number(desiredMinimumFontSize) + re.cap(2);
+//					}
+//				}
 			}
 			if ((flag & RSHTML_FORMATTEXT_REMOVE_FONT_FAMILY && key == "font-family") ||
 				(flag & RSHTML_FORMATTEXT_REMOVE_FONT_SIZE && key == "font-size") ||
@@ -1170,26 +1170,26 @@ void RsHtml::optimizeHtml(QString &text, unsigned int flag /*= 0*/
 {
 
 	// remove doctype
-	text.remove(QRegExp("<!DOCTYPE[^>]*>"));
-	//remove all prepend char that make doc.setContent() fail
-	text.remove(0,text.indexOf("<"));
-	// Save Space and Tab because doc loose it.
-	text=saveSpace(text);
-
-	QString errorMsg; int errorLine; int errorColumn;
-	QDomDocument doc;
-	if (doc.setContent(text, &errorMsg, &errorLine, &errorColumn) == false) {
-		return;
-	}
-
-	QDomElement body = doc.documentElement();
-    
-	QHash<QString, QStringList> stylesList;
-	QHash<QString, QString> knownStyle;
-
-	::optimizeHtml(doc, body, stylesList, knownStyle);
-	::styleCreate(doc, stylesList, flag, ::getRelativeLuminance(backgroundColor), desiredContrast, desiredMinimumFontSize);
-	text = doc.toString(-1);
+//	text.remove(QRegExp("<!DOCTYPE[^>]*>"));
+//	//remove all prepend char that make doc.setContent() fail
+//	text.remove(0,text.indexOf("<"));
+//	// Save Space and Tab because doc loose it.
+//	text=saveSpace(text);
+//
+//	QString errorMsg; int errorLine; int errorColumn;
+//	QDomDocument doc;
+//	if (doc.setContent(text, &errorMsg, &errorLine, &errorColumn) == false) {
+//		return;
+//	}
+//
+//	QDomElement body = doc.documentElement();
+//
+//	QHash<QString, QStringList> stylesList;
+//	QHash<QString, QString> knownStyle;
+//
+//	::optimizeHtml(doc, body, stylesList, knownStyle);
+//	::styleCreate(doc, stylesList, flag, ::getRelativeLuminance(backgroundColor), desiredContrast, desiredMinimumFontSize);
+//	text = doc.toString(-1);
 
 //	std::cerr << "Optimized text to " << text.length() << " bytes , instead of " << originalLength << std::endl;
 }
@@ -1252,10 +1252,10 @@ QString RsHtml::makeQuotedText(RSTextBrowser *browser)
 	{
 		text = browser->toPlainText();
 	}
-	QStringList sl = text.split(QRegExp("[\r\n]"),QString::SkipEmptyParts);
-	text = sl.join("\n> ");
-	text.replace("\n> >","\n>>"); // Don't add space for already quotted lines.
-	text.replace(QChar(-4)," ");//Char used when image on text.
+//	QStringList sl = text.split(QRegExp("[\r\n]"),QString::SkipEmptyParts);
+//	text = sl.join("\n> ");
+//	text.replace("\n> >","\n>>"); // Don't add space for already quotted lines.
+//	text.replace(QChar(-4)," ");//Char used when image on text.
 	QString quote = (text.left(1) == ">") ? QString(">") : QString("> ");
 	return quote + text;
 }

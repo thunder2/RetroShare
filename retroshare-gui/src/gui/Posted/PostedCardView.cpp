@@ -187,7 +187,7 @@ void PostedCardView::fill()
 		ui->fromLabel->setId(mPost.mMeta.mAuthorId);
 		ui->titleLabel->setText(tr( "<p><font color=\"#ff0000\"><b>The author of this message (with ID %1) is banned.</b>").arg(QString::fromStdString(mPost.mMeta.mAuthorId.toStdString()))) ;
 		QDateTime qtime;
-		qtime.setTime_t(mPost.mMeta.mPublishTs);
+//		qtime.setTime_t(mPost.mMeta.mPublishTs);
 		QString timestamp = qtime.toString("hh:mm dd-MMM-yyyy");
 		ui->dateLabel->setText(timestamp);
 	} else {
@@ -199,7 +199,7 @@ void PostedCardView::fill()
 		//int desired_width =  sqpixmap2.width()*desired_height/(float)sqpixmap2.height();
 
 		QDateTime qtime;
-		qtime.setTime_t(mPost.mMeta.mPublishTs);
+//		qtime.setTime_t(mPost.mMeta.mPublishTs);
 		QString timestamp = qtime.toString("hh:mm dd-MMM-yyyy");
 		QString timestamp2 = misc::timeRelativeToNow(mPost.mMeta.mPublishTs);
 		ui->dateLabel->setText(timestamp2);

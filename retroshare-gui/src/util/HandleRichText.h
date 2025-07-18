@@ -89,7 +89,7 @@ protected:
 	virtual void   anchorStylesheetForImg(QDomDocument &doc, QDomElement &element, const RetroShareLink &link, QString &styleSheet);
 
 private:
-	int indexInWithValidation(QRegExp &rx, const QString &text, EmbedInHtml &embedInfos, int pos = 0);
+//	int indexInWithValidation(QRegExp &rx, const QString &text, EmbedInHtml &embedInfos, int pos = 0);
 };
 
 #endif // HANDLE_RICH_TEXT_H_

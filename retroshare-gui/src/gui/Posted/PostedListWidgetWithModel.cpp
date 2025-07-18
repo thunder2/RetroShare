@@ -417,7 +417,7 @@ void PostedListWidgetWithModel::updateShowLabel()
 
 void PostedListWidgetWithModel::filterItems(QString text)
 {
-	QStringList lst = text.split(" ",QString::SkipEmptyParts) ;
+	QStringList lst = text.split(" "/*,QString::SkipEmptyParts*/) ;
 
     uint32_t count;
 	mPostedPostsModel->setFilter(lst,count) ;

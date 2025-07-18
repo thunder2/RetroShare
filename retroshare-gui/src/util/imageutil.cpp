@@ -340,14 +340,14 @@ void ImageUtil::quantization(const QImage &img, QVector<QRgb> &palette)
 		colors.insert(pixel);
 	}
 
-	QList<QRgb> colorlist = colors.toList();
-	//don't do the algoritmh if we have less than 16 different colors
-	if(colorlist.size() <= (1 << bits)) {
-		for(int i = 0; i < colors.count(); ++i)
-			palette.append(colorlist[i]);
-	} else {
-		quantization(colorlist.begin(), colorlist.end(), bits, palette);
-	}
+//	QList<QRgb> colorlist = colors.toList();
+//	//don't do the algoritmh if we have less than 16 different colors
+//	if(colorlist.size() <= (1 << bits)) {
+//		for(int i = 0; i < colors.count(); ++i)
+//			palette.append(colorlist[i]);
+//	} else {
+//		quantization(colorlist.begin(), colorlist.end(), bits, palette);
+//	}
 }
 
 void ImageUtil::quantization(QList<QRgb>::iterator begin, QList<QRgb>::iterator end, int depth, QVector<QRgb> &palette)
@@ -385,16 +385,16 @@ void ImageUtil::quantization(QList<QRgb>::iterator begin, QList<QRgb>::iterator 
 	int blue = bh - bl;
 
 	//order by the widest channel
-	if(red > green)
-		if(red > blue)
-			qSort(begin, end, redLessThan);
-		else
-			qSort(begin, end, blueLessThan);
-	else
-		if(green > blue)
-			qSort(begin, end, greenLessThan);
-		else
-			qSort(begin, end, blueLessThan);
+//	if(red > green)
+//		if(red > blue)
+//			qSort(begin, end, redLessThan);
+//		else
+//			qSort(begin, end, blueLessThan);
+//	else
+//		if(green > blue)
+//			qSort(begin, end, greenLessThan);
+//		else
+//			qSort(begin, end, blueLessThan);
 
 	//split into two buckets
 	QList<QRgb>::iterator split = begin + count / 2;

@@ -567,20 +567,20 @@ bool ChatWidget::eventFilter(QObject *obj, QEvent *event)
 				   !cursor.selectedText().isEmpty()) {
 					lastUpdateCursorPos = cursor.position();
 					lastUpdateCursorEnd = cursor.selectionEnd();
-					QRegExp rx("<a name=\"(.*)\"",Qt::CaseSensitive, QRegExp::RegExp2);
-					rx.setMinimal(true);
-					QString sel=cursor.selection().toHtml();
-					QStringList anchors;
-					int pos=0;
-					while ((pos = rx.indexIn(sel,pos)) != -1) {
-						anchors << rx.cap(1);
-						pos += rx.matchedLength();
-					}
-					if (!anchors.isEmpty()){
-						for (QStringList::iterator it=anchors.begin();it!=anchors.end();++it) {
-							notify->chatLobbyCleared(chatId.toLobbyId(), *it);
-						}
-					}
+//					QRegExp rx("<a name=\"(.*)\"",Qt::CaseSensitive, QRegExp::RegExp2);
+//					rx.setMinimal(true);
+//					QString sel=cursor.selection().toHtml();
+//					QStringList anchors;
+//					int pos=0;
+//					while ((pos = rx.indexIn(sel,pos)) != -1) {
+//						anchors << rx.cap(1);
+//						pos += rx.matchedLength();
+//					}
+//					if (!anchors.isEmpty()){
+//						for (QStringList::iterator it=anchors.begin();it!=anchors.end();++it) {
+//							notify->chatLobbyCleared(chatId.toLobbyId(), *it);
+//						}
+//					}
 				}
 			}
 		}
@@ -595,19 +595,19 @@ bool ChatWidget::eventFilter(QObject *obj, QEvent *event)
 					// Delete key pressed
 					if (ui->textBrowser->textCursor().selectedText().length() > 0) {
 						if (notify && chatType() == CHATTYPE_LOBBY) {
-							QRegExp rx("<a name=\"(.*)\"",Qt::CaseSensitive, QRegExp::RegExp2);
-							rx.setMinimal(true);
-							QString sel=ui->textBrowser->textCursor().selection().toHtml();
-							QStringList anchors;
-							int pos=0;
-							while ((pos = rx.indexIn(sel,pos)) != -1) {
-								anchors << rx.cap(1);
-								pos += rx.matchedLength();
-							}
-
-							for (QStringList::iterator it=anchors.begin();it!=anchors.end();++it) {
-								notify->chatLobbyCleared(chatId.toLobbyId(), *it);
-							}
+//							QRegExp rx("<a name=\"(.*)\"",Qt::CaseSensitive, QRegExp::RegExp2);
+//							rx.setMinimal(true);
+//							QString sel=ui->textBrowser->textCursor().selection().toHtml();
+//							QStringList anchors;
+//							int pos=0;
+//							while ((pos = rx.indexIn(sel,pos)) != -1) {
+//								anchors << rx.cap(1);
+//								pos += rx.matchedLength();
+//							}
+//
+//							for (QStringList::iterator it=anchors.begin();it!=anchors.end();++it) {
+//								notify->chatLobbyCleared(chatId.toLobbyId(), *it);
+//							}
 
 						}
                         ui->textBrowser->textCursor().deleteChar();
@@ -1508,13 +1508,13 @@ void ChatWidget::on_markButton_clicked(bool bValue)
 void ChatWidget::chooseColor()
 {
 	bool ok;
-	QRgb color = QColorDialog::getRgba(currentColor.rgba(), &ok, window());
-	if (ok) {
-		currentColor = QColor(color);
-		PeerSettings->setPrivateChatColor(chatId, currentColor.name());
-		colorChanged();
-		setColorAndFont(false);
-	}
+//	QRgb color = QColorDialog::getRgba(currentColor.rgba(), &ok, window());
+//	if (ok) {
+//		currentColor = QColor(color);
+//		PeerSettings->setPrivateChatColor(chatId, currentColor.name());
+//		colorChanged();
+//		setColorAndFont(false);
+//	}
 }
 
 void ChatWidget::colorChanged()
@@ -1541,24 +1541,24 @@ void ChatWidget::chooseFont()
 			// and charFormat() get format for last char.
 			QTextCursor selCurs = cursor;
 			QTextCursor lastCurs = cursor;
-			int pos = cursor.selectionStart();
-			lastCurs.setPosition(pos);
-			do
-			{
-				// Get format block in selection iterating char one by one
-				selCurs.setPosition(++pos);
-				if (selCurs.charFormat() != lastCurs.charFormat())
-				{
-					// New char format, format last block.
-					QTextCharFormat charFormat = lastCurs.charFormat();
-					charFormat.setFont(font);
-					lastCurs.setCharFormat(charFormat);
-					// Last block formated, start it to current char.
-					lastCurs.setPosition(pos-1);
-				}
-				// Add current char.
-				lastCurs.setPosition(pos, QTextCursor::KeepAnchor);
-			} while (pos < cursor.selectionEnd());
+//			int pos = cursor.selectionStart();
+//			lastCurs.setPosition(pos);
+//			do
+//			{
+//				// Get format block in selection iterating char one by one
+////				selCurs.setPosition(++pos);
+//				if (selCurs.charFormat() != lastCurs.charFormat())
+//				{
+//					// New char format, format last block.
+//					QTextCharFormat charFormat = lastCurs.charFormat();
+//					charFormat.setFont(font);
+//					lastCurs.setCharFormat(charFormat);
+//					// Last block formated, start it to current char.
+//					lastCurs.setPosition(pos-1);
+//				}
+//				// Add current char.
+//				lastCurs.setPosition(pos, QTextCursor::KeepAnchor);
+//			} while (pos < cursor.selectionEnd());
 
 			// Now format last block
 			if (lastCurs.selectionStart() != lastCurs.selectionEnd())
@@ -1763,7 +1763,7 @@ bool ChatWidget::fileSave()
 	if (!file.open(QFile::WriteOnly))
 		return false;
 	QTextStream ts(&file);
-	ts.setCodec(QTextCodec::codecForName("UTF-8"));
+//	ts.setCodec(QTextCodec::codecForName("UTF-8"));
 	ts << ui->textBrowser->document()->toPlainText();
 	ui->textBrowser->document()->setModified(false);
 	return true;
@@ -1930,7 +1930,7 @@ void ChatWidget::updatePeersCustomStateString(const QString& peer_id, const QStr
 
 void ChatWidget::updateStatusString(const QString &statusMask, const QString &statusString, bool permanent)
 {
-	ui->typingLabel->setText(QString(statusMask).arg(trUtf8(statusString.toUtf8()))); // displays info for 5 secs.
+//	ui->typingLabel->setText(QString(statusMask).arg(trUtf8(statusString.toUtf8()))); // displays info for 5 secs.
     ui->typingPixmapLabel->setPixmap(FilesDefs::getPixmapFromQtResourcePath(":icons/png/typing.png") );
 
 	if (statusString == "is typing...") {

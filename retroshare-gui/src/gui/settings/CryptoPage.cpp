@@ -212,7 +212,7 @@ bool CryptoPage::fileSave()
     if (!file.open(QFile::WriteOnly))
         return false;
     QTextStream ts(&file);
-    ts.setCodec(QTextCodec::codecForName("UTF-8"));
+//    ts.setCodec(QTextCodec::codecForName("UTF-8"));
     ts << ui.certplainTextEdit->document()->toPlainText();
     return true;
 }

@@ -130,10 +130,10 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_Space:
     case Qt::Key_Enter:
-        foreach (QGraphicsItem *item, scene()->items()) {
-            if (qgraphicsitem_cast<Node *>(item))
-                item->setPos(-150 + qrand() % 300, -150 + qrand() % 300);
-        }
+//        foreach (QGraphicsItem *item, scene()->items()) {
+//            if (qgraphicsitem_cast<Node *>(item))
+//                item->setPos(-150 + qrand() % 300, -150 + qrand() % 300);
+//        }
         break;
     default:
         QGraphicsView::keyPressEvent(event);
@@ -331,16 +331,16 @@ void GraphWidget::resizeEvent(QResizeEvent *event)
 
 void GraphWidget::wheelEvent(QWheelEvent *event)
 {
-    scaleView(pow((double)2, -event->delta() / 240.0));
+//    scaleView(pow((double)2, -event->delta() / 240.0));
 }
 
 void GraphWidget::scaleView(qreal scaleFactor)
 {
-    qreal factor = matrix().scale(scaleFactor, scaleFactor).mapRect(QRectF(0, 0, 1, 1)).width();
-    if (factor < 0.07 || factor > 100)
-        return;
-
-    scale(scaleFactor, scaleFactor);
+//    qreal factor = matrix().scale(scaleFactor, scaleFactor).mapRect(QRectF(0, 0, 1, 1)).width();
+//    if (factor < 0.07 || factor > 100)
+//        return;
+//
+//    scale(scaleFactor, scaleFactor);
 }
 
 void GraphWidget::setFreeze(bool freeze)

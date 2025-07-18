@@ -640,7 +640,7 @@ void MessageWidget::fill(const std::string &msgId)
 
     ui.trans_ToText->setText(to_text);
 
-	int recipientsCount = ui.trans_ToText->toPlainText().split(QRegExp("(\\s|\\n|\\r)+"), QString::SkipEmptyParts).count();
+	int recipientsCount = 0;//ui.trans_ToText->toPlainText().split(QRegExp("(\\s|\\n|\\r)+"), QString::SkipEmptyParts).count();
 	ui.expandButton->setText( QString::number(recipientsCount)+ " " + tr("more"));
 
 	if (recipientsCount >=20) {
@@ -774,8 +774,8 @@ void MessageWidget::print()
 	QPrinter printer(QPrinter::HighResolution);
 	printer.setFullPage(true);
 	QPrintDialog *dlg = new QPrintDialog(&printer, this);
-	if (ui.msgText->textCursor().hasSelection())
-		dlg->addEnabledOption(QAbstractPrintDialog::PrintSelection);
+//	if (ui.msgText->textCursor().hasSelection())
+//		dlg->addEnabledOption(QAbstractPrintDialog::PrintSelection);
 	dlg->setWindowTitle(tr("Print Document"));
 	if (dlg->exec() == QDialog::Accepted) {
 		ui.msgText->print(&printer);
@@ -802,8 +802,8 @@ void MessageWidget::saveAs()
 		if (!file.open(QFile::WriteOnly))
 			return;
 		QTextStream ts(&file);
-		ts.setCodec(QTextCodec::codecForName("UTF-8"));
-		ts << ui.msgText->document()->toHtml("UTF-8");
+//		ts.setCodec(QTextCodec::codecForName("UTF-8"));
+//		ts << ui.msgText->document()->toHtml("UTF-8");
 		ui.msgText->document()->setModified(false);
 	}
 }

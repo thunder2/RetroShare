@@ -230,7 +230,7 @@ IdDialog::IdDialog(QWidget *parent)
     mProxyModel->setSortRole(RsIdentityListModel::SortRole);
     mProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
     mProxyModel->setFilterRole(RsIdentityListModel::FilterRole);
-    mProxyModel->setFilterRegExp(QRegExp(RsIdentityListModel::FilterString));
+//    mProxyModel->setFilterRegExp(QRegExp(RsIdentityListModel::FilterString));
 
     ui->idTreeWidget->setModel(mProxyModel);
     //ui->idTreeWidget->setSelectionModel(new QItemSelectionModel(mProxyModel));// useless in Qt5.
@@ -393,7 +393,7 @@ IdDialog::IdDialog(QWidget *parent)
 
 	/* Set initial section sizes */
     QHeaderView * circlesheader = ui->treeWidget_membership->header () ;
-    circlesheader->resizeSection (CIRCLEGROUP_CIRCLE_COL_GROUPNAME, fm.width("Circle name")*1.5) ;
+//    circlesheader->resizeSection (CIRCLEGROUP_CIRCLE_COL_GROUPNAME, fm.width("Circle name")*1.5) ;
     ui->treeWidget_membership->setColumnWidth(CIRCLEGROUP_CIRCLE_COL_GROUPNAME, 270);
 
 	/* Setup tree */
@@ -1653,7 +1653,7 @@ void IdDialog::loadIdentity(RsGxsIdGroup data)
 	/* get GPG Details from rsPeers */
 	RsPgpId ownPgpId  = rsPeers->getGPGOwnId();
 
-    ui->lineEdit_PublishTS->setText(QDateTime::fromMSecsSinceEpoch(qint64(1000)*data.mMeta.mPublishTs).toString(Qt::SystemLocaleShortDate));
+//    ui->lineEdit_PublishTS->setText(QDateTime::fromMSecsSinceEpoch(qint64(1000)*data.mMeta.mPublishTs).toString(Qt::SystemLocaleShortDate));
     //ui->lineEdit_Nickname->setText(QString::fromUtf8(data.mMeta.mGroupName.c_str()).left(RSID_MAXIMUM_NICKNAME_SIZE));
 	ui->lineEdit_KeyId->setText(QString::fromStdString(data.mMeta.mGroupId.toStdString()));
 	//ui->lineEdit_GpgHash->setText(QString::fromStdString(data.mPgpIdHash.toStdString()));
@@ -2264,7 +2264,7 @@ void IdDialog::IdListCustomPopupMenu( QPoint )
 
         // create menu header
         QHBoxLayout *hbox = new QHBoxLayout(widget);
-        hbox->setMargin(0);
+//        hbox->setMargin(0);
         hbox->setSpacing(6);
 
         QLabel *iconLabel = new QLabel(widget);
@@ -2718,8 +2718,8 @@ void IdDialog::recursSaveExpandedItems_idTreeView(const QModelIndex& proxy_index
         if(proxy_index.isValid())
             expanded.insert(local_path) ;
 
-        for(int row=0;row<mProxyModel->rowCount(proxy_index);++row)
-            recursSaveExpandedItems_idTreeView(proxy_index.child(row,0),local_path,expanded,selected) ;
+//        for(int row=0;row<mProxyModel->rowCount(proxy_index);++row)
+//            recursSaveExpandedItems_idTreeView(proxy_index.child(row,0),local_path,expanded,selected) ;
     }
 
     if(ui->idTreeWidget->selectionModel()->isSelected(proxy_index))
@@ -2750,8 +2750,8 @@ void IdDialog::recursRestoreExpandedItems_idTreeView(const QModelIndex& proxy_in
 
         ui->idTreeWidget->setExpanded(proxy_index,true) ;
 
-        for(int row=0;row<mProxyModel->rowCount(proxy_index);++row)
-            recursRestoreExpandedItems_idTreeView(proxy_index.child(row,0),local_path,expanded,selected) ;
+//        for(int row=0;row<mProxyModel->rowCount(proxy_index);++row)
+//            recursRestoreExpandedItems_idTreeView(proxy_index.child(row,0),local_path,expanded,selected) ;
     }
 
     if(selected.find(local_path) != selected.end())

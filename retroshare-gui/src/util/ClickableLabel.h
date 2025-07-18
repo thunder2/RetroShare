@@ -39,8 +39,8 @@ signals:
 protected:
     void mousePressEvent(QMouseEvent* event) override;
 
-    void enterEvent(QEvent * /* ev */ ) override { if(mUseStyleSheet) setStyleSheet("QLabel { border: 2px solid #039bd5; }");}
-    void leaveEvent(QEvent * /* ev */ ) override { if(mUseStyleSheet) setStyleSheet("");}
+    void enterEvent(QEvent * /* ev */ ) { if(mUseStyleSheet) setStyleSheet("QLabel { border: 2px solid #039bd5; }");}
+    void leaveEvent(QEvent * /* ev */ ) { if(mUseStyleSheet) setStyleSheet("");}
 
     bool mUseStyleSheet;
 };

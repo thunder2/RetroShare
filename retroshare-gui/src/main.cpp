@@ -136,7 +136,7 @@ static void showHelp(const argstream& as)
         box.setWindowTitle(QObject::tr("Retroshare commandline arguments"));
 
         // now compute the size of text and set the size of the box. For the record, this doesn't work...
-        box.setBaseSize( QSize(QFontMetricsF(font).width(text),QFontMetricsF(font).height()*text.count('\n')) );
+//        box.setBaseSize( QSize(QFontMetricsF(font).width(text),QFontMetricsF(font).height()*text.count('\n')) );
         box.exec();
 }
 

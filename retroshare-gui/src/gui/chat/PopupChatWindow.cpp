@@ -205,7 +205,7 @@ void PopupChatWindow::showEvent(QShowEvent */*event*/)
 		if (tabbedWindow) {
 			Settings->loadWidgetInformation(this);
 		} else {
-			this->move(qrand()%100, qrand()%100); //avoid to stack multiple popup chat windows on the same position
+//			this->move(qrand()%100, qrand()%100); //avoid to stack multiple popup chat windows on the same position
             PeerSettings->loadWidgetInformation(chatId, this);
 		}
 	}

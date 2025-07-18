@@ -261,7 +261,7 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags flags)
     QWidget *widget = new QWidget();
     widget->setObjectName("trans_statusComboBoxFrame");
     QHBoxLayout *hbox = new QHBoxLayout();
-    hbox->setMargin(0);
+//    hbox->setMargin(0);
     hbox->setSpacing(6);
     hbox->addWidget(statusComboBox);
     widget->setLayout(hbox);
@@ -939,7 +939,7 @@ void MainWindow::postModDirectories(bool /*update_local*/)
 {
     //RSettingsPage::postModDirectories(update_local);
 
-    QCoreApplication::flush();
+//    QCoreApplication::flush();
 }
 
 #ifdef WINDOWS_SYS

@@ -211,16 +211,16 @@ public:
         setDynamicSortFilter(false); // causes crashes when true
     }
 
-    bool lessThan(const QModelIndex& left, const QModelIndex& right) const override
-    {
-        bool  left_is_not_pinned  = ! left.data(RsGxsForumModel::ThreadPinnedRole).toBool();
-        bool right_is_not_pinned  = !right.data(RsGxsForumModel::ThreadPinnedRole).toBool();
-
-        if(left_is_not_pinned ^ right_is_not_pinned)
-            return (m_header->sortIndicatorOrder()==Qt::AscendingOrder)?right_is_not_pinned:left_is_not_pinned ;	// always put pinned posts on top
-
-        return left.data(RsGxsForumModel::SortRole) < right.data(RsGxsForumModel::SortRole) ;
-    }
+//    bool lessThan(const QModelIndex& left, const QModelIndex& right) const override
+//    {
+//        bool  left_is_not_pinned  = ! left.data(RsGxsForumModel::ThreadPinnedRole).toBool();
+//        bool right_is_not_pinned  = !right.data(RsGxsForumModel::ThreadPinnedRole).toBool();
+//
+//        if(left_is_not_pinned ^ right_is_not_pinned)
+//            return (m_header->sortIndicatorOrder()==Qt::AscendingOrder)?right_is_not_pinned:left_is_not_pinned ;	// always put pinned posts on top
+//
+//        return left.data(RsGxsForumModel::SortRole) < right.data(RsGxsForumModel::SortRole) ;
+//    }
 
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override
     {
@@ -264,7 +264,7 @@ GxsForumThreadWidget::GxsForumThreadWidget(const RsGxsGroupId &forumId, QWidget 
     ui->threadTreeWidget->setModel(mThreadProxyModel);
 
     mThreadProxyModel->setFilterRole(RsGxsForumModel::FilterRole);
-    mThreadProxyModel->setFilterRegExp(QRegExp(QString(RsGxsForumModel::FilterString))) ;
+//    mThreadProxyModel->setFilterRegExp(QRegExp(QString(RsGxsForumModel::FilterString))) ;
 
     ui->threadTreeWidget->setSortingEnabled(true);
 
@@ -539,8 +539,8 @@ void GxsForumThreadWidget::recursSaveExpandedItems(const QModelIndex& index, QLi
 {
     if(ui->threadTreeWidget->isExpanded(index))
     {
-        for(int row=0;row<mThreadProxyModel->rowCount(index);++row)
-            recursSaveExpandedItems(index.child(row,0),expanded_items) ;
+//        for(int row=0;row<mThreadProxyModel->rowCount(index);++row)
+//            recursSaveExpandedItems(index.child(row,0),expanded_items) ;
 
         RsGxsMessageId message_id(index.sibling(index.row(),RsGxsForumModel::COLUMN_THREAD_MSGID).data(Qt::UserRole).toString().toStdString());
         expanded_items.push_back(message_id);
@@ -1846,7 +1846,7 @@ void GxsForumThreadWidget::filterColumnChanged(int column)
 
 void GxsForumThreadWidget::filterItems(const QString& text)
 {
-    QStringList lst = text.split(" ",QString::SkipEmptyParts) ;
+    QStringList lst = text.split(" "/*,QString::SkipEmptyParts*/) ;
 
     int filterColumn = ui->filterLineEdit->currentFilter();
 
@@ -1854,7 +1854,7 @@ void GxsForumThreadWidget::filterItems(const QString& text)
     mThreadModel->setFilter(filterColumn,lst,count) ;
 
     // We do this in order to trigger a new filtering action in the proxy model.
-    mThreadProxyModel->setFilterRegExp(QRegExp(QString(RsGxsForumModel::FilterString))) ;
+//    mThreadProxyModel->setFilterRegExp(QRegExp(QString(RsGxsForumModel::FilterString))) ;
 
     if(!lst.empty())
         ui->threadTreeWidget->expandAll();

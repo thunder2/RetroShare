@@ -34,6 +34,8 @@
 
 #include <iostream>
 
+class QRegExpValidator;
+
 enum ExprSearchType
 {
     NameSearch,
