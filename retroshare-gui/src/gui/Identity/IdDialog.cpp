@@ -394,7 +394,7 @@ IdDialog::IdDialog(QWidget *parent)
 
 	/* Set initial section sizes */
     QHeaderView * circlesheader = ui->treeWidget_membership->header () ;
-    circlesheader->resizeSection (CIRCLEGROUP_CIRCLE_COL_GROUPNAME, fm.width("Circle name")*1.5) ;
+//    circlesheader->resizeSection (CIRCLEGROUP_CIRCLE_COL_GROUPNAME, fm.width("Circle name")*1.5) ;
     ui->treeWidget_membership->setColumnWidth(CIRCLEGROUP_CIRCLE_COL_GROUPNAME, 270);
 
 	/* Setup tree */
@@ -2719,8 +2719,8 @@ void IdDialog::recursSaveExpandedItems_idTreeView(const QModelIndex& proxy_index
         if(proxy_index.isValid())
             expanded.insert(local_path) ;
 
-        for(int row=0;row<mProxyModel->rowCount(proxy_index);++row)
-            recursSaveExpandedItems_idTreeView(proxy_index.child(row,0),local_path,expanded,selected) ;
+//        for(int row=0;row<mProxyModel->rowCount(proxy_index);++row)
+//            recursSaveExpandedItems_idTreeView(proxy_index.child(row,0),local_path,expanded,selected) ;
     }
 
     if(ui->idTreeWidget->selectionModel()->isSelected(proxy_index))
@@ -2751,8 +2751,8 @@ void IdDialog::recursRestoreExpandedItems_idTreeView(const QModelIndex& proxy_in
 
         ui->idTreeWidget->setExpanded(proxy_index,true) ;
 
-        for(int row=0;row<mProxyModel->rowCount(proxy_index);++row)
-            recursRestoreExpandedItems_idTreeView(proxy_index.child(row,0),local_path,expanded,selected) ;
+//        for(int row=0;row<mProxyModel->rowCount(proxy_index);++row)
+//            recursRestoreExpandedItems_idTreeView(proxy_index.child(row,0),local_path,expanded,selected) ;
     }
 
     if(selected.find(local_path) != selected.end())

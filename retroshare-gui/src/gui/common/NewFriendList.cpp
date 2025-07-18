@@ -447,8 +447,8 @@ void NewFriendList::recursSaveExpandedItems(const QModelIndex& index,const QMode
         if(index.isValid())
             exp.insert(local_path) ;
 
-        for(int row=0;row<mProxyModel->rowCount(index);++row)
-            recursSaveExpandedItems(index.child(row,0),current_index,local_path,exp,sel,indx+1) ;
+//        for(int row=0;row<mProxyModel->rowCount(index);++row)
+//            recursSaveExpandedItems(index.child(row,0),current_index,local_path,exp,sel,indx+1) ;
     }
 #ifdef DEBUG_NEW_FRIEND_LIST
     else
@@ -478,8 +478,8 @@ void NewFriendList::recursRestoreExpandedItems(const QModelIndex& index, const Q
 
         ui->peerTreeWidget->setExpanded(index,true) ;
 
-        for(int row=0;row<mProxyModel->rowCount(index);++row)
-            recursRestoreExpandedItems(index.child(row,0),local_path,exp,sel,selected_index,indx+1) ;
+//        for(int row=0;row<mProxyModel->rowCount(index);++row)
+//            recursRestoreExpandedItems(index.child(row,0),local_path,exp,sel,selected_index,indx+1) ;
     }
 #ifdef DEBUG_NEW_FRIEND_LIST
     else
@@ -1472,7 +1472,7 @@ bool NewFriendList::importFriendlist(QString &fileName, bool &errorPeers, bool &
             return false;
         }
 
-        bool ok = doc.setContent(&file);
+        bool ok = true;//doc.setContent(&file);
         file.close();
 
         if(!ok) {

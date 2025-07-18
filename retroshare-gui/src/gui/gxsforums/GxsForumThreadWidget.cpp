@@ -211,16 +211,16 @@ public:
         setDynamicSortFilter(false); // causes crashes when true
     }
 
-    bool lessThan(const QModelIndex& left, const QModelIndex& right) const override
-    {
-        bool  left_is_not_pinned  = ! left.data(RsGxsForumModel::ThreadPinnedRole).toBool();
-        bool right_is_not_pinned  = !right.data(RsGxsForumModel::ThreadPinnedRole).toBool();
-
-        if(left_is_not_pinned ^ right_is_not_pinned)
-            return (m_header->sortIndicatorOrder()==Qt::AscendingOrder)?right_is_not_pinned:left_is_not_pinned ;	// always put pinned posts on top
-
-        return left.data(RsGxsForumModel::SortRole) < right.data(RsGxsForumModel::SortRole) ;
-    }
+//    bool lessThan(const QModelIndex& left, const QModelIndex& right) const override
+//    {
+//        bool  left_is_not_pinned  = ! left.data(RsGxsForumModel::ThreadPinnedRole).toBool();
+//        bool right_is_not_pinned  = !right.data(RsGxsForumModel::ThreadPinnedRole).toBool();
+//
+//        if(left_is_not_pinned ^ right_is_not_pinned)
+//            return (m_header->sortIndicatorOrder()==Qt::AscendingOrder)?right_is_not_pinned:left_is_not_pinned ;	// always put pinned posts on top
+//
+//        return left.data(RsGxsForumModel::SortRole) < right.data(RsGxsForumModel::SortRole) ;
+//    }
 
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override
     {
@@ -539,8 +539,8 @@ void GxsForumThreadWidget::recursSaveExpandedItems(const QModelIndex& index, QLi
 {
     if(ui->threadTreeWidget->isExpanded(index))
     {
-        for(int row=0;row<mThreadProxyModel->rowCount(index);++row)
-            recursSaveExpandedItems(index.child(row,0),expanded_items) ;
+//        for(int row=0;row<mThreadProxyModel->rowCount(index);++row)
+//            recursSaveExpandedItems(index.child(row,0),expanded_items) ;
 
         RsGxsMessageId message_id(index.sibling(index.row(),RsGxsForumModel::COLUMN_THREAD_MSGID).data(Qt::UserRole).toString().toStdString());
         expanded_items.push_back(message_id);

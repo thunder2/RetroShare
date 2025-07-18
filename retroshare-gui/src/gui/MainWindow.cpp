@@ -939,7 +939,7 @@ void MainWindow::postModDirectories(bool /*update_local*/)
 {
     //RSettingsPage::postModDirectories(update_local);
 
-    QCoreApplication::flush();
+//    QCoreApplication::flush();
 }
 
 #ifdef WINDOWS_SYS

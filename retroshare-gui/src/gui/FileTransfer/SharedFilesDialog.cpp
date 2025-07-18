@@ -145,22 +145,22 @@ public:
     {
         Q_ASSERT(index.isValid());
 
-        QStyleOptionViewItemV4 opt = option;
-        initStyleOption(&opt, index);
+//        QStyleOptionViewItemV4 opt = option;
+//        initStyleOption(&opt, index);
         // disable default icon
-        opt.icon = QIcon();
-        // draw default item
-        QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter, 0);
-
-        const QRect r = option.rect;
-
-        // get pixmap
-        QIcon icon = qvariant_cast<QIcon>(index.data(Qt::DecorationRole));
-        QPixmap pix = icon.pixmap(r.size());
-
-        // draw pixmap at center of item
-        const QPoint p = QPoint((r.width() - pix.width())/2, (r.height() - pix.height())/2);
-        painter->drawPixmap(r.topLeft() + p, pix);
+//        opt.icon = QIcon();
+//        // draw default item
+//        QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter, 0);
+//
+//        const QRect r = option.rect;
+//
+//        // get pixmap
+//        QIcon icon = qvariant_cast<QIcon>(index.data(Qt::DecorationRole));
+//        QPixmap pix = icon.pixmap(r.size());
+//
+//        // draw pixmap at center of item
+//        const QPoint p = QPoint((r.width() - pix.width())/2, (r.height() - pix.height())/2);
+//        painter->drawPixmap(r.topLeft() + p, pix);
     }
 };
 
@@ -1018,7 +1018,7 @@ void SharedFilesDialog::recursExpandAll(const QModelIndex& index)
 
     for(int row=0;row<ui.dirTreeView->model()->rowCount(index);++row)
     {
-        QModelIndex idx(index.child(row,0)) ;
+		QModelIndex idx; //(index.child(row,0)) ;
 
         if(ui.dirTreeView->model()->rowCount(idx) > 0)
             recursExpandAll(idx) ;
@@ -1131,7 +1131,7 @@ void  SharedFilesDialog::postModDirectories(bool local)
 #ifdef DEBUG_SHARED_FILES_DIALOG
     std::cerr << "****** updated directories! Re-enabling sorting ******" << std::endl;
 #endif
-    QCoreApplication::flush();
+//    QCoreApplication::flush();
 }
 
 class ChannelCompare

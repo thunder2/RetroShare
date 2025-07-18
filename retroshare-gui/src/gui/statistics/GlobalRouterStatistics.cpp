@@ -265,7 +265,7 @@ void GlobalRouterStatisticsWidget::updateContent()
     setFixedHeight(maxHeight);
 
     QPainter painter(&tmppixmap);
-    painter.initFrom(this);
+//    painter.initFrom(this);
     painter.setPen(QColor::fromRgb(0,0,0)) ;
 
     QFont times_f(font());//"Times") ;
@@ -429,17 +429,17 @@ void GlobalRouterStatisticsWidget::updateContent()
 
 void GlobalRouterStatisticsWidget::wheelEvent(QWheelEvent *e)
 {
-    if(e->x() < mMinWheelZoneX || e->x() > mMaxWheelZoneX || e->y() < mMinWheelZoneY || e->y() > mMaxWheelZoneY)
-    {
-        QWidget::wheelEvent(e) ;
-        return ;
-    }
-    
-    if(e->delta() < 0 && mCurrentN+PARTIAL_VIEW_SIZE/2+1 < mNumberOfKnownKeys)
-	    mCurrentN++ ;
-    
-    if(e->delta() > 0 && mCurrentN > PARTIAL_VIEW_SIZE/2+1)
-	    mCurrentN-- ;
+//    if(e->x() < mMinWheelZoneX || e->x() > mMaxWheelZoneX || e->y() < mMinWheelZoneY || e->y() > mMaxWheelZoneY)
+//    {
+//        QWidget::wheelEvent(e) ;
+//        return ;
+//    }
+//
+//    if(e->delta() < 0 && mCurrentN+PARTIAL_VIEW_SIZE/2+1 < mNumberOfKnownKeys)
+//	    mCurrentN++ ;
+//
+//    if(e->delta() > 0 && mCurrentN > PARTIAL_VIEW_SIZE/2+1)
+//	    mCurrentN-- ;
     
     updateContent();
     update();
