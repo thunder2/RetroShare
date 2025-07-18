@@ -285,26 +285,26 @@ void RSTextBrowser::contextMenuEvent(QContextMenuEvent *event)
 
 QMenu *RSTextBrowser::createStandardContextMenuFromPoint(const QPoint &widgetPos)
 {
-	QMatrix matrix;
-	matrix.translate(horizontalScrollBar()->value(), verticalScrollBar()->value());
-
-	QMenu *menu = QTextBrowser::createStandardContextMenu(matrix.map(widgetPos));
-
-	menu->addSeparator();
-	QAction *a = menu->addAction(FilesDefs::getIconFromQtResourcePath("://icons/textedit/code.png"), tr("View &Source"), this, SLOT(viewSource()));
-	a->setEnabled(!this->document()->isEmpty());
-
-	if (ImageUtil::checkImage(this, widgetPos
-#ifdef RSTEXTBROWSER_CHECKIMAGE_DEBUG
-	                          , &mCursorRectStart, &mCursorRectLeft, &mCursorRectRight, &mCursorRectEnd
-#endif
-	)) {
-		a = menu->addAction(FilesDefs::getIconFromQtResourcePath(":/images/document_save.png"), tr("Save image"), this, SLOT(saveImage()));
-		a->setData(widgetPos);
-
-		a = menu->addAction( tr("Copy image"), this, SLOT(copyImage()));
-		a->setData(widgetPos);
-	}
+//	QMatrix matrix;
+//	matrix.translate(horizontalScrollBar()->value(), verticalScrollBar()->value());
+//
+//	QMenu *menu = QTextBrowser::createStandardContextMenu(matrix.map(widgetPos));
+//
+//	menu->addSeparator();
+//	QAction *a = menu->addAction(FilesDefs::getIconFromQtResourcePath("://icons/textedit/code.png"), tr("View &Source"), this, SLOT(viewSource()));
+//	a->setEnabled(!this->document()->isEmpty());
+//
+//	if (ImageUtil::checkImage(this, widgetPos
+//#ifdef RSTEXTBROWSER_CHECKIMAGE_DEBUG
+//	                          , &mCursorRectStart, &mCursorRectLeft, &mCursorRectRight, &mCursorRectEnd
+//#endif
+//	)) {
+//		a = menu->addAction(FilesDefs::getIconFromQtResourcePath(":/images/document_save.png"), tr("Save image"), this, SLOT(saveImage()));
+//		a->setData(widgetPos);
+//
+//		a = menu->addAction( tr("Copy image"), this, SLOT(copyImage()));
+//		a->setData(widgetPos);
+//	}
 
 #ifdef RSTEXTBROWSER_CHECKIMAGE_DEBUG
 	std::cerr << "cursorRect LTRB :" << mCursorRectStart.left() << ";" << mCursorRectStart.top() << ";" << mCursorRectStart.right() << ";" << mCursorRectStart.bottom() << std::endl;
@@ -315,7 +315,8 @@ QMenu *RSTextBrowser::createStandardContextMenuFromPoint(const QPoint &widgetPos
 	viewport()->update();
 #endif
 
-	return menu;
+//	return menu;
+	return nullptr;
 }
 
 void RSTextBrowser::viewSource()

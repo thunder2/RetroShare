@@ -598,7 +598,7 @@ QSize FlowLayout::minimumSize() const
 	foreach (item, m_itemList)
 		size = size.expandedTo(item->minimumSize());
 
-	size += QSize(2*margin(), 2*margin());
+//	size += QSize(2*margin(), 2*margin());
 	return size;
 }
 
@@ -645,7 +645,7 @@ void FlowLayout::performDrag()
 				if (curs==0) dragPixmap = itemPixmap;
 				QPixmap oldPixmap = dragPixmap;
 				if (curs!=0) dragPixmap = QPixmap(oldPixmap.width() + 20 , oldPixmap.height());
-				dragPixmap.fill(widget->palette().background().color());
+//				dragPixmap.fill(widget->palette().background().color());
 				QPainter painter(&dragPixmap);
 				painter.drawPixmap(0, 0, oldPixmap);
 				if (curs!=0) painter.drawPixmap((20 * curs), 0, itemPixmap);

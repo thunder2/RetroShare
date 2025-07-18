@@ -319,7 +319,7 @@ void RSPermissionMatrixWidget::paintEvent(QPaintEvent *)
       float X = S*fMATRIX_START_X + peer_name_size - QFontMetrics_horizontalAdvance(fm, names[i]) ;
       float Y = S*fMATRIX_START_Y + (i+0.5)*S*fROW_SIZE + line_height/2.0f-2 ;
 
-      _painter->drawText(QPointF(X,Y),names[i]) ;
+//      _painter->drawText(QPointF(X,Y),names[i]) ;
 
       if(*it == _current_peer_id)
           _painter->drawLine(QPointF(X,Y+3),QPointF(X+QFontMetrics_horizontalAdvance(fm, names[i]),Y+3)) ;

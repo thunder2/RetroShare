@@ -21,7 +21,7 @@
 #include <retroshare/rstypes.h>
 #include <QModelIndex>
 #include <QPainter>
-#include <QStyleOptionProgressBarV2>
+//#include <QStyleOptionProgressBarV2>
 #include <QProgressBar>
 #include <QApplication>
 #include <QDateTime>
@@ -44,7 +44,7 @@ void DLListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
 {
 	QString byteUnits[4] = {tr("B"), tr("KB"), tr("MB"), tr("GB")};
 	QStyleOptionViewItem opt = option;
-	QStyleOptionProgressBarV2 newopt;
+//	QStyleOptionProgressBarV2 newopt;
 	QRect pixmapRect;
 	QPixmap pixmap;
 	qlonglong fileSize;
@@ -61,7 +61,7 @@ void DLListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
 	painter->setClipRect(opt.rect);
 
 	//set text color
-        QVariant value = index.data(Qt::TextColorRole);
+	QVariant value;// = index.data(Qt::TextColorRole);
         if(value.isValid() && qvariant_cast<QColor>(value).isValid()) {
                 opt.palette.setColor(QPalette::Text, qvariant_cast<QColor>(value));
         }
@@ -182,7 +182,7 @@ void DLListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
 
 				painter->restore() ;
 			}
-			painter->drawText(option.rect, Qt::AlignCenter, newopt.text);
+//			painter->drawText(option.rect, Qt::AlignCenter, newopt.text);
 			break;
         case COLUMN_SOURCES:
 		{

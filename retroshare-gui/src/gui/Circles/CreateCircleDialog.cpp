@@ -74,7 +74,7 @@ CreateCircleDialog::CreateCircleDialog()
 	ui.IdFilter->addFilter(QIcon(), headerText, RSCIRCLEID_COL_KEYID, QString("%1 %2").arg(tr("Search"), headerText));
 	
 	/* Set initial column width */
-	int fontWidth = QFontMetricsF(ui.treeWidget_IdList->font()).width("W");
+	int fontWidth = 1; //QFontMetricsF(ui.treeWidget_IdList->font()).width("W");
 	ui.treeWidget_IdList->setColumnWidth(RSCIRCLEID_COL_NICKNAME, 17 * fontWidth);
 	ui.treeWidget_membership->setColumnWidth(RSCIRCLEID_COL_NICKNAME, 17 * fontWidth);
 	

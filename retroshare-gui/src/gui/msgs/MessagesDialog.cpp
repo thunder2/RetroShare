@@ -115,10 +115,10 @@ public:
 	void setSortingEnabled(bool b) { m_sortingEnabled = b ; }
 
 protected:
-	bool lessThan(const QModelIndex& left, const QModelIndex& right) const override
-	{
-		return sourceModel()->data(left, RsMessageModel::SortRole) < sourceModel()->data(right, RsMessageModel::SortRole) ;
-	}
+//	bool lessThan(const QModelIndex& left, const QModelIndex& right) const override
+//	{
+//		return sourceModel()->data(left, RsMessageModel::SortRole) < sourceModel()->data(right, RsMessageModel::SortRole) ;
+//	}
 
 	bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override
 	{

@@ -613,8 +613,8 @@ void GenCertDialog::genPerson()
         std::cout << "Waiting ed->processEvents()" << std::endl;
 #endif
 		time_t waitEnd = time(NULL) + 10;//Wait no more than 10 sec to processEvents
-		if (ed->hasPendingEvents())
-			while(ed->processEvents(QEventLoop::AllEvents) && (time(NULL) < waitEnd));
+//		if (ed->hasPendingEvents())
+//			while(ed->processEvents(QEventLoop::AllEvents) && (time(NULL) < waitEnd));
 
 		std::string email_str = "" ;
 		std::cout << "RsAccounts::GeneratePGPCertificate" << std::endl;

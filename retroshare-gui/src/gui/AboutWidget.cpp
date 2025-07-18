@@ -211,7 +211,7 @@ void AWidget::initImages()
     if(height() == 0) return ;
 
     image1 = QImage(width(),height(),QImage::Format_ARGB32);
-    image1.fill(palette().color(QPalette::Background));
+//    image1.fill(palette().color(QPalette::Background));
 
     //QImage image(":/images/logo/logo_info.png");
     QPixmap image(":/images/logo/logo_splash.png");
@@ -267,7 +267,7 @@ void AWidget::initGoL()
 
 void AWidget::drawBitField()
 {
-    image2.fill(palette().color(QPalette::Background));
+//    image2.fill(palette().color(QPalette::Background));
     QPainter p(&image2) ;
 
     p.setPen(QColor(200,200,200));
@@ -306,7 +306,7 @@ void AWidget::drawBitField()
 AWidget::AWidget()
     : page(0), density(5)
     , mImagesReady(false), mState(0), mTimerId(0)
-    , mStep(1.0f), mMaxStep(QFontMetricsF(font()).width(' '))
+    , mStep(1.0f), mMaxStep(1/*QFontMetricsF(font()).width(' ')*/)
 {
 	setMouseTracking(true);
 	//startTimer(15);
@@ -774,7 +774,7 @@ void TBoard::showNextPiece() {
 
     QPixmap pixmap(dx * squareWidth(), dy * squareHeight());
     QPainter painter(&pixmap);
-    painter.fillRect(pixmap.rect(), nextPieceLabel->palette().background());
+//    painter.fillRect(pixmap.rect(), nextPieceLabel->palette().background());
 
     for (int i = 0; i < 4; ++i) {
         int x = nextPiece.x(i) - nextPiece.minX();
@@ -809,18 +809,18 @@ void TBoard::drawSquare(QPainter &painter, int x, int y, TPiece::Shape shape) {
     QColor color = colorTable[int(shape)];
     painter.fillRect(x + 1, y + 1, squareWidth() - 2, squareHeight() - 2, color);
 
-    painter.setPen(color.light());
+//    painter.setPen(color.light());
     painter.drawLine(x, y + squareHeight() - 1, x, y);
     painter.drawLine(x, y, x + squareWidth() - 1, y);
 
-    painter.setPen(color.dark());
+//    painter.setPen(color.dark());
     painter.drawLine(x + 1, y + squareHeight() - 1, x + squareWidth() - 1, y + squareHeight() - 1);
     painter.drawLine(x + squareWidth() - 1, y + squareHeight() - 1, x + squareWidth() - 1, y + 1);
 }
 
 
 void TPiece::setRandomShape() {
-    setShape(TPiece::Shape(qrand() % 7 + 1));
+//    setShape(TPiece::Shape(qrand() % 7 + 1));
 }
 
 
@@ -905,7 +905,7 @@ TPiece TPiece::rotatedRight() const {
 NextPieceLabel::NextPieceLabel( QWidget* parent /* = 0*/ ) : QLabel(parent)
 {
     QPalette p = palette();
-    p.setColor(QPalette::Background, Qt::white);
+//    p.setColor(QPalette::Background, Qt::white);
     setPalette(p);
     setFrameShape(QFrame::Box);
     setAlignment(Qt::AlignCenter);

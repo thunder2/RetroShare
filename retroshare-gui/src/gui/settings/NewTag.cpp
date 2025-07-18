@@ -124,11 +124,11 @@ void NewTag::textChanged(const QString &text)
 void NewTag::setTagColor()
 {
     bool ok;
-    QRgb color = QColorDialog::getRgba(m_Color, &ok, this);
-    if (ok) {
-        m_Color = color;
-        showColor (m_Color);
-    }
+//    QRgb color = QColorDialog::getRgba(m_Color, &ok, this);
+//    if (ok) {
+//        m_Color = color;
+//        showColor (m_Color);
+//    }
 }
 
 void NewTag::showColor(QRgb color)

@@ -353,14 +353,14 @@ QSize ChannelPostFilesDelegate::sizeHint(const QStyleOptionViewItem& option, con
 
     QFontMetricsF fm(option.font);
 
-    switch(index.column())
-    {
-    case RsGxsChannelPostFilesModel::COLUMN_FILES_NAME: return QSize(1.1*fm.width(QString::fromUtf8(file.mName.c_str())),fm.height());
-    case RsGxsChannelPostFilesModel::COLUMN_FILES_SIZE: return QSize(1.1*fm.width(misc::friendlyUnit(qulonglong(file.mSize))),fm.height());
-    case RsGxsChannelPostFilesModel::COLUMN_FILES_DATE: return QSize(1.1*fm.width(QDateTime::fromMSecsSinceEpoch(file.mPublishTime*1000).toString("MM/dd/yyyy, hh:mm")),fm.height());
-    default:
-    case RsGxsChannelPostFilesModel::COLUMN_FILES_FILE: return QSize(option.rect.width(),GxsChannelFilesStatusWidget(file).height());
-    }
+//    switch(index.column())
+//    {
+//    case RsGxsChannelPostFilesModel::COLUMN_FILES_NAME: return QSize(1.1*fm.width(QString::fromUtf8(file.mName.c_str())),fm.height());
+//    case RsGxsChannelPostFilesModel::COLUMN_FILES_SIZE: return QSize(1.1*fm.width(misc::friendlyUnit(qulonglong(file.mSize))),fm.height());
+//    case RsGxsChannelPostFilesModel::COLUMN_FILES_DATE: return QSize(1.1*fm.width(QDateTime::fromMSecsSinceEpoch(file.mPublishTime*1000).toString("MM/dd/yyyy, hh:mm")),fm.height());
+//    default:
+//    case RsGxsChannelPostFilesModel::COLUMN_FILES_FILE: return QSize(option.rect.width(),GxsChannelFilesStatusWidget(file).height());
+//    }
 }
 
 //===============================================================================================================================================//
@@ -463,8 +463,8 @@ GxsChannelPostsWidgetWithModel::GxsChannelPostsWidgetWithModel(const RsGxsGroupI
     QHeaderView * channelpostfilesheader = ui->channelPostFiles_TV->header () ;
     QHeaderView * channelfilesheader = ui->channelFiles_TV->header () ;
 
-    channelpostfilesheader->resizeSection (RsGxsChannelPostFilesModel::COLUMN_FILES_NAME, fm.width("RetroShare-v0.6.5-1487-g6714648e5-Windows-x64-portable-20200518-Qt-5.14.2.7z"));
-    channelfilesheader->resizeSection (RsGxsChannelPostFilesModel::COLUMN_FILES_NAME, fm.width("RetroShare-v0.6.5-1487-g6714648e5-Windows-x64-portable-20200518-Qt-5.14.2.7z"));
+//    channelpostfilesheader->resizeSection (RsGxsChannelPostFilesModel::COLUMN_FILES_NAME, fm.width("RetroShare-v0.6.5-1487-g6714648e5-Windows-x64-portable-20200518-Qt-5.14.2.7z"));
+//    channelfilesheader->resizeSection (RsGxsChannelPostFilesModel::COLUMN_FILES_NAME, fm.width("RetroShare-v0.6.5-1487-g6714648e5-Windows-x64-portable-20200518-Qt-5.14.2.7z"));
 
     /* Initialize feed widget */
     //ui->feedWidget->setSortRole(ROLE_PUBLISH, Qt::DescendingOrder);

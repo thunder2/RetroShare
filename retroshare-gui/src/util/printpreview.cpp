@@ -239,12 +239,12 @@ PrintPreview::PrintPreview(const QTextDocument *document, QWidget *parent)
 
 void PrintPreview::setup()
 {
-    QSizeF page = printer.pageRect().size();
-    paperSize = printer.paperRect().size();
+	QSizeF page = QSizeF();//printer.pageRect().size();
+	paperSize = QSize();//printer.paperRect().size();
     paperSize.rwidth() *= qreal(view->logicalDpiX()) / printer.logicalDpiX();
     paperSize.rheight() *= qreal(view->logicalDpiY()) / printer.logicalDpiY();
 
-    pageTopLeft = printer.pageRect().topLeft();
+	pageTopLeft = QPointF();//printer.pageRect().topLeft();
     pageTopLeft.rx() *= qreal(view->logicalDpiX()) / printer.logicalDpiX();
     pageTopLeft.ry() *= qreal(view->logicalDpiY()) / printer.logicalDpiY();
 
