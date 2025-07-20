@@ -19,5 +19,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-                VOIP \
+#                VOIP \
 		FeedReader
+
+win32-g++:isEmpty(QMAKE_SH):lessThan(QT_MAJOR_VERSION,6):SUBDIRS += VOIP
