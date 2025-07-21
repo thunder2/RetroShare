@@ -75,11 +75,23 @@ bool IdlePlatform::init()
 
 	old_handler = XSetErrorHandler(xerrhandler);
 
-	int event_base, error_base;
+    // https://doc.qt.io/qt-6/extras-changes-qt6.html#changes-to-qt-x11-extras
+    // Display *display = nullptr;
+    // xcb_connection_t *connection = nullptr;
+    // bool isPlatformX11 = false;
+    // if (auto *x11Application = qGuiApp->nativeInterface<QNativeInterface::QX11Application>()) {
+    //     display = x11Application->display();
+    //     connection = x11Application->connection();
+    //     isPlatformX11 = true;
+    // }
+
+//    bool isPlatformX11 = qGuiApp->nativeInterface<QNativeInterface::QX11Application>();
+
+    int event_base, error_base;
 #if QT_VERSION >= QT_VERSION_CHECK(5,0,0) && QT_VERSION < QT_VERSION_CHECK(6,0,0)
     if(QX11Info::isPlatformX11() && XScreenSaverQueryExtension(QX11Info::display(), &event_base, &error_base)) {
 #else
-    if(qGuiApp->nativeInterface<QNativeInterface::QX11Application>() && XScreenSaverQueryExtension(QNativeInterface::QX11Application::display(), &event_base, &error_base)) {
+    if(qGuiApp->nativeInterface<QNativeInterface::QX11Application>() && XScreenSaverQueryExtension(qGuiApp->nativeInterface<QNativeInterface::QX11Application>()->display(), &event_base, &error_base)) {
 #endif
 		d->ss_info = XScreenSaverAllocInfo();
 		return true;
@@ -94,7 +106,10 @@ int IdlePlatform::secondsIdle()
 #if QT_VERSION >= QT_VERSION_CHECK(5,0,0) && QT_VERSION < QT_VERSION_CHECK(6,0,0)
 	if(!QX11Info::isPlatformX11() || !XScreenSaverQueryInfo(QX11Info::display(), QX11Info::appRootWindow(), d->ss_info))
 #else
-    if(!qGuiApp->nativeInterface<QNativeInterface::QX11Application>() || !XScreenSaverQueryInfo(QNativeInterface::QX11Application::display(), QX11Info::appRootWindow(), d->ss_info))
+//    if(!qGuiApp->nativeInterface<QNativeInterface::QX11Application>() ||!XScreenSaverQueryInfo(qGuiApp->nativeInterface<QNativeInterface::QX11Application>()->display(), DefaultRootWindow(qGuiApp->nativeInterface<QNativeInterface::QX11Application>()->display()), d->ss_info))                                                                                          QX11Info::appRootWindow(), d->ss_info))
+    if(!qGuiApp->nativeInterface<QNativeInterface::QX11Application>() ||
+        !XScreenSaverQueryInfo(qGuiApp->nativeInterface<QNativeInterface::QX11Application>()->display(),
+                               DefaultRootWindow(qGuiApp->nativeInterface<QNativeInterface::QX11Application>()->display()), d->ss_info))
 #endif
 		return 0;
 	return d->ss_info->idle / 1000;
