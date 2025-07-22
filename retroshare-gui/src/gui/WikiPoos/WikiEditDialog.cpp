@@ -731,7 +731,6 @@ void WikiEditDialog::loadBaseHistory(const uint32_t &token)
 			QDateTime qtime = DateTime::DateTimeFromTime_t(page.mMeta.mPublishTs);
 			QString text;
 			QString sort;
-			// qtime.setSecsSinceEpoch(page.mMeta.mPublishTs);
 			sort = qtime.toString("yyyyMMdd_hhmmss");
 			text = qtime.toString("dd/MM/yy hh:mm");
 			
@@ -845,7 +844,6 @@ void WikiEditDialog::loadEditTreeData(const uint32_t &token)
 			QDateTime qtime = DateTime::DateTimeFromTime_t(snapshot.mMeta.mPublishTs);
 			QString text;
 			QString sort;
-			//qtime.setSecsSinceEpoch(snapshot.mMeta.mPublishTs);
 			sort = qtime.toString("yyyyMMdd_hhmmss");
 			text = qtime.toString("dd/MM/yy hh:mm");
 			
