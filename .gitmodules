@@ -39,5 +39,5 @@
 	branch = master
 [submodule "supportlibs/librnp"]
 	path = supportlibs/librnp
-	url = https://github.com/rnpgp/rnp.git
+	url = ../rnp.git
 	branch = main
