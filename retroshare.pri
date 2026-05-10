@@ -482,7 +482,7 @@ defined in command line")
     DEFINES += RS_PATCH_REVISION=0
     DEFINES += RS_EXTRA_VERSION=\\\"$${RS_EXTRA_VERSION}\\\"
 } else {
-    RS_GIT_DESCRIBE = $$system(git describe --long --dirty --match v*.*.*)
+    RS_GIT_DESCRIBE = $$system(git describe --long --match v*.*.*)
     contains(RS_GIT_DESCRIBE, ^v\d+\.\d+\.\d+.*) {
         RS_GIT_DESCRIBE_SPLIT = $$split(RS_GIT_DESCRIBE, v)
         RS_GIT_DESCRIBE_SPLIT = $$split(RS_GIT_DESCRIBE_SPLIT, .)
