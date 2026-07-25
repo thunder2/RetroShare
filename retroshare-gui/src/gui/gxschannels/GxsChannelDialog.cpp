@@ -37,6 +37,7 @@
 #include "util/qtthreadsutils.h"
 #include "util/misc.h"
 #include "util/RsQtVersion.h"
+#include "util/DateTime.h"
 
 // class GxsChannelGroupInfoData : public RsUserdata
 // {
@@ -426,7 +427,7 @@ void GxsChannelDialog::groupInfoToGroupItemInfo(const RsGxsGenericGroupData *gro
     // creation of its signature. Since the service string is local, this breaks signature validation at distant nodes.
     // This flag is here to warn users about re-signing their channel.
 
-    if(groupItemInfo.adminKey && (channelGroupData->mMeta.mPublishTs < QDateTime(QDate(2026,4,15),QTime(0,0)).toSecsSinceEpoch()))
+    if(groupItemInfo.adminKey && (channelGroupData->mMeta.mPublishTs < DateTime::DateTimeToTime_t(QDateTime(QDate(2026,4,15),QTime(0,0)))))
         groupItemInfo.deprecated_format = true;
 
     if(channelGroupData->mImage.mSize > 0)
