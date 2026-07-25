@@ -471,7 +471,7 @@ QVariant RsIdentityListModel::data(const QModelIndex &index, int role) const
 
 static bool checkDate_deprecated_ids(const time_t t)
 {
-    return t > QDateTime(QDate(2026,4,20),QTime(0,0)).toSecsSinceEpoch();
+    return t > DateTime::DateTimeToTime_t(QDateTime(QDate(2026,4,20),QTime(0,0)));
 }
 
 bool RsIdentityListModel::passesFilter(const EntryIndex& e,int /*column*/) const
