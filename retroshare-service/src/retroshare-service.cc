@@ -197,11 +197,13 @@ static bool askPgpProfile(RsPgpId& pgpId)
 	          << colored(COLOR_GREEN, "Existing profiles on this machine:")
 	          << std::endl << std::endl;
 
+	int profileCountDigits = static_cast<int>( ceil(log(choices.size() + 1)/log(10.0)) );
+
 	for(size_t i = 0; i < choices.size(); ++i)
 	{
 		std::string name, email;
 		RsAccounts::GetPGPLoginDetails(choices[i], name, email);
-		std::cout << colored(COLOR_GREEN, "  [" + RsUtil::NumberToString(i+1) + "]") << " "
+		std::cout << colored(COLOR_GREEN, "  [" + RsUtil::NumberToString(i+1, false, '0', profileCountDigits) + "]") << " "
 		          << colored(COLOR_BLUE, choices[i].toStdString()) << ": "
 		          << colored(COLOR_PURPLE, name) << std::endl;
 	}
@@ -212,7 +214,7 @@ static bool askPgpProfile(RsPgpId& pgpId)
 	                     "A new profile is a new identity: your existing friends "
 	                     "will not recognise it,\nand you will have to exchange "
 	                     "certificates with them again. Reuse a profile above\n"
-	                     "to simply add this machine as another node of it.")
+	                     "to simply add this machine as another node to that profile.")
 	          << std::endl << std::endl;
 
 	for(int attempt = 0; keepRunning && attempt < MAX_PROMPT_ATTEMPTS; ++attempt)
@@ -273,7 +275,7 @@ static CreateAccountResult doTerminalCreateAccount()
 	{
 		for(int attempt = 0; keepRunning && pgpName.empty() && attempt < MAX_PROMPT_ATTEMPTS; ++attempt)
 		{
-			std::cout << colored(COLOR_GREEN, "Please enter your Username: ");
+			std::cout << colored(COLOR_GREEN, "Please enter your new profile name: ");
 			std::cout.flush();
 			if(!std::getline(std::cin, pgpName))
 			{
@@ -353,9 +355,9 @@ static CreateAccountResult doTerminalCreateAccount()
 	}
 
 	if(reusingProfile)
-		std::cout << colored(COLOR_YELLOW, "Generating SSL certificate for the new node...") << std::endl;
+		std::cout << colored(COLOR_YELLOW, "Generating certificate for the new node...") << std::endl;
 	else
-		std::cout << colored(COLOR_YELLOW, "Generating 4096-bit PGP key & SSL certificate (this may take a few seconds)...") << std::endl;
+		std::cout << colored(COLOR_YELLOW, "Generating profile key and node certificate (this may take a few seconds)...") << std::endl;
 
 	RsPeerId locationId;
 	std::error_condition err = rsLoginHelper->createLocationV2(locationId, pgpId, locationName, pgpName, pass1);
@@ -368,8 +370,8 @@ static CreateAccountResult doTerminalCreateAccount()
 
 	std::cout << std::endl
 	          << colored(COLOR_GREEN, "Account successfully created and logged in!") << std::endl;
-	std::cout << colored(COLOR_GREEN, "  Location ID : ") << colored(COLOR_YELLOW, locationId.toStdString()) << std::endl;
-	std::cout << colored(COLOR_GREEN, "  PGP ID      : ") << colored(COLOR_BLUE, pgpId.toStdString()) << std::endl << std::endl;
+	std::cout << colored(COLOR_GREEN, "  Node ID : ") << colored(COLOR_YELLOW, locationId.toStdString()) << std::endl;
+	std::cout << colored(COLOR_GREEN, "  Profile ID      : ") << colored(COLOR_BLUE, pgpId.toStdString()) << std::endl << std::endl;
 
 	return CreateAccountResult::Created;
 }
@@ -502,7 +504,7 @@ int main(int argc, char* argv[])
 	std::string webui_pass1;
 	if(askWebUiPassword)
 	{
-		std::string webui_pass2 = "N";
+		std::string webui_pass2 = "";
 
 		// Same bound as the account prompts: -W on a service with no terminal
 		// re-asks a question that can never be answered.
@@ -570,9 +572,11 @@ int main(int argc, char* argv[])
 			{
 			case CreateAccountResult::Created:   alreadyLoggedIn = true; break;
 			case CreateAccountResult::Cancelled: return 0;
-			case CreateAccountResult::Failed:
+			case CreateAccountResult::Failed:    return -RsInit::ERR_UNKNOWN;
 			case CreateAccountResult::Unknown:
-			default:                             return -RsInit::ERR_UNKNOWN;
+			default:
+				RsErr() << "An unexpected error occurred during account creation." << std::endl;
+				return -RsInit::ERR_UNKNOWN;
 			}
 		}
 		else if(prefUserString == "list")
@@ -615,7 +619,7 @@ int main(int argc, char* argv[])
 			}
 
 			std::cout << colored(COLOR_GREEN,"  [c]") << " "
-			          << colored(COLOR_YELLOW,"Create new account") << std::endl
+			          << colored(COLOR_YELLOW,"Create new profile/node") << std::endl
 			          << std::endl;
 
 			bool selectionMade = false;
@@ -639,9 +643,11 @@ int main(int argc, char* argv[])
 					{
 					case CreateAccountResult::Created:   alreadyLoggedIn = true; break;
 					case CreateAccountResult::Cancelled: return 0;
-					case CreateAccountResult::Failed:
+					case CreateAccountResult::Failed:    return -RsInit::ERR_UNKNOWN;
 					case CreateAccountResult::Unknown:
-					default:                             return -RsInit::ERR_UNKNOWN;
+					default:
+						RsErr() << "An unexpected error occurred during account creation." << std::endl;
+						return -RsInit::ERR_UNKNOWN;
 					}
 					break;
 				}
