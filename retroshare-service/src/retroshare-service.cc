@@ -177,7 +177,7 @@ void signalHandler(int signal)
 
 
 #ifdef RS_SERVICE_TERMINAL_LOGIN
-enum class CreateAccountResult { Created, Cancelled, Failed };
+enum class CreateAccountResult { Unknown = 0x00, Created = 0x01, Cancelled = 0x02, Failed = 0x03 };
 
 /** Ask the user for a PGP profile to sign the new node with.
  * Returns false when the user cancelled. A null pgpId on return means "make a
@@ -570,7 +570,9 @@ int main(int argc, char* argv[])
 			{
 			case CreateAccountResult::Created:   alreadyLoggedIn = true; break;
 			case CreateAccountResult::Cancelled: return 0;
-			case CreateAccountResult::Failed:    return -RsInit::ERR_UNKNOWN;
+			case CreateAccountResult::Failed:
+			case CreateAccountResult::Unknown:
+			default:                             return -RsInit::ERR_UNKNOWN;
 			}
 		}
 		else if(prefUserString == "list")
@@ -637,7 +639,9 @@ int main(int argc, char* argv[])
 					{
 					case CreateAccountResult::Created:   alreadyLoggedIn = true; break;
 					case CreateAccountResult::Cancelled: return 0;
-					case CreateAccountResult::Failed:    return -RsInit::ERR_UNKNOWN;
+					case CreateAccountResult::Failed:
+					case CreateAccountResult::Unknown:
+					default:                             return -RsInit::ERR_UNKNOWN;
 					}
 					break;
 				}
