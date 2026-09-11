@@ -90,7 +90,8 @@ endif(RS_DEVELOPMENT_BUILD)
 
 list(
 	APPEND RS_SERVICE_SOURCES
-	src/retroshare-service.cc )
+	src/retroshare-service.cc
+	src/util/retroshare-service_path.cpp )
 
 add_executable(${PROJECT_NAME} ${RS_SERVICE_SOURCES})
 
