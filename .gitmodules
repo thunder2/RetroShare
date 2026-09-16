@@ -41,3 +41,6 @@
 	path = supportlibs/librnp
 	url = ../rnp.git
 	branch = main
+[submodule "plugins/RetroChess"]
+	path = plugins/RetroChess
+	url = ../RetroChess.git

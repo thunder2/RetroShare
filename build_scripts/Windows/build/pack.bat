@@ -89,6 +89,7 @@ if "%Extensions%"=="" %cecho% error "Folder for extensions not found in %Extensi
 :: Copy files
 mkdir "%RsDeployPath%\Data\%Extensions%"
 mkdir "%RsDeployPath%\imageformats"
+mkdir "%RsDeployPath%\iconengines"
 mkdir "%RsDeployPath%\qss"
 mkdir "%RsDeployPath%\stylesheets"
 mkdir "%RsDeployPath%\sounds"
@@ -143,6 +144,9 @@ if %QtMainVersion% GEQ 5 (
 if "%QtMainVersion%"=="5" (
 	mkdir "%RsDeployPath%\audio"
 	copy "%QtPath%\..\plugins\audio\qtaudio_windows.dll" "%RsDeployPath%\audio" %Quite%
+
+	mkdir "%RsDeployPath%\mediaservice"
+	copy "%QtPath%\..\plugins\mediaservice\dsengine.dll" "%RsDeployPath%\mediaservice" %Quite%
 )
 
 echo Copy styles
@@ -156,6 +160,8 @@ if "%QtMainVersion%"=="6" (
 
 copy "%QtPath%\..\plugins\imageformats\*.dll" "%RsDeployPath%\imageformats" %Quite%
 del /Q "%RsDeployPath%\imageformats\*d?.dll" %Quite%
+
+copy "%QtPath%\..\plugins\iconengines\qsvgicon.dll" "%RsDeployPath%\iconengines" %Quite%
 
 if exist "%SourcePath%\retroshare-gui\src\qss" (
 	echo copy qss
