@@ -18,6 +18,8 @@
 !insertmacro LANG_STRING Section_Plugin_LinksCloud_Desc "Instala el complemento LinksCloud."
 !insertmacro LANG_STRING Section_Plugin_VOIP "VOIP"
 !insertmacro LANG_STRING Section_Plugin_VOIP_Desc "Instala el complemento VOIP"
+!insertmacro LANG_STRING Section_Plugin_RetroChess "RetroChess"
+!insertmacro LANG_STRING Section_Plugin_RetroChess_Desc "Installs plugin RetroChess."
 !insertmacro LANG_STRING Section_AutoStart "Auto iniciar"
 !insertmacro LANG_STRING Section_AutoStart_Desc "Auto-ejecutar al incio."
 !insertmacro LANG_STRING Page_InstallMode "Modo de instalación"
