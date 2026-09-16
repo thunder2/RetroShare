@@ -96,6 +96,7 @@ if "%Extensions%"=="" echo Folder for extensions not found in %ExtensionsFile%& 
 :: Copy files
 mkdir "%RsDeployPath%\Data\%Extensions%"
 mkdir "%RsDeployPath%\imageformats"
+mkdir "%RsDeployPath%\iconengines"
 mkdir "%RsDeployPath%\qss"
 mkdir "%RsDeployPath%\stylesheets"
 mkdir "%RsDeployPath%\sounds"
@@ -131,6 +132,9 @@ if %QtMainVersion% GEQ 5 (
 if "%QtMainVersion%"=="5" (
 	mkdir "%RsDeployPath%\audio"
 	copy "%QtSharePath%\plugins\audio\qtaudio_windows.dll" "%RsDeployPath%\audio" %Quite%
+
+	mkdir "%RsDeployPath%\mediaservice"
+	copy "%QtSharePath%\plugins\mediaservice\dsengine.dll" "%RsDeployPath%\mediaservice" %Quite%
 )
 
 echo copy styles
@@ -144,6 +148,8 @@ if "%QtMainVersion%"=="6" (
 
 copy "%QtSharePath%\plugins\imageformats\*.dll" "%RsDeployPath%\imageformats" %Quite%
 del /Q "%RsDeployPath%\imageformats\*d?.dll" %Quite%
+
+copy "%QtSharePath%\plugins\iconengines\qsvgicon.dll" "%RsDeployPath%\iconengines" %Quite%
 
 if "%ParamTor%"=="1" (
 	echo copy tor
