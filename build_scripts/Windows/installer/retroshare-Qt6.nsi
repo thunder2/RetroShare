@@ -333,11 +333,15 @@ SectionEnd
 # Plugins
 ${!defineifexist} PLUGIN_FEEDREADER_EXISTS "${RELEASEDIR}\plugins\FeedReader\lib\FeedReader.dll"
 ${!defineifexist} PLUGIN_VOIP_EXISTS "${RELEASEDIR}\plugins\VOIP\lib\VOIP.dll"
+${!defineifexist} PLUGIN_RETROCHESS_EXISTS "${RELEASEDIR}\plugins\RetroChess\lib\RetroChess.dll"
 
 !ifdef PLUGIN_FEEDREADER_EXISTS
 !define /ifndef PLUGIN_EXISTS
 !endif
 !ifdef PLUGIN_VOIP_EXISTS
+!define /ifndef PLUGIN_EXISTS
+!endif
+!ifdef PLUGIN_RETROCHESS_EXISTS
 !define /ifndef PLUGIN_EXISTS
 !endif
 
@@ -356,6 +360,13 @@ ${!defineifexist} PLUGIN_VOIP_EXISTS "${RELEASEDIR}\plugins\VOIP\lib\VOIP.dll"
       File "${RELEASEDIR}\plugins\VOIP\lib\VOIP.dll"
       SetOutPath "$INSTDIR\sounds"
       File /r "${SOURCEDIR}\plugins\VOIP\gui\sounds\*.*"
+    SectionEnd
+  !endif
+
+  !ifdef PLUGIN_RETROCHESS_EXISTS
+    Section $(Section_Plugin_RetroChess) Section_Plugin_RetroChess
+      SetOutPath "$DataDir\extensions6"
+      File "${RELEASEDIR}\plugins\RetroChess\lib\RetroChess.dll"
     SectionEnd
   !endif
   SectionGroupEnd
@@ -460,6 +471,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${Section_Plugins} $(Section_Plugins_Desc)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section_Plugin_FeedReader} $(Section_Plugin_FeedReader_Desc)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section_Plugin_VOIP} $(Section_Plugin_VOIP_Desc)
+  !insertmacro MUI_DESCRIPTION_TEXT ${Section_Plugin_RetroChess} $(Section_Plugin_RetroChess_Desc)
 ;  !insertmacro MUI_DESCRIPTION_TEXT ${Section_Link} $(Section_Link_Desc)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section_AutoStart} $(Section_AutoStart_Desc)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section_Tor} $(Section_Tor_Desc)
