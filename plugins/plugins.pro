@@ -25,4 +25,4 @@ SUBDIRS += \
 }
 SUBDIRS += \
 		FeedReader \
-		RetroChess
+#		RetroChess
