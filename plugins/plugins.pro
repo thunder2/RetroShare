@@ -25,8 +25,8 @@ SUBDIRS += \
 }
 SUBDIRS += \
 		FeedReader \
-		RetroChess \
-		QtPaint \
-		retroGit \
-		Lua4RS \
-		RsWiki
+#		RetroChess \
+#		QtPaint \
+#		retroGit \
+#		Lua4RS \
+#		RsWiki
