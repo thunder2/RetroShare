@@ -20,6 +20,8 @@
 !insertmacro LANG_STRING Section_Plugin_VOIP_Desc "Instal·lar complement VeuIP."
 !insertmacro LANG_STRING Section_Plugin_RetroChess "RetroChess"
 !insertmacro LANG_STRING Section_Plugin_RetroChess_Desc "Installs plugin RetroChess."
+!insertmacro LANG_STRING Section_Plugin_QtPaint "QtPaint"
+!insertmacro LANG_STRING Section_Plugin_QtPaint_Desc "Installs plugin QtPaint."
 !insertmacro LANG_STRING Section_AutoStart "Posada en marxa automàtica"
 !insertmacro LANG_STRING Section_AutoStart_Desc "Autoengegar al arrencar."
 !insertmacro LANG_STRING Page_InstallMode "Mode instal·lació"

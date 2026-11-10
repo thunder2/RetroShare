@@ -25,4 +25,5 @@ SUBDIRS += \
 }
 SUBDIRS += \
 		FeedReader \
-		RetroChess
+		RetroChess \
+		QtPaint

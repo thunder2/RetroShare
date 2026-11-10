@@ -339,6 +339,7 @@ SectionEnd
 ${!defineifexist} PLUGIN_FEEDREADER_EXISTS "${RELEASEDIR}\plugins\FeedReader\lib\FeedReader.dll"
 ${!defineifexist} PLUGIN_VOIP_EXISTS "${RELEASEDIR}\plugins\VOIP\lib\VOIP.dll"
 ${!defineifexist} PLUGIN_RETROCHESS_EXISTS "${RELEASEDIR}\plugins\RetroChess\lib\RetroChess.dll"
+${!defineifexist} PLUGIN_QTPAINT_EXISTS "${RELEASEDIR}\plugins\QtPaint\lib\QtPaint.dll"
 
 !ifdef PLUGIN_FEEDREADER_EXISTS
 !define /ifndef PLUGIN_EXISTS
@@ -347,6 +348,9 @@ ${!defineifexist} PLUGIN_RETROCHESS_EXISTS "${RELEASEDIR}\plugins\RetroChess\lib
 !define /ifndef PLUGIN_EXISTS
 !endif
 !ifdef PLUGIN_RETROCHESS_EXISTS
+!define /ifndef PLUGIN_EXISTS
+!endif
+!ifdef PLUGIN_QTPAINT_EXISTS
 !define /ifndef PLUGIN_EXISTS
 !endif
 
@@ -376,6 +380,13 @@ ${!defineifexist} PLUGIN_RETROCHESS_EXISTS "${RELEASEDIR}\plugins\RetroChess\lib
       File "${QTDIR}\plugins\iconengines\qsvgicon.dll"
       SetOutPath "$INSTDIR\mediaservice"
       File "${QTDIR}\plugins\mediaservice\dsengine.dll"
+    SectionEnd
+  !endif
+
+  !ifdef PLUGIN_QTPAINT_EXISTS
+    Section $(Section_Plugin_QtPaint) Section_Plugin_QtPaint
+      SetOutPath "$DataDir\extensions6"
+      File "${RELEASEDIR}\plugins\QtPaint\lib\QtPaint.dll"
     SectionEnd
   !endif
   SectionGroupEnd
@@ -481,6 +492,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${Section_Plugin_FeedReader} $(Section_Plugin_FeedReader_Desc)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section_Plugin_VOIP} $(Section_Plugin_VOIP_Desc)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section_Plugin_RetroChess} $(Section_Plugin_RetroChess_Desc)
+  !insertmacro MUI_DESCRIPTION_TEXT ${Section_Plugin_QtPaint} $(Section_Plugin_QtPaint_Desc)
 ;  !insertmacro MUI_DESCRIPTION_TEXT ${Section_Link} $(Section_Link_Desc)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section_AutoStart} $(Section_AutoStart_Desc)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section_Tor} $(Section_Tor_Desc)

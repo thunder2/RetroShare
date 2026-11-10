@@ -18,6 +18,8 @@
 !insertmacro LANG_STRING Section_Plugin_VOIP_Desc "Installs plugin VOIP."
 !insertmacro LANG_STRING Section_Plugin_RetroChess "RetroChess"
 !insertmacro LANG_STRING Section_Plugin_RetroChess_Desc "Installs plugin RetroChess."
+!insertmacro LANG_STRING Section_Plugin_QtPaint "QtPaint"
+!insertmacro LANG_STRING Section_Plugin_QtPaint_Desc "Installs plugin QtPaint."
 ;!insertmacro LANG_STRING Section_Link "File Association"
 ;!insertmacro LANG_STRING Section_Link_Desc "Associate ${APPNAME} with .pqi file extension."
 !insertmacro LANG_STRING Section_AutoStart "Auto Startup"
