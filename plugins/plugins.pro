@@ -26,4 +26,5 @@ SUBDIRS += \
 SUBDIRS += \
 		FeedReader \
 		RetroChess \
-		QtPaint
+		QtPaint \
+		retroGit

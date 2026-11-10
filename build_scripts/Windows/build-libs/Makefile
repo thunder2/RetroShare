@@ -16,6 +16,7 @@ RAPIDJSON_VERSION=1.1.0
 XAPIAN_VERSION=1.4.29
 ASIO_VERSION=1-34-2
 #RNP_VERSION=0.17.1
+LIBGIT2_VERSION=1.9.7
 
 # libaries for rnp
 JSON_C_VERSION=0.18
@@ -25,7 +26,7 @@ DOWNLOAD_PATH?=download
 BUILD_PATH=build
 LIBS_PATH?=libs
 
-all: dirs zlib bzip2 miniupnpc openssl speex speexdsp libxml curl sqlcipher ffmpeg rapidjson xapian jsonc botan asio copylibs
+all: dirs zlib bzip2 miniupnpc openssl speex speexdsp libxml curl sqlcipher ffmpeg rapidjson xapian jsonc botan asio libgit2 copylibs
 #rnp
 
 download: \
@@ -419,6 +420,28 @@ $(BUILD_PATH)/rnp-$(RNP_VERSION):
 	# cleanup
 	rm -r -f rnp-$(RNP_VERSION)
 	mv $(BUILD_PATH)/rnp-$(RNP_VERSION).tmp $(BUILD_PATH)/rnp-$(RNP_VERSION)
+
+libgit2: $(BUILD_PATH)/libgit2-$(LIBGIT2_VERSION)
+
+ifeq ($(MSYSTEM),MINGW32)
+    LIBGIT2_RC_FLAG := -DCMAKE_RC_FLAGS="-F pe-i386"
+else ifneq ($(filter $(MSYSTEM),MINGW64),)
+    LIBGIT2_RC_FLAG := 
+else
+    $(error ERROR: Only MINGW32 and MINGW64 supported
+endif
+
+$(BUILD_PATH)/libgit2-$(LIBGIT2_VERSION):
+	# prepare
+	rm -r -f $(BUILD_PATH)/libgit2-*
+	[ -d "libgit2-$(LIBGIT2_VERSION)" ] || git clone https://github.com/libgit2/libgit2.git --depth=1 --branch v$(LIBGIT2_VERSION) "libgit2-$(LIBGIT2_VERSION)"
+	# build
+	mkdir -p libgit2-$(LIBGIT2_VERSION)/build
+	cd libgit2-$(LIBGIT2_VERSION)/build && cmake .. -G"MSYS Makefiles" -Wno-dev -DCMAKE_BUILD_TYPE="release" -DBUILD_SHARED_LIBS=ON -DBUILD_TESTS=OFF -DBUILD_CLI=OFF -DREGEX_BACKEND=builtin -DUSE_BUNDLED_ZLIB=ON -DCMAKE_INSTALL_PREFIX="`pwd`/../../$(BUILD_PATH)/libgit2-$(LIBGIT2_VERSION).tmp" $(LIBGIT2_RC_FLAG)
+	cd libgit2-$(LIBGIT2_VERSION)/build && make -j install
+	# cleanup
+	rm -r -f libgit2-$(LIBGIT2_VERSION)
+	mv $(BUILD_PATH)/libgit2-$(LIBGIT2_VERSION).tmp $(BUILD_PATH)/libgit2-$(LIBGIT2_VERSION)
 
 copylibs:
 	rm -r -f $(LIBS_PATH) ; \

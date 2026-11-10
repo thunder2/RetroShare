@@ -22,6 +22,8 @@
 !insertmacro LANG_STRING Section_Plugin_RetroChess_Desc "Installs plugin RetroChess."
 !insertmacro LANG_STRING Section_Plugin_QtPaint "QtPaint"
 !insertmacro LANG_STRING Section_Plugin_QtPaint_Desc "Installs plugin QtPaint."
+!insertmacro LANG_STRING Section_Plugin_RetroGit "RetroGit"
+!insertmacro LANG_STRING Section_Plugin_RetroGit_Desc "Installs plugin RetroGit."
 !insertmacro LANG_STRING Section_AutoStart "Auto Startup"
 !insertmacro LANG_STRING Section_AutoStart_Desc "Auto-Run at startup."
 !insertmacro LANG_STRING Page_InstallMode "安装模式"
