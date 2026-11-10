@@ -189,6 +189,7 @@ SectionEnd
 ${!defineifexist} PLUGIN_FEEDREADER_EXISTS "${DEPLOYDIR}\Data\extensions6\FeedReader.dll"
 ${!defineifexist} PLUGIN_VOIP_EXISTS "${DEPLOYDIR}\Data\extensions6\VOIP.dll"
 ${!defineifexist} PLUGIN_RETROCHESS_EXISTS "${DEPLOYDIR}\Data\extensions6\RetroChess.dll"
+${!defineifexist} PLUGIN_QTPAINT_EXISTS "${DEPLOYDIR}\Data\extensions6\QtPaint.dll"
 
 !ifdef PLUGIN_FEEDREADER_EXISTS
 !define /ifndef PLUGIN_EXISTS
@@ -197,6 +198,9 @@ ${!defineifexist} PLUGIN_RETROCHESS_EXISTS "${DEPLOYDIR}\Data\extensions6\RetroC
 !define /ifndef PLUGIN_EXISTS
 !endif
 !ifdef PLUGIN_RETROCHESS_EXISTS
+!define /ifndef PLUGIN_EXISTS
+!endif
+!ifdef PLUGIN_QTPAINT_EXISTS
 !define /ifndef PLUGIN_EXISTS
 !endif
 
@@ -220,6 +224,13 @@ ${!defineifexist} PLUGIN_RETROCHESS_EXISTS "${DEPLOYDIR}\Data\extensions6\RetroC
     Section $(Section_Plugin_RetroChess) Section_Plugin_RetroChess
       SetOutPath "$DataDir\extensions6"
       File "${DEPLOYDIR}\Data\extensions6\RetroChess.dll"
+    SectionEnd
+  !endif
+
+  !ifdef PLUGIN_QTPAINT_EXISTS
+    Section $(Section_Plugin_QtPaint) Section_Plugin_QtPaint
+      SetOutPath "$DataDir\extensions6"
+      File "${DEPLOYDIR}\Data\extensions6\QtPaint.dll"
     SectionEnd
   !endif
   SectionGroupEnd
@@ -307,6 +318,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${Section_Plugin_FeedReader} $(Section_Plugin_FeedReader_Desc)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section_Plugin_VOIP} $(Section_Plugin_VOIP_Desc)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section_Plugin_RetroChess} $(Section_Plugin_RetroChess_Desc)
+  !insertmacro MUI_DESCRIPTION_TEXT ${Section_Plugin_QtPaint} $(Section_Plugin_QtPaint_Desc)
 ;  !insertmacro MUI_DESCRIPTION_TEXT ${Section_Link} $(Section_Link_Desc)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section_AutoStart} $(Section_AutoStart_Desc)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END

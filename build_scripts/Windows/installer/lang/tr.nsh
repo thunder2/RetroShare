@@ -28,6 +28,8 @@
 !insertmacro LANG_STRING Section_Plugin_VOIP_Desc "VOIP eklentisini yükleyin."
 !insertmacro LANG_STRING Section_Plugin_RetroChess "RetroChess"
 !insertmacro LANG_STRING Section_Plugin_RetroChess_Desc "Installs plugin RetroChess."
+!insertmacro LANG_STRING Section_Plugin_QtPaint "QtPaint"
+!insertmacro LANG_STRING Section_Plugin_QtPaint_Desc "Installs plugin QtPaint."
 !insertmacro LANG_STRING Section_AutoStart "Otomatik Başlat"
 !insertmacro LANG_STRING Section_AutoStart_Desc "Açılışta otomatik başlatın."
 !insertmacro LANG_STRING Page_InstallMode "Kurulum Yöntemi"

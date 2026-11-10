@@ -44,3 +44,6 @@
 [submodule "plugins/RetroChess"]
 	path = plugins/RetroChess
 	url = ../RetroChess.git
+[submodule "plugins/QtPaint"]
+	path = plugins/QtPaint
+	url = ../QtPaint.git
