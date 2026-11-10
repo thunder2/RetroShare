@@ -47,3 +47,6 @@
 [submodule "plugins/QtPaint"]
 	path = plugins/QtPaint
 	url = ../QtPaint.git
+[submodule "plugins/retroGit"]
+	path = plugins/retroGit
+	url = ../retroGit.git

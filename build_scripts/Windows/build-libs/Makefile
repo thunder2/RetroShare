@@ -16,6 +16,7 @@ RAPIDJSON_VERSION=1.1.0
 XAPIAN_VERSION=1.4.29
 ASIO_VERSION=1-34-2
 #RNP_VERSION=0.17.1
+LIBGIT2_VERSION=1.9.7
 
 # libaries for rnp
 JSON_C_VERSION=0.18
@@ -25,7 +26,7 @@ DOWNLOAD_PATH?=download
 BUILD_PATH=build
 LIBS_PATH?=libs
 
-all: cleanlibs dirs zlib bzip2 miniupnpc openssl speex speexdsp libxml curl sqlcipher ffmpeg rapidjson xapian jsonc botan asio copylibs
+all: cleanlibs dirs zlib bzip2 miniupnpc openssl speex speexdsp libxml curl sqlcipher ffmpeg rapidjson xapian jsonc botan asio libgit2 copylibs
 #rnp
 
 download: \
@@ -125,7 +126,7 @@ $(BUILD_PATH)/miniupnpc-$(MINIUPNPC_VERSION): $(DOWNLOAD_PATH)/miniupnpc-$(MINIU
 	cmake -S miniupnpc-$(MINIUPNPC_VERSION) -B miniupnpc-$(MINIUPNPC_VERSION)/build -DCMAKE_INSTALL_PREFIX="$(abspath $(LIBS_PATH))" -DCMAKE_RC_FLAGS="$(RC_TARGET_FLAG)" -DUPNPC_BUILD_STATIC=OFF -DUPNPC_BUILD_SHARED=ON -DUPNPC_BUILD_TESTS=OFF -DUPNPC_BUILD_SAMPLE=OFF
 	cmake --build miniupnpc-$(MINIUPNPC_VERSION)/build --parallel
 	# copy files
-	# Workaround für miniupnpc 2.2.3 (CMakeLists.txt sucht Header im Hauptordner statt in include/)
+	# Workaround fÃ¼r miniupnpc 2.2.3 (CMakeLists.txt sucht Header im Hauptordner statt in include/)
 	cp miniupnpc-$(MINIUPNPC_VERSION)/include/*.h miniupnpc-$(MINIUPNPC_VERSION)/
 	cmake --install miniupnpc-$(MINIUPNPC_VERSION)/build --prefix "$(abspath $(BUILD_PATH)/miniupnpc-$(MINIUPNPC_VERSION).tmp)"
 	# cleanup
@@ -418,6 +419,22 @@ $(BUILD_PATH)/rnp-$(RNP_VERSION):
 	# cleanup
 	rm -r -f rnp-$(RNP_VERSION)
 	mv $(BUILD_PATH)/rnp-$(RNP_VERSION).tmp $(BUILD_PATH)/rnp-$(RNP_VERSION)
+
+libgit2: $(BUILD_PATH)/libgit2-$(LIBGIT2_VERSION)
+
+$(BUILD_PATH)/libgit2-$(LIBGIT2_VERSION):
+	# prepare
+	rm -r -f $(BUILD_PATH)/libgit2-*
+	[ -d "libgit2-$(LIBGIT2_VERSION)" ] || git clone https://github.com/libgit2/libgit2.git --depth=1 --branch v$(LIBGIT2_VERSION) "libgit2-$(LIBGIT2_VERSION)"
+	# build
+	mkdir -p libgit2-$(LIBGIT2_VERSION)/build
+	cd libgit2-$(LIBGIT2_VERSION)/build && cmake .. -G"MSYS Makefiles" -Wno-dev -DCMAKE_BUILD_TYPE="release" -DBUILD_SHARED_LIBS=ON -DBUILD_TESTS=OFF -DBUILD_CLI=OFF -DREGEX_BACKEND=builtin -DUSE_BUNDLED_ZLIB=ON -DCMAKE_INSTALL_PREFIX="$(abspath $(LIBS_PATH))" -DCMAKE_RC_FLAGS="$(RC_TARGET_FLAG)"
+	cmake --build libgit2-$(LIBGIT2_VERSION)/build --parallel
+	# copy files
+	cmake --install libgit2-$(LIBGIT2_VERSION)/build --prefix "$(abspath $(BUILD_PATH)/libgit2-$(LIBGIT2_VERSION).tmp)"
+	# cleanup
+	rm -r -f libgit2-$(LIBGIT2_VERSION)
+	mv $(BUILD_PATH)/libgit2-$(LIBGIT2_VERSION).tmp $(BUILD_PATH)/libgit2-$(LIBGIT2_VERSION)
 
 cleanlibs:
 	@echo "Remove libs"
