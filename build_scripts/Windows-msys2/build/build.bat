@@ -27,7 +27,7 @@ if not "%ParamNoupdate%"=="1" (
 	if "%ParamWebui%"=="1" %EnvMSYS2Cmd% "pacman --noconfirm --needed -S mingw-w64-%RsMSYS2Architecture%-doxygen mingw-w64-%RsMSYS2Architecture%-asio"
 
 	:: Plugins
-	if "%ParamPlugins%"=="1" %EnvMSYS2Cmd% "pacman --noconfirm --needed -S mingw-w64-%RsMSYS2Architecture%-speex mingw-w64-%RsMSYS2Architecture%-speexdsp mingw-w64-%RsMSYS2Architecture%-curl mingw-w64-%RsMSYS2Architecture%-libxslt mingw-w64-%RsMSYS2Architecture%-opencv mingw-w64-%RsMSYS2Architecture%-ffmpeg mingw-w64-%RsMSYS2Architecture%-libgit2"
+	if "%ParamPlugins%"=="1" %EnvMSYS2Cmd% "pacman --noconfirm --needed -S mingw-w64-%RsMSYS2Architecture%-speex mingw-w64-%RsMSYS2Architecture%-speexdsp mingw-w64-%RsMSYS2Architecture%-curl mingw-w64-%RsMSYS2Architecture%-libxslt mingw-w64-%RsMSYS2Architecture%-opencv mingw-w64-%RsMSYS2Architecture%-ffmpeg mingw-w64-%RsMSYS2Architecture%-libgit2 mingw-w64-%RsMSYS2Architecture%-lua"
 
 	:: Clang
 	if "%ClangCompiler%"=="1" %EnvMSYS2Cmd% "pacman --noconfirm --needed -S mingw-w64-%RsMSYS2Architecture%-clang"

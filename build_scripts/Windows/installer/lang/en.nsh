@@ -30,6 +30,8 @@
 !insertmacro LANG_STRING Section_Plugin_QtPaint_Desc "Installs plugin QtPaint."
 !insertmacro LANG_STRING Section_Plugin_RetroGit "RetroGit"
 !insertmacro LANG_STRING Section_Plugin_RetroGit_Desc "Installs plugin RetroGit."
+!insertmacro LANG_STRING Section_Plugin_Lua4RS "Lua4RS"
+!insertmacro LANG_STRING Section_Plugin_Lua4RS_Desc "Installs plugin Lua4RS."
 ;!insertmacro LANG_STRING Section_Link "File Association"
 ;!insertmacro LANG_STRING Section_Link_Desc "Associate ${APPNAME} with .pqi file extension."
 !insertmacro LANG_STRING Section_AutoStart "Auto Startup"
