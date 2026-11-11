@@ -50,3 +50,6 @@
 [submodule "plugins/retroGit"]
 	path = plugins/retroGit
 	url = ../retroGit.git
+[submodule "plugins/Lua4RS"]
+	path = plugins/Lua4RS
+	url = ../Lua4RS.git

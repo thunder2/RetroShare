@@ -17,6 +17,7 @@ XAPIAN_VERSION=1.4.29
 ASIO_VERSION=1-34-2
 #RNP_VERSION=0.17.1
 LIBGIT2_VERSION=1.9.7
+LUA_VERSION=5.5.1
 
 # libaries for rnp
 JSON_C_VERSION=0.18
@@ -26,7 +27,7 @@ DOWNLOAD_PATH?=download
 BUILD_PATH=build
 LIBS_PATH?=libs
 
-all: dirs zlib bzip2 miniupnpc openssl speex speexdsp libxml curl sqlcipher ffmpeg rapidjson xapian jsonc botan asio libgit2 copylibs
+all: dirs zlib bzip2 miniupnpc openssl speex speexdsp libxml curl sqlcipher ffmpeg rapidjson xapian jsonc botan asio libgit2 lua copylibs
 #rnp
 
 download: \
@@ -43,7 +44,8 @@ download: \
 	$(DOWNLOAD_PATH)/sqlcipher-$(SQLCIPHER_VERSION).tar.gz \
 	$(DOWNLOAD_PATH)/ffmpeg-$(FFMPEG_VERSION).tar.xz \
 	$(DOWNLOAD_PATH)/rapidjson-$(RAPIDJSON_VERSION).tar.gz \
-	$(DOWNLOAD_PATH)/xapian-core-$(XAPIAN_VERSION).tar.xz
+	$(DOWNLOAD_PATH)/xapian-core-$(XAPIAN_VERSION).tar.xz \
+	$(DOWNLOAD_PATH)/lua-$(LUA_VERSION).tar.gz
 
 clean:
 	rm -r -f $(BUILD_PATH)
@@ -442,6 +444,27 @@ $(BUILD_PATH)/libgit2-$(LIBGIT2_VERSION):
 	# cleanup
 	rm -r -f libgit2-$(LIBGIT2_VERSION)
 	mv $(BUILD_PATH)/libgit2-$(LIBGIT2_VERSION).tmp $(BUILD_PATH)/libgit2-$(LIBGIT2_VERSION)
+
+
+lua: $(BUILD_PATH)/lua-$(LUA_VERSION)
+
+$(DOWNLOAD_PATH)/lua-$(LUA_VERSION).tar.gz:
+	wget --no-check-certificate https://www.lua.org/ftp/lua-$(LUA_VERSION).tar.gz -O $(DOWNLOAD_PATH)/lua-$(LUA_VERSION).tar.gz
+
+LUA_DLL_VER=$(word 1,$(subst ., ,$(LUA_VERSION)))$(word 2,$(subst ., ,$(LUA_VERSION)))
+
+$(BUILD_PATH)/lua-$(LUA_VERSION): $(DOWNLOAD_PATH)/lua-$(LUA_VERSION).tar.gz
+	# prepare
+	rm -r -f $(BUILD_PATH)/lua-*
+	tar xvf $(DOWNLOAD_PATH)/lua-$(LUA_VERSION).tar.gz
+	# build
+#	cd lua-$(LUA_VERSION) && make PLAT=mingw -j
+#	cd lua-$(LUA_VERSION) && make install PLAT=mingw INSTALL_TOP="`pwd`/../$(BUILD_PATH)/lua-$(LUA_VERSION).tmp"
+	cd lua-$(LUA_VERSION)/src && make -j "LUA_A=lua$(LUA_DLL_VER).dll" "AR=gcc -shared -Wl,--out-implib,liblua.dll.a -o" "RANLIB=strip --strip-unneeded" "SYSCFLAGS=-DLUA_BUILD_AS_DLL" "SYSLIBS=" "SYSLDFLAGS=-s" lua$(LUA_DLL_VER).dll
+	cd lua-$(LUA_VERSION) && make install INSTALL_TOP="`pwd`/../$(BUILD_PATH)/lua-$(LUA_VERSION).tmp" TO_BIN="lua$(LUA_DLL_VER).dll" TO_LIB="liblua.dll.a"
+	# cleanup
+	rm -r -f lua-$(LUA_VERSION)
+	mv $(BUILD_PATH)/lua-$(LUA_VERSION).tmp $(BUILD_PATH)/lua-$(LUA_VERSION)
 
 copylibs:
 	rm -r -f $(LIBS_PATH) ; \

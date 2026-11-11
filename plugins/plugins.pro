@@ -27,4 +27,5 @@ SUBDIRS += \
 		FeedReader \
 		RetroChess \
 		QtPaint \
-		retroGit
+		retroGit \
+		Lua4RS
