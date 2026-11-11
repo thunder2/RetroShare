@@ -192,6 +192,7 @@ ${!defineifexist} PLUGIN_RETROCHESS_EXISTS "${DEPLOYDIR}\Data\extensions6\RetroC
 ${!defineifexist} PLUGIN_QTPAINT_EXISTS "${DEPLOYDIR}\Data\extensions6\QtPaint.dll"
 ${!defineifexist} PLUGIN_RETROGIT_EXISTS "${DEPLOYDIR}\Data\extensions6\RetroGit.dll"
 ${!defineifexist} PLUGIN_LUA4RS_EXISTS "${DEPLOYDIR}\Data\extensions6\Lua4RS.dll"
+${!defineifexist} PLUGIN_RSWIKI_EXISTS "${DEPLOYDIR}\Data\extensions6\RsWiki.dll"
 
 !ifdef PLUGIN_FEEDREADER_EXISTS
 !define /ifndef PLUGIN_EXISTS
@@ -209,6 +210,9 @@ ${!defineifexist} PLUGIN_LUA4RS_EXISTS "${DEPLOYDIR}\Data\extensions6\Lua4RS.dll
 !define /ifndef PLUGIN_EXISTS
 !endif
 !ifdef PLUGIN_LUA4RS_EXISTS
+!define /ifndef PLUGIN_EXISTS
+!endif
+!ifdef PLUGIN_RSWIKI_EXISTS
 !define /ifndef PLUGIN_EXISTS
 !endif
 
@@ -253,6 +257,13 @@ ${!defineifexist} PLUGIN_LUA4RS_EXISTS "${DEPLOYDIR}\Data\extensions6\Lua4RS.dll
     Section $(Section_Plugin_Lua4RS) Section_Plugin_Lua4RS
       SetOutPath "$DataDir\extensions6"
       File "${DEPLOYDIR}\Data\extensions6\Lua4RS.dll"
+    SectionEnd
+  !endif
+
+  !ifdef PLUGIN_RSWIKI_EXISTS
+    Section $(Section_Plugin_RsWiki) Section_Plugin_RsWiki
+      SetOutPath "$DataDir\extensions6"
+      File "${DEPLOYDIR}\Data\extensions6\RsWiki.dll"
     SectionEnd
   !endif
   SectionGroupEnd
@@ -343,6 +354,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${Section_Plugin_QtPaint} $(Section_Plugin_QtPaint_Desc)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section_Plugin_RetroGit} $(Section_Plugin_RetroGit_Desc)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section_Plugin_Lua4RS} $(Section_Plugin_Lua4RS_Desc)
+  !insertmacro MUI_DESCRIPTION_TEXT ${Section_Plugin_RsWiki} $(Section_Plugin_RsWiki_Desc)
 ;  !insertmacro MUI_DESCRIPTION_TEXT ${Section_Link} $(Section_Link_Desc)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section_AutoStart} $(Section_AutoStart_Desc)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END

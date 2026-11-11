@@ -32,6 +32,8 @@
 !insertmacro LANG_STRING Section_Plugin_RetroGit_Desc "Installs plugin RetroGit."
 !insertmacro LANG_STRING Section_Plugin_Lua4RS "Lua4RS"
 !insertmacro LANG_STRING Section_Plugin_Lua4RS_Desc "Installs plugin Lua4RS."
+!insertmacro LANG_STRING Section_Plugin_RsWiki "RsWiki"
+!insertmacro LANG_STRING Section_Plugin_RsWiki_Desc "Installs plugin RsWiki."
 ;!insertmacro LANG_STRING Section_Link "File Association"
 ;!insertmacro LANG_STRING Section_Link_Desc "Associate ${APPNAME} with .pqi file extension."
 !insertmacro LANG_STRING Section_AutoStart "Auto Startup"

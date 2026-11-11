@@ -53,3 +53,6 @@
 [submodule "plugins/Lua4RS"]
 	path = plugins/Lua4RS
 	url = ../Lua4RS.git
+[submodule "plugins/RsWiki"]
+	path = plugins/RsWiki
+	url = https://github.com/thunder2/RsWiki.git

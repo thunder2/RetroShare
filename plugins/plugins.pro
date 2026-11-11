@@ -28,4 +28,5 @@ SUBDIRS += \
 		RetroChess \
 		QtPaint \
 		retroGit \
-		Lua4RS
+		Lua4RS \
+		RsWiki
