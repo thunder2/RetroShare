@@ -246,7 +246,7 @@ Section $(Section_Main) Section_Main
   File "${MINGWDIR}\bin\libwinpthread-1.dll"
 
   ; External binaries
-  File "${EXTERNAL_LIB_DIR}\bin\miniupnpc.dll"
+  File "${EXTERNAL_LIB_DIR}\bin\libminiupnpc.dll"
   File "${RELEASEDIR}\supportlibs\librnp\Build\src\lib\librnp.dll"
   !if ${ARCHITECTURE} == "x86"
     File "${EXTERNAL_LIB_DIR}\bin\libcrypto-1_1.dll"

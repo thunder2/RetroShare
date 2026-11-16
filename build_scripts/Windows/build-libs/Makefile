@@ -25,7 +25,7 @@ DOWNLOAD_PATH?=download
 BUILD_PATH=build
 LIBS_PATH?=libs
 
-all: dirs zlib bzip2 miniupnpc openssl speex speexdsp libxml curl sqlcipher ffmpeg rapidjson xapian jsonc botan asio copylibs
+all: cleanlibs dirs zlib bzip2 miniupnpc openssl speex speexdsp libxml curl sqlcipher ffmpeg rapidjson xapian jsonc botan asio copylibs
 #rnp
 
 download: \
@@ -45,13 +45,30 @@ download: \
 	$(DOWNLOAD_PATH)/xapian-core-$(XAPIAN_VERSION).tar.xz
 
 clean:
-	rm -r -f $(BUILD_PATH)
-	rm -r -f $(LIBS_PATH)
+	@rm -r -f $(BUILD_PATH)
+	@rm -r -f $(LIBS_PATH)
 
 dirs:
-	mkdir -p $(DOWNLOAD_PATH)
-	mkdir -p $(BUILD_PATH)
-	gcc --version | head --lines 1 | tr ' ' '\n' | tail -1 >$(BUILD_PATH)/gcc-version
+	@mkdir -p $(DOWNLOAD_PATH)
+	@mkdir -p $(BUILD_PATH)
+	@gcc --version | head --lines 1 | tr ' ' '\n' | tail -1 >$(BUILD_PATH)/gcc-version
+
+WIN_LIBS_PATH := $(shell cygpath -m '$(abspath $(LIBS_PATH))' | sed 's/^[a-z]:/\U&/')
+
+define CLEAN_PC_FILES
+	find "$(1)" \( -name "*.pc" -o -name "*.la" \) -exec perl -i -pe \
+		's{(^|[=\s'\'']|-[IL])/([a-zA-Z])/}{$$1\U$$2:/}g; \
+		 s{((?:^|[=\s'\''])(?:-[IL])?|-[IL])[^ ='\''"\s]*/build/[^/\s'\'']+}{$$1$(WIN_LIBS_PATH)}g; \
+		 s{(^|[=\s'\'']|-[IL])([a-z]):/}{$$1\U$$2:/}g;' {} +
+endef
+
+ifeq ($(MSYSTEM),MINGW32)
+	RC_TARGET_FLAG := -F pe-i386
+else ifneq ($(filter $(MSYSTEM),MINGW64),)
+	RC_TARGET_FLAG :=
+else
+	$(error ERROR: Only MINGW32 and MINGW64 supported)
+endif
 
 $(DOWNLOAD_PATH)/zlib-$(ZLIB_VERSION).tar.gz:
 	wget --no-check-certificate http://sourceforge.net/projects/libpng/files/zlib/$(ZLIB_VERSION)/zlib-$(ZLIB_VERSION).tar.gz/download -O $(DOWNLOAD_PATH)/zlib-$(ZLIB_VERSION).tar.gz
@@ -105,14 +122,12 @@ $(BUILD_PATH)/miniupnpc-$(MINIUPNPC_VERSION): $(DOWNLOAD_PATH)/miniupnpc-$(MINIU
 	rm -r -f $(BUILD_PATH)/miniupnpc-*
 	tar xvf $(DOWNLOAD_PATH)/miniupnpc-$(MINIUPNPC_VERSION).tar.gz
 	# build
-	cd miniupnpc-$(MINIUPNPC_VERSION) && export CC=gcc && export PATH=.:$$PATH && make -j -f Makefile.mingw libminiupnpc.a miniupnpc.dll
+	cmake -S miniupnpc-$(MINIUPNPC_VERSION) -B miniupnpc-$(MINIUPNPC_VERSION)/build -DCMAKE_INSTALL_PREFIX="$(abspath $(LIBS_PATH))" -DCMAKE_RC_FLAGS="$(RC_TARGET_FLAG)" -DUPNPC_BUILD_STATIC=OFF -DUPNPC_BUILD_SHARED=ON -DUPNPC_BUILD_TESTS=OFF -DUPNPC_BUILD_SAMPLE=OFF
+	cmake --build miniupnpc-$(MINIUPNPC_VERSION)/build --parallel
 	# copy files
-	mkdir -p $(BUILD_PATH)/miniupnpc-$(MINIUPNPC_VERSION).tmp/include/miniupnpc
-	cp miniupnpc-$(MINIUPNPC_VERSION)/include/*.h $(BUILD_PATH)/miniupnpc-$(MINIUPNPC_VERSION).tmp/include/miniupnpc/
-	mkdir -p $(BUILD_PATH)/miniupnpc-$(MINIUPNPC_VERSION).tmp/lib
-	cp miniupnpc-$(MINIUPNPC_VERSION)/miniupnpc.lib $(BUILD_PATH)/miniupnpc-$(MINIUPNPC_VERSION).tmp/lib/
-	mkdir -p $(BUILD_PATH)/miniupnpc-$(MINIUPNPC_VERSION).tmp/bin
-	cp miniupnpc-$(MINIUPNPC_VERSION)/miniupnpc.dll $(BUILD_PATH)/miniupnpc-$(MINIUPNPC_VERSION).tmp/bin/
+	# Workaround für miniupnpc 2.2.3 (CMakeLists.txt sucht Header im Hauptordner statt in include/)
+	cp miniupnpc-$(MINIUPNPC_VERSION)/include/*.h miniupnpc-$(MINIUPNPC_VERSION)/
+	cmake --install miniupnpc-$(MINIUPNPC_VERSION)/build --prefix "$(abspath $(BUILD_PATH)/miniupnpc-$(MINIUPNPC_VERSION).tmp)"
 	# cleanup
 	rm -r -f miniupnpc-$(MINIUPNPC_VERSION)
 	mv $(BUILD_PATH)/miniupnpc-$(MINIUPNPC_VERSION).tmp $(BUILD_PATH)/miniupnpc-$(MINIUPNPC_VERSION)
@@ -127,22 +142,12 @@ $(BUILD_PATH)/openssl-$(OPENSSL_VERSION): $(DOWNLOAD_PATH)/openssl-$(OPENSSL_VER
 	rm -r -f $(BUILD_PATH)/openssl-*
 	tar xvf $(DOWNLOAD_PATH)/openssl-$(OPENSSL_VERSION).tar.gz
 	# build
-	#cd openssl-$(OPENSSL_VERSION) && ./config --prefix="`pwd`/../$(BUILD_PATH)"
-	#cd openssl-$(OPENSSL_VERSION) && make install
-	cd openssl-$(OPENSSL_VERSION) && ./config shared
-	cd openssl-$(OPENSSL_VERSION) && make -j
+	cd openssl-$(OPENSSL_VERSION) && ./config shared --prefix="$(abspath $(LIBS_PATH))" --openssldir="$(abspath $(BUILD_PATH)/openssl-$(OPENSSL_VERSION).tmp/ssl)"
+	cd openssl-$(OPENSSL_VERSION) && make -j build_libs
 	# copy files
-	mkdir -p $(BUILD_PATH)/openssl-$(OPENSSL_VERSION).tmp/include/openssl
-	cp openssl-$(OPENSSL_VERSION)/include/openssl/*.h $(BUILD_PATH)/openssl-$(OPENSSL_VERSION).tmp/include/openssl/
-	mkdir -p $(BUILD_PATH)/openssl-$(OPENSSL_VERSION).tmp/bin
-	if [ $(MSYSTEM) = "MINGW32" ] ; then cp openssl-$(OPENSSL_VERSION)/libcrypto-1_1.dll $(BUILD_PATH)/openssl-$(OPENSSL_VERSION).tmp/bin/ ; fi
-	if [ $(MSYSTEM) = "MINGW32" ] ; then cp openssl-$(OPENSSL_VERSION)/libcrypto-1_1.dll $(BUILD_PATH)/openssl-$(OPENSSL_VERSION).tmp/bin/ ; fi
-	if [ $(MSYSTEM) = "MINGW32" ] ; then cp openssl-$(OPENSSL_VERSION)/libssl-1_1.dll $(BUILD_PATH)/openssl-$(OPENSSL_VERSION).tmp/bin/ ; fi
-	if [ $(MSYSTEM) = "MINGW64" ] ; then cp openssl-$(OPENSSL_VERSION)/libcrypto-1_1-x64.dll $(BUILD_PATH)/openssl-$(OPENSSL_VERSION).tmp/bin/ ; fi
-	if [ $(MSYSTEM) = "MINGW64" ] ; then cp openssl-$(OPENSSL_VERSION)/libssl-1_1-x64.dll $(BUILD_PATH)/openssl-$(OPENSSL_VERSION).tmp/bin/ ; fi
-	mkdir -p $(BUILD_PATH)/openssl-$(OPENSSL_VERSION).tmp/lib
-	cp openssl-$(OPENSSL_VERSION)/libcrypto.dll.a $(BUILD_PATH)/openssl-$(OPENSSL_VERSION).tmp/lib/
-	cp openssl-$(OPENSSL_VERSION)/libssl.dll.a $(BUILD_PATH)/openssl-$(OPENSSL_VERSION).tmp/lib/
+	cd openssl-$(OPENSSL_VERSION) && make install_dev INSTALLTOP_dir="$(abspath $(BUILD_PATH)/openssl-$(OPENSSL_VERSION).tmp)" ENGINESDIR_dir="$(abspath $(BUILD_PATH)/openssl-$(OPENSSL_VERSION).tmp)/lib/engines-1_1" OPENSSLDIR_dir="$(abspath $(BUILD_PATH)/openssl-$(OPENSSL_VERSION).tmp)"
+	rm -f "$(BUILD_PATH)/openssl-$(OPENSSL_VERSION).tmp/lib/libcrypto.a" "$(BUILD_PATH)/openssl-$(OPENSSL_VERSION).tmp/lib/libssl.a"
+	$(call CLEAN_PC_FILES,$(abspath $(BUILD_PATH)/openssl-$(OPENSSL_VERSION).tmp))
 	# cleanup
 	rm -r -f openssl-$(OPENSSL_VERSION)
 	mv $(BUILD_PATH)/openssl-$(OPENSSL_VERSION).tmp $(BUILD_PATH)/openssl-$(OPENSSL_VERSION)
@@ -157,14 +162,11 @@ $(BUILD_PATH)/speex-$(SPEEX_VERSION): $(DOWNLOAD_PATH)/speex-$(SPEEX_VERSION).ta
 	rm -r -f $(BUILD_PATH)/speex-*
 	tar xvf $(DOWNLOAD_PATH)/speex-$(SPEEX_VERSION).tar.gz
 	# build
-	cd speex-$(SPEEX_VERSION) && ./configure
-	#cd speex-$(SPEEX_VERSION) && make install exec_prefix="`pwd`/../$(BUILD_PATH)"
+	cd speex-$(SPEEX_VERSION) && ./configure --disable-shared --enable-static --prefix="$(abspath $(LIBS_PATH))"
 	cd speex-$(SPEEX_VERSION) && make -j
 	# copy files
-	mkdir -p $(BUILD_PATH)/speex-$(SPEEX_VERSION).tmp/include/speex
-	cp speex-$(SPEEX_VERSION)/include/speex/*.h $(BUILD_PATH)/speex-$(SPEEX_VERSION).tmp/include/speex/
-	mkdir -p $(BUILD_PATH)/speex-$(SPEEX_VERSION).tmp/lib
-	cp speex-$(SPEEX_VERSION)/libspeex/.libs/libspeex.a $(BUILD_PATH)/speex-$(SPEEX_VERSION).tmp/lib
+	cd speex-$(SPEEX_VERSION) && make install prefix="$(abspath $(BUILD_PATH)/speex-$(SPEEX_VERSION).tmp)"
+	$(call CLEAN_PC_FILES,$(abspath $(BUILD_PATH)/speex-$(SPEEX_VERSION).tmp))
 	# cleanup
 	rm -r -f speex-$(SPEEX_VERSION)
 	mv $(BUILD_PATH)/speex-$(SPEEX_VERSION).tmp $(BUILD_PATH)/speex-$(SPEEX_VERSION)
@@ -179,13 +181,13 @@ $(BUILD_PATH)/speexdsp-$(SPEEXDSP_VERSION): $(DOWNLOAD_PATH)/speexdsp-$(SPEEXDSP
 	rm -r -f $(BUILD_PATH)/speexdsp-*
 	tar xvf $(DOWNLOAD_PATH)/speexdsp-$(SPEEXDSP_VERSION).tar.gz
 	# build
-	cd speexdsp-$(SPEEXDSP_VERSION) && ./configure
+	cd speexdsp-$(SPEEXDSP_VERSION) && ./configure --disable-shared --enable-static --prefix="$(abspath $(LIBS_PATH))"
 	cd speexdsp-$(SPEEXDSP_VERSION) && make -j
 	# copy files
-	mkdir -p $(BUILD_PATH)/speexdsp-$(SPEEXDSP_VERSION).tmp/include/speex
+	cd speexdsp-$(SPEEXDSP_VERSION) && make install prefix="$(abspath $(BUILD_PATH)/speexdsp-$(SPEEXDSP_VERSION).tmp)"
+	# copy missing header files
 	cp speexdsp-$(SPEEXDSP_VERSION)/include/speex/*.h $(BUILD_PATH)/speexdsp-$(SPEEXDSP_VERSION).tmp/include/speex/
-	mkdir -p $(BUILD_PATH)/speexdsp-$(SPEEXDSP_VERSION).tmp/lib
-	cp speexdsp-$(SPEEXDSP_VERSION)/libspeexdsp/.libs/libspeexdsp.a $(BUILD_PATH)/speexdsp-$(SPEEXDSP_VERSION).tmp/lib
+	$(call CLEAN_PC_FILES,$(abspath $(BUILD_PATH)/speexdsp-$(SPEEXDSP_VERSION).tmp))
 	# cleanup
 	rm -r -f speexdsp-$(SPEEXDSP_VERSION)
 	mv $(BUILD_PATH)/speexdsp-$(SPEEXDSP_VERSION).tmp $(BUILD_PATH)/speexdsp-$(SPEEXDSP_VERSION)
@@ -209,27 +211,23 @@ $(BUILD_PATH)/libxml2-$(LIBXML2_VERSION) $(BUILD_PATH)/libxslt-$(LIBXSLT_VERSION
 	tar xvf $(DOWNLOAD_PATH)/libxml2-$(LIBXML2_VERSION).tar.xz
 	# libxslt: prepare
 	rm -r -f $(BUILD_PATH)/libxslt-*
-	tar xvf $(DOWNLOAD_PATH)/libxml2-$(LIBXML2_VERSION).tar.xz
 	tar xvf $(DOWNLOAD_PATH)/libxslt-$(LIBXSLT_VERSION).tar.xz
 	# libxml2: build
-	cd libxml2-$(LIBXML2_VERSION) && ./configure --without-iconv -enable-shared=no
-	#cd libxml2-$(LIBXML2_VERSION) && make install exec_prefix="`pwd`/../$(BUILD_PATH)"
+	cd libxml2-$(LIBXML2_VERSION) && ./configure --without-iconv -disable-shared --prefix="$(abspath $(LIBS_PATH))"
 	cd libxml2-$(LIBXML2_VERSION) && make -j libxml2.la
 	# libxslt: build
-	cd libxslt-$(LIBXSLT_VERSION) && ./configure --with-libxml-src=../libxml2-$(LIBXML2_VERSION) -enable-shared=no CFLAGS=-DLIBXML_STATIC
-	cd libxslt-$(LIBXSLT_VERSION)/libxslt && make -j
-	cd libxslt-$(LIBXSLT_VERSION)/libexslt && make -j
+	cd libxslt-$(LIBXSLT_VERSION) && ./configure --with-libxml-src=../libxml2-$(LIBXML2_VERSION) -disable-shared CFLAGS=-DLIBXML_STATIC --prefix="$(abspath $(LIBS_PATH))"
+	cd libxslt-$(LIBXSLT_VERSION) && make -j -C libxslt libxslt.la
+	cd libxslt-$(LIBXSLT_VERSION) && make -j -C libexslt libexslt.la
 	# libxml2: copy files
-	mkdir -p $(BUILD_PATH)/libxml2-$(LIBXML2_VERSION).tmp/include/libxml
-	cp libxml2-$(LIBXML2_VERSION)/include/libxml/*.h $(BUILD_PATH)/libxml2-$(LIBXML2_VERSION).tmp/include/libxml/
-	mkdir -p $(BUILD_PATH)/libxml2-$(LIBXML2_VERSION).tmp/lib
-	cp libxml2-$(LIBXML2_VERSION)/.libs/libxml2.a $(BUILD_PATH)/libxml2-$(LIBXML2_VERSION).tmp/lib/
+	cd libxml2-$(LIBXML2_VERSION) && make install-libLTLIBRARIES install-data-am prefix="$(abspath $(BUILD_PATH)/libxml2-$(LIBXML2_VERSION).tmp)" exec_prefix="$(abspath $(BUILD_PATH)/libxml2-$(LIBXML2_VERSION).tmp)"
+	cd libxml2-$(LIBXML2_VERSION)/include && make install prefix="$(abspath $(BUILD_PATH)/libxml2-$(LIBXML2_VERSION).tmp)" exec_prefix="$(abspath $(BUILD_PATH)/libxml2-$(LIBXML2_VERSION).tmp)"
+	$(call CLEAN_PC_FILES,$(abspath $(BUILD_PATH)/libxml2-$(LIBXML2_VERSION).tmp))
 	# libxslt: copy files
-	mkdir -p $(BUILD_PATH)/libxslt-$(LIBXSLT_VERSION).tmp/include/libxslt
-	cp libxslt-$(LIBXSLT_VERSION)/libxslt/*.h $(BUILD_PATH)/libxslt-$(LIBXSLT_VERSION).tmp/include/libxslt/
-	mkdir -p $(BUILD_PATH)/libxslt-$(LIBXSLT_VERSION).tmp/lib
-	cp libxslt-$(LIBXSLT_VERSION)/libxslt/.libs/libxslt.a $(BUILD_PATH)/libxslt-$(LIBXSLT_VERSION).tmp/lib/
-	cp libxslt-$(LIBXSLT_VERSION)/libexslt/.libs/libexslt.a $(BUILD_PATH)/libxslt-$(LIBXSLT_VERSION).tmp/lib/
+	cd libxslt-$(LIBXSLT_VERSION)/libxslt && make install prefix="$(abspath $(BUILD_PATH)/libxslt-$(LIBXSLT_VERSION).tmp)" exec_prefix="$(abspath $(BUILD_PATH)/libxslt-$(LIBXSLT_VERSION).tmp)"
+	cd libxslt-$(LIBXSLT_VERSION)/libexslt && make install prefix="$(abspath $(BUILD_PATH)/libxslt-$(LIBXSLT_VERSION).tmp)" exec_prefix="$(abspath $(BUILD_PATH)/libxslt-$(LIBXSLT_VERSION).tmp)"
+	cd libxslt-$(LIBXSLT_VERSION) && make install-data-am prefix="$(abspath $(BUILD_PATH)/libxslt-$(LIBXSLT_VERSION).tmp)" exec_prefix="$(abspath $(BUILD_PATH)/libxslt-$(LIBXSLT_VERSION).tmp)"
+	$(call CLEAN_PC_FILES,$(abspath $(BUILD_PATH)/libxslt-$(LIBXSLT_VERSION).tmp))
 	# libxml2: cleanup
 	rm -r -f libxml2-$(LIBXML2_VERSION)
 	# libxslt: cleanup
@@ -248,14 +246,11 @@ $(BUILD_PATH)/curl-$(CURL_VERSION): $(DOWNLOAD_PATH)/curl-$(CURL_VERSION).tar.gz
 	rm -r -f $(BUILD_PATH)/curl-*
 	tar xvf $(DOWNLOAD_PATH)/curl-$(CURL_VERSION).tar.gz
 	# build
-	cd curl-$(CURL_VERSION) && ./configure --disable-shared --with-ssl="`pwd`/../$(BUILD_PATH)/openssl-$(OPENSSL_VERSION)"
-	#cd curl-$(CURL_VERSION) && make install exec_prefix="`pwd`/../$(BUILD_PATH)"
-	cd curl-$(CURL_VERSION)/lib && make -j
+	cd curl-$(CURL_VERSION) && cmake -B build -DCMAKE_INSTALL_PREFIX="$(abspath $(LIBS_PATH))" -DCMAKE_PREFIX_PATH="$(abspath $(BUILD_PATH)/openssl-$(OPENSSL_VERSION))" -DBUILD_SHARED_LIBS=OFF -DBUILD_CURL_EXE=OFF -DBUILD_TESTING=OFF -DBUILD_LIBCURL_DOCS=OFF -DENABLE_CURL_MANUAL=OFF -DCURL_USE_OPENSSL=ON -DCURL_USE_LIBPSL=OFF -DOPENSSL_ROOT_DIR="$(abspath $(BUILD_PATH)/openssl-$(OPENSSL_VERSION))" -DOPENSSL_INCLUDE_DIR="$(abspath $(BUILD_PATH)/openssl-$(OPENSSL_VERSION)/include)" -DOPENSSL_SSL_LIBRARY="$(abspath $(BUILD_PATH)/openssl-$(OPENSSL_VERSION)/lib/libssl.dll.a)" -DOPENSSL_CRYPTO_LIBRARY="$(abspath $(BUILD_PATH)/openssl-$(OPENSSL_VERSION)/lib/libcrypto.dll.a)"
+	cd curl-$(CURL_VERSION) && cmake --build build -j
 	# copy files
-	mkdir -p $(BUILD_PATH)/curl-$(CURL_VERSION).tmp/include/curl
-	cp curl-$(CURL_VERSION)/include/curl/*.h $(BUILD_PATH)/curl-$(CURL_VERSION).tmp/include/curl/
-	mkdir -p $(BUILD_PATH)/curl-$(CURL_VERSION).tmp/lib
-	cp curl-$(CURL_VERSION)/lib/.libs/libcurl.a $(BUILD_PATH)/curl-$(CURL_VERSION).tmp/lib/
+	cd curl-$(CURL_VERSION) && cmake --install build --prefix "$(abspath $(BUILD_PATH)/curl-$(CURL_VERSION).tmp)"
+	$(call CLEAN_PC_FILES,$(abspath $(BUILD_PATH)/curl-$(CURL_VERSION).tmp))
 	# cleanup
 	rm -r -f curl-$(CURL_VERSION)
 	mv $(BUILD_PATH)/curl-$(CURL_VERSION).tmp $(BUILD_PATH)/curl-$(CURL_VERSION)
@@ -274,22 +269,20 @@ $(BUILD_PATH)/sqlcipher-$(SQLCIPHER_VERSION): $(DOWNLOAD_PATH)/tcl$(TCL_VERSION)
 	# tcl
 	tar xvf $(DOWNLOAD_PATH)/tcl$(TCL_VERSION)-src.tar.gz
 	mkdir -p tcl$(TCL_VERSION)/build
-	cd tcl$(TCL_VERSION)/build && ../win/configure
-	cd tcl$(TCL_VERSION)/build && make -j
-	#sqlcipher
+	cd tcl$(TCL_VERSION)/build && RC="windres $(RC_TARGET_FLAG)" ../win/configure
+	cd tcl$(TCL_VERSION)/build && make -j tclsh86.exe
+	# sqlcipher
 	tar xvf $(DOWNLOAD_PATH)/sqlcipher-$(SQLCIPHER_VERSION).tar.gz
 	cd sqlcipher-$(SQLCIPHER_VERSION) && ln -s ../tcl$(TCL_VERSION)/build/tclsh86.exe tclsh
 	mkdir -p tcl$(TCL_VERSION)/lib
 	ln -s `pwd`/tcl$(TCL_VERSION)/library `pwd`/tcl$(TCL_VERSION)/lib/tcl8.6
 	# build
-	cd sqlcipher-$(SQLCIPHER_VERSION) && PATH=.:$$PATH:`pwd`/../tcl$(TCL_VERSION)/build && export LIBS="-L`pwd`/../$(BUILD_PATH)/openssl-$(OPENSSL_VERSION)/lib -lgdi32 $$LIBS" && ./configure --disable-shared --enable-static --enable-tempstore=yes CFLAGS="-DSQLITE_HAS_CODEC -I`pwd`/../$(BUILD_PATH)/openssl-$(OPENSSL_VERSION)/include -I`pwd`/../tcl$(TCL_VERSION)/generic" LDFLAGS="-L`pwd`/../$(BUILD_PATH)/openssl-$(OPENSSL_VERSION)/lib -lcrypto -lgdi32" --with-tcl="`pwd`/../tcl$(TCL_VERSION)/build" && make -j install prefix="`pwd`/install"
+	cd sqlcipher-$(SQLCIPHER_VERSION) && PATH=.:$$PATH:$(abspath tcl$(TCL_VERSION)/build) && export LIBS="-L$(abspath $(BUILD_PATH)/openssl-$(OPENSSL_VERSION)/lib) -lgdi32 $$LIBS" && ./configure --disable-shared --enable-static --enable-tempstore=yes CFLAGS="-DSQLITE_HAS_CODEC -I$(abspath $(BUILD_PATH)/openssl-$(OPENSSL_VERSION)/include) -I$(abspath tcl$(TCL_VERSION)/generic)" LDFLAGS="-L$(abspath $(BUILD_PATH)/openssl-$(OPENSSL_VERSION)/lib) -lcrypto -lgdi32" --with-tcl="$(abspath tcl$(TCL_VERSION)/build)" --prefix="$(abspath $(LIBS_PATH))" && make -j
 	# copy files
-	mkdir -p $(BUILD_PATH)/sqlcipher-$(SQLCIPHER_VERSION).tmp/include
-	cp -r sqlcipher-$(SQLCIPHER_VERSION)/install/include/* $(BUILD_PATH)/sqlcipher-$(SQLCIPHER_VERSION).tmp/include/
-	mkdir -p $(BUILD_PATH)/sqlcipher-$(SQLCIPHER_VERSION).tmp/lib
-	cp sqlcipher-$(SQLCIPHER_VERSION)/install/lib/libsqlcipher.a $(BUILD_PATH)/sqlcipher-$(SQLCIPHER_VERSION).tmp/lib/
-	mkdir -p $(BUILD_PATH)/sqlcipher-$(SQLCIPHER_VERSION).tmp/bin
-	cp sqlcipher-$(SQLCIPHER_VERSION)/install/bin/sqlcipher.exe $(BUILD_PATH)/sqlcipher-$(SQLCIPHER_VERSION).tmp/bin/
+	cd sqlcipher-$(SQLCIPHER_VERSION) && make install prefix="$(abspath $(BUILD_PATH)/sqlcipher-$(SQLCIPHER_VERSION).tmp)"
+	# fix path to openssl
+	sed -i 's|$(abspath $(BUILD_PATH)/openssl-$(OPENSSL_VERSION)/lib)|$(abspath $(LIBS_PATH))/lib|g' "$(abspath $(BUILD_PATH)/sqlcipher-$(SQLCIPHER_VERSION).tmp)/lib/libsqlcipher.la" "$(abspath $(BUILD_PATH)/sqlcipher-$(SQLCIPHER_VERSION).tmp)/lib/pkgconfig/sqlcipher.pc"
+	$(call CLEAN_PC_FILES,$(abspath $(BUILD_PATH)/sqlcipher-$(SQLCIPHER_VERSION).tmp))
 	# cleanup
 	rm -r -f sqlcipher-$(SQLCIPHER_VERSION)
 	rm -r -f tcl$(TCL_VERSION)
@@ -305,8 +298,11 @@ $(BUILD_PATH)/ffmpeg-$(FFMPEG_VERSION): $(DOWNLOAD_PATH)/ffmpeg-$(FFMPEG_VERSION
 	rm -r -f $(BUILD_PATH)/ffmpeg-*
 	tar xvf $(DOWNLOAD_PATH)/ffmpeg-$(FFMPEG_VERSION).tar.xz
 	# build
-	cd ffmpeg-$(FFMPEG_VERSION) && ./configure --disable-shared --enable-static --disable-programs --disable-ffmpeg --disable-ffplay --disable-ffprobe --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages --disable-yasm --disable-everything --enable-encoder=mpeg4 --enable-decoder=mpeg4 --prefix="`pwd`/../$(BUILD_PATH)/ffmpeg-$(FFMPEG_VERSION).tmp"
-	cd ffmpeg-$(FFMPEG_VERSION) && make -j install
+	cd ffmpeg-$(FFMPEG_VERSION) && ./configure --disable-shared --enable-static --disable-programs --disable-ffmpeg --disable-ffplay --disable-ffprobe --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages --disable-yasm --disable-everything --enable-encoder=mpeg4 --enable-decoder=mpeg4 --prefix="$(abspath $(LIBS_PATH))"
+	cd ffmpeg-$(FFMPEG_VERSION) && make -j
+	# copy files
+	cd ffmpeg-$(FFMPEG_VERSION) && make install prefix="$(abspath $(BUILD_PATH)/ffmpeg-$(FFMPEG_VERSION).tmp)"
+	$(call CLEAN_PC_FILES,$(abspath $(BUILD_PATH)/ffmpeg-$(FFMPEG_VERSION).tmp))
 	# cleanup
 	rm -r -f ffmpeg-$(FFMPEG_VERSION)
 	mv $(BUILD_PATH)/ffmpeg-$(FFMPEG_VERSION).tmp $(BUILD_PATH)/ffmpeg-$(FFMPEG_VERSION)
@@ -341,16 +337,11 @@ $(BUILD_PATH)/xapian-core-$(XAPIAN_VERSION): $(DOWNLOAD_PATH)/xapian-core-$(XAPI
 	rm -r -f $(BUILD_PATH)/xapian-core-*
 	tar xvf $(DOWNLOAD_PATH)/xapian-core-$(XAPIAN_VERSION).tar.xz
 	# build
-	#cd xapian-core-$(XAPIAN_VERSION) && ./configure --disable-shared --enable-static --prefix="`pwd`/../$(BUILD_PATH)/xapian-core-$(XAPIAN_VERSION).tmp"
-	#cd xapian-core-$(XAPIAN_VERSION) && make install
-	cd xapian-core-$(XAPIAN_VERSION) && ./configure --disable-shared --enable-static
-	cd xapian-core-$(XAPIAN_VERSION) && make -j
+	cd xapian-core-$(XAPIAN_VERSION) && ./configure --disable-shared --enable-static --disable-documentation --prefix="$(abspath $(LIBS_PATH))"
+	cd xapian-core-$(XAPIAN_VERSION) && make -j libxapian.la
 	# copy files
-	mkdir -p $(BUILD_PATH)/xapian-core-$(XAPIAN_VERSION).tmp/include
-	cp -r xapian-core-$(XAPIAN_VERSION)/include/* $(BUILD_PATH)/xapian-core-$(XAPIAN_VERSION).tmp/include/
-	rm $(BUILD_PATH)/xapian-core-$(XAPIAN_VERSION).tmp/include/Makefile*
-	mkdir -p $(BUILD_PATH)/xapian-core-$(XAPIAN_VERSION).tmp/lib
-	cp -r xapian-core-$(XAPIAN_VERSION)/.libs/libxapian.a $(BUILD_PATH)/xapian-core-$(XAPIAN_VERSION).tmp/lib/
+	cd xapian-core-$(XAPIAN_VERSION) && make install-libLTLIBRARIES install-incHEADERS install-xapianincludeHEADERS install-nodist_xapianincludeHEADERS install-nodist_pkgconfigDATA prefix="$(abspath $(BUILD_PATH)/xapian-core-$(XAPIAN_VERSION).tmp)"
+	$(call CLEAN_PC_FILES,$(abspath $(BUILD_PATH)/xapian-core-$(XAPIAN_VERSION).tmp))
 	# cleanup
 	rm -r -f xapian-core-$(XAPIAN_VERSION)
 	mv $(BUILD_PATH)/xapian-core-$(XAPIAN_VERSION).tmp $(BUILD_PATH)/xapian-core-$(XAPIAN_VERSION)
@@ -363,8 +354,12 @@ $(BUILD_PATH)/json-c-$(JSON_C_VERSION):
 	[ -d "json-c-$(JSON_C_VERSION)" ] || git clone https://github.com/json-c/json-c.git --depth=1 --branch json-c-$(JSON_C_VERSION) "json-c-$(JSON_C_VERSION)"
 	# build
 	mkdir -p json-c-$(JSON_C_VERSION)/build
-	cd json-c-$(JSON_C_VERSION)/build && cmake .. -G"MSYS Makefiles" -Wno-dev -DCMAKE_BUILD_TYPE="release" -DBUILD_SHARED_LIBS=off -DBUILD_STATIC_LIBS=on -DBUILD_TESTING=off -DCMAKE_CXX_FLAGS="-D__MINGW_USE_VC2005_COMPAT" -DCMAKE_INSTALL_PREFIX="`pwd`/install" -DCMAKE_INSTALL_PREFIX="`pwd`/../../$(BUILD_PATH)/json-c-$(JSON_C_VERSION).tmp"
-	cd json-c-$(JSON_C_VERSION)/build && make -j install
+	cd json-c-$(JSON_C_VERSION)/build && cmake .. -G"MSYS Makefiles" -Wno-dev -DCMAKE_BUILD_TYPE="release" -DBUILD_SHARED_LIBS=off -DBUILD_STATIC_LIBS=on -DBUILD_TESTING=off -DCMAKE_CXX_FLAGS="-D__MINGW_USE_VC2005_COMPAT" -DCMAKE_INSTALL_PREFIX="$(abspath $(BUILD_PATH)/json-c-$(JSON_C_VERSION).tmp)"
+	cmake --build json-c-$(JSON_C_VERSION)/build --parallel
+	# copy files
+	cmake --install json-c-$(JSON_C_VERSION)/build
+	# fix package config file (bug in json-c with CMAKE_INSTALL_PREFIX)
+	sed -i -E "s|=.*json-c-$(JSON_C_VERSION)\.tmp|=$$(cygpath -m '$(abspath $(LIBS_PATH))')|g" "$(abspath $(BUILD_PATH)/json-c-$(JSON_C_VERSION).tmp)/lib/pkgconfig/json-c.pc"
 	# cleanup
 	rm -r -f json-c-$(JSON_C_VERSION)
 	mv $(BUILD_PATH)/json-c-$(JSON_C_VERSION).tmp $(BUILD_PATH)/json-c-$(JSON_C_VERSION)
@@ -377,9 +372,15 @@ $(BUILD_PATH)/botan-$(BOTAN_VERSION):
 	rm -r -f $(BUILD_PATH)/botan-*
 	[ -d "botan-$(BOTAN_VERSION)" ] || git clone https://github.com/randombit/botan.git --depth=1 --branch $(BOTAN_VERSION) "botan-$(BOTAN_VERSION)"
 	# build
-	if [ $(MSYSTEM) = "MINGW32" ] ; then cd botan-$(BOTAN_VERSION) && ./configure.py --os=mingw --cpu=x86_32 --disable-shared-library --enable-static-library --extra-cxxflags="-D__MINGW_USE_VC2005_COMPAT" --prefix="`pwd`/../$(BUILD_PATH)/botan-$(BOTAN_VERSION).tmp" ; fi
-	if [ $(MSYSTEM) = "MINGW64" ] ; then cd botan-$(BOTAN_VERSION) && ./configure.py --os=mingw --cpu=x86_64 --disable-shared-library --enable-static-library --prefix="`pwd`/../$(BUILD_PATH)/botan-$(BOTAN_VERSION).tmp" ; fi
-	cd botan-$(BOTAN_VERSION) && make -j install
+	if [ $(MSYSTEM) = "MINGW32" ] ; then cd botan-$(BOTAN_VERSION) && ./configure.py --os=mingw --cpu=x86_32 --build-targets=static --without-documentation --no-install-python-module --extra-cxxflags="-D__MINGW_USE_VC2005_COMPAT" --prefix="$(abspath $(LIBS_PATH))" ; fi
+	if [ $(MSYSTEM) = "MINGW64" ] ; then cd botan-$(BOTAN_VERSION) && ./configure.py --os=mingw --cpu=x86_64 --build-targets=static --without-documentation --no-install-python-module --prefix="$(abspath $(LIBS_PATH))" ; fi
+	cd botan-$(BOTAN_VERSION) && make -j libs
+	# copy files
+	# botan has fix in configure and cannot be installed in an other directory than configured prefix
+	#cd botan-$(BOTAN_VERSION) && make install
+	# use install.py to install in temp directory (see install target in Makefile)
+	cd botan-$(BOTAN_VERSION) && python3 src/scripts/install.py --prefix="$(abspath $(BUILD_PATH)/botan-$(BOTAN_VERSION).tmp)" --build-dir="build" --bindir="$(abspath $(BUILD_PATH)/botan-$(BOTAN_VERSION).tmp)/bin" --libdir="$(abspath $(BUILD_PATH)/botan-$(BOTAN_VERSION).tmp)/lib" --docdir="share/doc" --includedir="include"
+	$(call CLEAN_PC_FILES,$(abspath $(BUILD_PATH)/botan-$(BOTAN_VERSION).tmp))
 	# cleanup
 	rm -r -f botan-$(BOTAN_VERSION)
 	mv $(BUILD_PATH)/botan-$(BOTAN_VERSION).tmp $(BUILD_PATH)/botan-$(BOTAN_VERSION)
@@ -389,11 +390,15 @@ asio: $(BUILD_PATH)/asio-$(ASIO_VERSION)
 $(BUILD_PATH)/asio-$(ASIO_VERSION):
 	# prepare
 	rm -r -f $(BUILD_PATH)/asio-*
+	pacman --needed --noconfirm -S autoconf automake
 	[ -d "asio-$(ASIO_VERSION)" ] || git clone https://github.com/chriskohlhoff/asio.git --depth=1 --branch asio-$(ASIO_VERSION) "asio-$(ASIO_VERSION)"
+	# build
+	cd asio-$(ASIO_VERSION)/asio && autoreconf -fi
+	cd asio-$(ASIO_VERSION)/asio && ./configure --prefix="$(abspath $(LIBS_PATH))"
 	# copy files
-	mkdir -p $(BUILD_PATH)/asio-$(ASIO_VERSION).tmp/include/asio
-	cp asio-$(ASIO_VERSION)/asio/include/*.hpp $(BUILD_PATH)/asio-$(ASIO_VERSION).tmp/include/
-	cp -r asio-$(ASIO_VERSION)/asio/include/asio/* $(BUILD_PATH)/asio-$(ASIO_VERSION).tmp/include/asio/
+	cd asio-$(ASIO_VERSION)/asio && make -C include install-nobase_includeHEADERS prefix="$(abspath $(BUILD_PATH)/asio-$(ASIO_VERSION).tmp)"
+	cd asio-$(ASIO_VERSION)/asio && make install-noarch_pkgconfigDATA prefix="$(abspath $(BUILD_PATH)/asio-$(ASIO_VERSION).tmp)"
+	$(call CLEAN_PC_FILES,$(abspath $(BUILD_PATH)/asio-$(ASIO_VERSION).tmp))
 	# cleanup
 	rm -r -f asio-$(ASIO_VERSION)
 	mv $(BUILD_PATH)/asio-$(ASIO_VERSION).tmp $(BUILD_PATH)/asio-$(ASIO_VERSION)
@@ -406,22 +411,30 @@ $(BUILD_PATH)/rnp-$(RNP_VERSION):
 	[ -d "rnp-$(RNP_VERSION)" ] || git clone https://github.com/rnpgp/rnp.git --depth=1 --branch v$(RNP_VERSION) --recurse-submodules --shallow-submodules "rnp-$(RNP_VERSION)"
 	# build
 	mkdir -p rnp-$(RNP_VERSION)/build
-	cd rnp-$(RNP_VERSION)/build && cmake .. -G"MSYS Makefiles" -Wno-dev -DCMAKE_INSTALL_PREFIX="`pwd`/install" -DBUILD_SHARED_LIBS=yes -DBUILD_TESTING=off -DCMAKE_CXX_FLAGS="-D__MINGW_USE_VC2005_COMPAT -D__STDC_FORMAT_MACROS" -DBZIP2_INCLUDE_DIR="`pwd`/../../$(BUILD_PATH)/bzip2-$(BZIP2_VERSION)/include" -DBZIP2_LIBRARY_RELEASE="`pwd`/../../$(BUILD_PATH)/bzip2-$(BZIP2_VERSION)/lib/libbz2.a" -DBZIP2_LIBRARIES="`pwd`/../../$(BUILD_PATH)/bzip2-$(BZIP2_VERSION)/lib/libbz2.a" -DZLIB_INCLUDE_DIR="`pwd`/../../$(BUILD_PATH)/zlib-$(ZLIB_VERSION)/include" -DZLIB_LIBRARY="`pwd`/../../$(BUILD_PATH)/zlib-$(ZLIB_VERSION)/lib/libz.a" -DJSON-C_INCLUDE_DIR="`pwd`/../../$(BUILD_PATH)/json-c-$(JSON_C_VERSION)/include/json-c" -DJSON-C_LIBRARY="`pwd`/../../$(BUILD_PATH)/json-c-$(JSON_C_VERSION)/lib/libjson-c.a" -DBOTAN_INCLUDE_DIR="`pwd`/../../$(BUILD_PATH)/botan-$(BOTAN_VERSION)/include/botan-`echo $(BOTAN_VERSION) | cut -c1-1`" -DBOTAN_LIBRARY="`pwd`/../../$(BUILD_PATH)/botan-$(BOTAN_VERSION)/lib/libbotan-`echo $(BOTAN_VERSION) | cut -c1-1`.a"
-	cmake --build rnp-$(RNP_VERSION)/build
+	cd rnp-$(RNP_VERSION)/build && cmake .. -G"MSYS Makefiles" -Wno-dev -DCMAKE_INSTALL_PREFIX="$(abspath $(LIBS_PATH))" -DBUILD_SHARED_LIBS=yes -DBUILD_TESTING=off -DCMAKE_CXX_FLAGS="-D__MINGW_USE_VC2005_COMPAT -D__STDC_FORMAT_MACROS" -DBZIP2_INCLUDE_DIR="$(abspath $(BUILD_PATH)/bzip2-$(BZIP2_VERSION)/include)" -DBZIP2_LIBRARY_RELEASE="$(abspath $(BUILD_PATH)/bzip2-$(BZIP2_VERSION)/lib/libbz2.a)" -DBZIP2_LIBRARIES="$(abspath $(BUILD_PATH)/bzip2-$(BZIP2_VERSION)/lib/libbz2.a)" -DZLIB_INCLUDE_DIR="$(abspath $(BUILD_PATH)/zlib-$(ZLIB_VERSION)/include)" -DZLIB_LIBRARY="$(abspath $(BUILD_PATH)/zlib-$(ZLIB_VERSION)/lib/libz.a)" -DJSON-C_INCLUDE_DIR="$(abspath $(BUILD_PATH)/json-c-$(JSON_C_VERSION)/include/json-c)" -DJSON-C_LIBRARY="$(abspath $(BUILD_PATH)/json-c-$(JSON_C_VERSION)/lib/libjson-c.a)" -DBOTAN_INCLUDE_DIR="$(abspath $(BUILD_PATH)/botan-$(BOTAN_VERSION)/include/botan-$(firstword $(subst ., ,$(BOTAN_VERSION))))" -DBOTAN_LIBRARY="$(abspath $(BUILD_PATH)/botan-$(BOTAN_VERSION)/lib/libbotan-$(firstword $(subst ., ,$(BOTAN_VERSION))).a)"
+	cmake --build rnp-$(RNP_VERSION)/build --parallel
 	# copy files
-	mkdir -p $(BUILD_PATH)/rnp-$(RNP_VERSION).tmp/include/rnp
-	cp -r rnp-$(RNP_VERSION)/include/rnp/* $(BUILD_PATH)/rnp-$(RNP_VERSION).tmp/include/rnp/
-	cp -r rnp-$(RNP_VERSION)/build/src/lib/rnp/* $(BUILD_PATH)/rnp-$(RNP_VERSION).tmp/include/rnp/
-	mkdir -p $(BUILD_PATH)/rnp-$(RNP_VERSION).tmp/lib
-	cp -r rnp-$(RNP_VERSION)/build/src/lib/librnp.dll.a $(BUILD_PATH)/rnp-$(RNP_VERSION).tmp/lib/
-	mkdir -p $(BUILD_PATH)/rnp-$(RNP_VERSION).tmp/bin
-	cp -r rnp-$(RNP_VERSION)/build/src/lib/librnp.dll $(BUILD_PATH)/rnp-$(RNP_VERSION).tmp/bin/
+	cmake --install rnp-$(RNP_VERSION)/build --component development --prefix "$(abspath $(BUILD_PATH)/rnp-$(RNP_VERSION).tmp)"
 	# cleanup
 	rm -r -f rnp-$(RNP_VERSION)
 	mv $(BUILD_PATH)/rnp-$(RNP_VERSION).tmp $(BUILD_PATH)/rnp-$(RNP_VERSION)
 
+cleanlibs:
+	@echo "Remove libs"
+	@rm -r -f $(LIBS_PATH);
+
 copylibs:
-	rm -r -f $(LIBS_PATH) ; \
-	mkdir -p $(LIBS_PATH) ; \
-	cp -p $(BUILD_PATH)/gcc-version $(LIBS_PATH) ; \
-	find $(BUILD_PATH) -mindepth 1 -maxdepth 1 -type d -not -name "*.tmp" -print -exec cp -r -p {}/. $(LIBS_PATH) \; ; \
+	@echo "Copy libs";
+	@set -e; \
+	rm -rf "$(LIBS_PATH)"; \
+	mkdir -p "$(LIBS_PATH)"; \
+	cp -p "$(BUILD_PATH)/gcc-version" "$(LIBS_PATH)"; \
+	for dir in "$(BUILD_PATH)"/*/; do \
+		case "$$dir" in *.tmp/) continue ;; esac; \
+		echo "$$dir"; \
+		cp -rp "$$dir." "$(LIBS_PATH)"; \
+	done; \
+	if grep -rlE '([=[:space:]'\'']|-[IL])(/[a-zA-Z]/|[a-z]:/)|/build/' "$(LIBS_PATH)" --include="*.pc" --include="*.la"; then \
+		echo "ERROR: Found not cleaned path in .pc or .la file!"; \
+		exit 1; \
+	fi

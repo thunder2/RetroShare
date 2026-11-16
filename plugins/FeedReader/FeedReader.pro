@@ -131,6 +131,9 @@ win32 {
 	!isEmpty(PREFIX_MSYS2) {
 		message(Use msys2 xml2.)
 		INC_DIR  += "$${PREFIX_MSYS2}/include/libxml2"
+	} else:!isEmpty(EXTERNAL_LIB_DIR) {
+		message(Use libxml2 in $${EXTERNAL_LIB_DIR}.)
+		INC_DIR  += "$${EXTERNAL_LIB_DIR}/include/libxml2"
 	}
 
 	DEPENDPATH += . $$INC_DIR
